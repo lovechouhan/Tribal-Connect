@@ -1,142 +1,278 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
-    <title>Base Layout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TribalConnect — India's premier tribal artisan marketplace. Buy authentic handcrafted tribal products, indigenous art, bamboo crafts, and forest goods directly from tribal communities.">
+    <title>TribalConnect — Tribal Artisan Marketplace</title>
+
+    <!-- Tailwind (existing output.css) -->
     <link rel="stylesheet" th:href="@{/css/output.css}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <!-- TribalConnect Tribal Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/tribal.css}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Flowbite -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-
-    <!-- sweetalert2 animation -->
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
-<body class="min-h-screen flex flex-col bg-red-300">
+<body class="tribal-bg" style="min-height:100vh; display:flex; flex-direction:column;">
 
+  <!-- ========== HEADER / NAVBAR ========== -->
   <header>
-      <div th:if="${loggedInUser}">
-          <div th:replace="~{navbar :: navbar}"></div>
-      </div>
+    <div th:if="${loggedInUser}">
+      <div th:replace="~{navbar :: navbar}"></div>
+    </div>
   </header>
 
+  <!-- Chatbot (only for logged-in users) -->
   <div th:if="${loggedInUser}">
     <div th:replace="~{user/chatbot :: chatbot}"></div>
   </div>
 
-  <!-- Sidebar -->
+  <!-- ♿ Multilingual + Voice Accessibility Widget (always shown) -->
+  <div th:replace="~{fragments/accessibility :: accessibility}"></div>
+
+
+  <!-- ========== SIDEBAR ========== -->
   <div th:if="${loggedInUser != null}">
     <div th:if="${userRole == 'ROLE_USER'}">
       <div th:replace="~{user/user-sidebar :: userSidebar}"></div>
     </div>
-
-    
-
     <div th:if="${userRole == 'ROLE_SELLER'}">
       <div th:replace="~{seller/seller-sidebar :: sellerSidebar}"></div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <main class="flex-1 pt-16 transition-all duration-300">
+  <!-- ========== MAIN CONTENT ========== -->
+  <main style="flex:1; padding-top:64px; transition:all 0.3s;">
     <div layout:fragment="content"></div>
   </main>
 
-  <!-- Footer -->
+  <!-- ========== FOOTER ========== -->
   <div th:replace="~{footerr :: footer}"></div>
 
+  <!-- ========== AI Summary Modal ========== -->
+  <style>
+    @keyframes aiModalScaleUp {
+      from { opacity: 0; transform: scale(0.92) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes aiPulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(192, 92, 46, 0.2); transform: scale(1); }
+      50% { box-shadow: 0 0 25px rgba(192, 92, 46, 0.5); transform: scale(1.05); }
+    }
+    @keyframes aiSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .ai-modal-animate {
+      animation: aiModalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .ai-badge-glow {
+      animation: aiPulseGlow 2.5s infinite ease-in-out;
+    }
+    .ai-sparkle-spin {
+      animation: aiSpin 4s linear infinite;
+    }
+  </style>
 
-<div id="ai-summary-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-gray-900 rounded-lg w-11/12 md:w-1/2 p-6 relative">
-        <button onclick="closeAISummary()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">&times;</button>
-        <h3 class="text-xl font-bold mb-4 text-white">Product AI Summary</h3>
-        <div id="ai-summary-content" class="text-white">
-            Loading...
+  <div id="ai-summary-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 backdrop-blur-sm transition-all duration-300">
+    <div class="ai-modal-animate" style="background:#fff; border-radius:24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); max-width:620px; width:92%; overflow:hidden; border: 1px solid rgba(192, 92, 46, 0.2);">
+      <!-- Modal Header -->
+      <div style="background: linear-gradient(135deg, #6B4226 0%, #C05C2E 100%); padding: 24px 32px; position: relative; color: #fff;">
+        <button onclick="closeAISummary()" style="position: absolute; top: 20px; right: 24px; font-size: 1.8rem; color: rgba(255,255,255,0.8); background: none; border: none; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">&times;</button>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div class="ai-badge-glow" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); width: 54px; height: 54px; display: flex; align-items: center; justify-content: center; border-radius: 16px; border: 1px solid rgba(255,255,255,0.25);">
+            <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 1.6rem; color: #F0B830;"></i>
+          </div>
+          <div>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 0; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">AI Product Insight</h3>
+            <p style="font-size: 0.82rem; color: #E8D5B0; margin: 2px 0 0; font-family: 'Poppins', sans-serif; opacity: 0.9;">Powered by Ollama AI</p>
+          </div>
         </div>
+      </div>
+      <!-- Decorative Trim -->
+      <div style="height: 4px; background: linear-gradient(90deg, #D4960A, #F0B830, #D4960A);"></div>
+      <!-- Modal Body -->
+      <div id="ai-summary-content" style="padding: 32px; color: #2C2416; font-family: 'Poppins', sans-serif; max-height: 70vh; overflow-y: auto;">
+        <!-- Dynamic content goes here -->
+      </div>
+      <!-- Modal Footer -->
+      <div style="background: #FDF6E9; padding: 16px 32px; border-top: 1px solid #E8D5B0; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: #8B7355; font-weight: 500;">
+          <i class="fa-solid fa-shield-halved" style="color: #3D6B45;"></i>
+          <span>Authentic Tribal Craftsmanship AI Analysis</span>
+        </div>
+        <button onclick="closeAISummary()" style="background: #C05C2E; color: #fff; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 12px rgba(192, 92, 46, 0.3); transition: all 0.2s;" onmouseover="this.style.transform='translateY(-1px)';this.style.backgroundColor='#A04820'" onmouseout="this.style.transform='translateY(0)';this.style.backgroundColor='#C05C2E'">Got it</button>
+      </div>
     </div>
-</div>
+  </div>
 
   <script th:inline="javascript">
     /*<![CDATA[*/
-        window.openAISummary = async function(productId) {
-            const modal = document.getElementById('ai-summary-modal');
-            const content = document.getElementById('ai-summary-content');
-            modal.classList.remove('hidden');
-            content.innerHTML = 'Loading...';
+    window.openAISummary = async function(productId) {
+        const modal = document.getElementById('ai-summary-modal');
+        const content = document.getElementById('ai-summary-content');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        content.innerHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center;">
+            <div style="position: relative; margin-bottom: 24px;">
+              <div class="ai-badge-glow" style="width: 72px; height: 72px; border-radius: 50%; background: #F5EAD2; display: flex; align-items: center; justify-content: center; border: 2px solid #E8D5B0;">
+                <i class="fa-solid fa-robot" style="font-size: 2.2rem; color: #C05C2E;"></i>
+              </div>
+              <div class="ai-sparkle-spin" style="position: absolute; top: -4px; right: -4px;">
+                <i class="fa-solid fa-sparkle" style="color: #D4960A; font-size: 1.4rem;"></i>
+              </div>
+            </div>
+            <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #6B4226; margin: 0 0 8px; font-weight: 700;">Analyzing Craft & Heritage...</h4>
+            <p style="color: #8B7355; font-size: 0.95rem; max-width: 320px; margin: 0; line-height: 1.5;">Ollama AI is examining tribal origin, traditional materials, and artisan history.</p>
+          </div>
+        `;
+        try {
+            const base = /*[[@{/}]]*/ '/';
+            const resp = await fetch(base.replace(/\/$/, '') + '/api/ai-summary/' + productId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!resp.ok) throw new Error('Server error: ' + resp.status);
+            const data = await resp.json();
+            content.innerHTML = `
+              <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Summary Card -->
+                <div style="background: #FDF6E9; border-left: 4px solid #C05C2E; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(107, 66, 38, 0.06); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <div style="background: #C05C2E; color: #fff; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(192, 92, 46, 0.3);">
+                      <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <h4 style="font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: #2C2416; margin: 0;">AI Quick Summary</h4>
+                  </div>
+                  <p style="font-size: 0.95rem; color: #4A3B2C; margin: 0; line-height: 1.6;">${data.summary || 'No summary returned'}</p>
+                </div>
 
-            try {
-                // POST to the API endpoint implemented in ProductAIController
-                const base = /*[[@{/}]]*/ '/'; // resolves to context-aware "/"
-                const resp = await fetch(base.replace(/\/$/, '') + '/api/ai-summary/' + productId, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                <!-- Description Card -->
+                <div style="background: #F4F9F5; border-left: 4px solid #3D6B45; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(61, 107, 69, 0.06); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <div style="background: #3D6B45; color: #fff; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(61, 107, 69, 0.3);">
+                      <i class="fa-solid fa-book-open-reader"></i>
+                    </div>
+                    <h4 style="font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: #2C2416; margin: 0;">Detailed Craft Description</h4>
+                  </div>
+                  <p style="font-size: 0.95rem; color: #3A4B3C; margin: 0; line-height: 1.6;">${data.description || 'No description returned'}</p>
+                </div>
+              </div>
+            `;
+        } catch (err) {
+            content.innerHTML = `
+              <div style="background: #FDF2F2; border-left: 4px solid #C05C2E; border-radius: 16px; padding: 24px; text-align: center;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.5rem; color: #C05C2E; margin-bottom: 12px;"></i>
+                <h4 style="font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: #2C2416; margin: 0 0 8px;">Insight Generation Failed</h4>
+                <p style="font-size: 0.95rem; color: #6B4226; margin: 0;">We couldn't generate AI insights at this moment. Please try again later. (${err.message || ''})</p>
+              </div>
+            `;
+        }
+    };
+    window.closeAISummary = function() {
+        const modal = document.getElementById('ai-summary-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    };
+
+    window.toggleWishlist = async function(productId, btnElement) {
+        try {
+            const base = /*[[@{/}]]*/ '/';
+            const url = base.replace(/\/$/, '') + '/user/wishlist/toggle';
+            const formData = new URLSearchParams();
+            formData.append('productId', productId);
+
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData
+            });
+
+            const data = await resp.json();
+
+            if (resp.status === 401 || data.status === 'unauthorized') {
+                Swal.fire({
+                    title: 'Login Required',
+                    text: 'Please login to add items to your wishlist.',
+                    icon: 'warning',
+                    confirmButtonColor: '#C05C2E'
+                }).then(() => {
+                    window.location.href = base.replace(/\/$/, '') + '/login';
                 });
+                return;
+            }
 
-                if (!resp.ok) {
-                    const text = await resp.text();
-                    throw new Error('Server error: ' + resp.status + ' ' + text);
+            if (resp.ok) {
+                const countElem = document.getElementById('nav-wishlist-count');
+                if (countElem && data.wishlistCount !== undefined) {
+                    countElem.textContent = data.wishlistCount;
                 }
 
-                const data = await resp.json();
-                // Expecting { summary: '...', description: '...' }
-                content.innerHTML = '<h4 class="font-semibold">Summary</h4>' +
-                    '<p class="mt-2 text-sm text-black">' + (data.summary || 'No summary returned') + '</p>' +
-                    '<hr class="my-3">' +
-                    '<h4 class="font-semibold">Description</h4>' +
-                    '<p class="mt-2 text-sm text-black">' + (data.description || 'No description returned') + '</p>';
+                if (btnElement) {
+                    if (data.status === 'added') {
+                        btnElement.innerHTML = '<i class="fa-solid fa-heart mr-1" style="color:#C05C2E;"></i>Wishlisted';
+                        btnElement.style.background = '#FDF6E9';
+                    } else {
+                        btnElement.innerHTML = '<i class="fa-regular fa-heart mr-1"></i>Wishlist';
+                        btnElement.style.background = '#fff';
+                    }
+                }
 
-            } catch (err) {
-                console.error(err);
-                content.innerHTML = '<p class="text-red-600">Failed to load AI summary. ' + (err.message || '') + '</p>';
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    icon: data.status === 'added' ? 'success' : 'info',
+                    title: data.message
+                });
+            }
+        } catch (err) {
+            console.error('Wishlist toggle error:', err);
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                icon: 'error',
+                title: 'Failed to update wishlist'
+            });
+        }
+    };
+
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.wishlist-btn');
+        if (btn) {
+            e.preventDefault();
+            const productId = btn.getAttribute('data-product-id');
+            if (productId) {
+                window.toggleWishlist(productId, btn);
             }
         }
-
-        window.closeAISummary = function() {
-            const modal = document.getElementById('ai-summary-modal');
-            modal.classList.add('hidden');
-        }
+    });
     /*]]>*/
-    </script>
+  </script>
 
-
-
+  <!-- SweetAlert helpers -->
   <script th:if="${alertMessage != null}" th:inline="javascript">
-  Swal.fire({
-    title: /*[[${alertTitle}]]*/ '',
-    text: /*[[${alertMessage}]]*/ '',
-    icon: /*[[${alertType}]]*/ 'info',
-    confirmButtonText: 'OK'
-  });
-</script>
-
-  <!-- Fallback: show success/info message if 'message' is present -->
+    Swal.fire({ title: /*[[${alertTitle}]]*/ '', text: /*[[${alertMessage}]]*/ '', icon: /*[[${alertType}]]*/ 'info', confirmButtonText: 'OK', confirmButtonColor: '#C05C2E' });
+  </script>
   <script th:if="${message != null}" th:inline="javascript">
-  Swal.fire({
-    title: 'Success',
-    text: /*[[${message}]]*/ '',
-    icon: 'success',
-    confirmButtonText: 'OK'
-  });
+    Swal.fire({ title: 'Success', text: /*[[${message}]]*/ '', icon: 'success', confirmButtonText: 'OK', confirmButtonColor: '#C05C2E' });
   </script>
-
-  <!-- Fallback: show error alert if 'error' is present -->
   <script th:if="${error != null}" th:inline="javascript">
-  Swal.fire({
-    title: 'Error',
-    text: /*[[${error}]]*/ '',
-    icon: 'error',
-    confirmButtonText: 'OK'
-  });
+    Swal.fire({ title: 'Oops!', text: /*[[${error}]]*/ '', icon: 'error', confirmButtonText: 'OK', confirmButtonColor: '#C05C2E' });
   </script>
 
-
-
- 
-
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
-
 </html>

@@ -1,74 +1,71 @@
-<nav th:fragment="navbar" class="bg-red-800 border-gray-200 dark:bg-gray-900">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+<nav th:fragment="navbar" class="tribal-navbar" style="position:sticky;top:0;z-index:100;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;">
 
-     <!-- Sidebar Toggle Button -->
-       <div class="flex items-start gap-4">
-         <button id="sidebar-toggle"
-                type="button"
-                class="inline-flex items-center p-2 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-white"
-                aria-controls="logo-sidebar"
-                aria-expanded="false">
-            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                      d="M2 4.5A.75.75 0 012.75 3h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.5zm0 5A.75.75 0 012.75 8h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 9.5zm0 5A.75.75 0 012.75 13h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 14.5z"
-                      clip-rule="evenodd"></path>
-            </svg>
-        </button>
-       </div>
-    <!-- Left Side: Sidebar Toggle and Logo -->
-    <div class="flex items-center gap-4">
-       
-
-        <!-- Logo -->
-     
-        <a th:href="@{/user/main}" class="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="/images/ApniDukkan.png" class="h-12 w-13 rounded-full" alt="Logo" />
-        </a>
-    </div>
-
-    <!-- Search Bar -->
-    <div class="flex-1 max-w-xl mx-4">
-        <form th:action="@{/search}" method="get" class="flex items-center">
-            <div class="relative w-full">
-                <input type="text" 
-                       name="keyword" 
-                       class="bg-gray-50 border border-gray-900 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                       placeholder="Search products..." 
-                       th:value="${param.keyword}">
-                <button type="submit" class="absolute right-2.5 bottom-2.5">
-                    <svg class="w-4 h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Existing collapse button for main navbar -->
-    <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-        </svg>
+    <!-- Sidebar Toggle -->
+    <button id="sidebar-toggle" type="button"
+            style="background:rgba(255,255,255,0.12);border:none;border-radius:8px;padding:8px;cursor:pointer;color:#FDF6E9;"
+            aria-controls="logo-sidebar" aria-expanded="false">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M2 4.5A.75.75 0 012.75 3h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.5zm0 5A.75.75 0 012.75 8h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 9.5zm0 5A.75.75 0 012.75 13h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 14.5z" clip-rule="evenodd"/>
+      </svg>
     </button>
 
-    <!-- Navbar links -->
-    <div class="hidden w-full md:block md:w-auto" id="navbar-default">
-      <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
-        
-        <li>
-            <a th:href="@{/user/about}" class="block py-2 px-3 text-white rounded-sm hover:bg-gray-900 md:hover:bg-transparent md:border-0 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-            <i class="fas fa-info-circle mr-1"></i>About</a>
-        </li>
-        <li>
-          <a th:href="@{/user/support}" class="block py-2 px-3 text-white rounded-sm hover:bg-gray-900 md:hover:bg-transparent md:border-0  md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-            <i class="fas fa-headset mr-1"></i>Customer Support</a>
-        </li>
-        <li>
-          <a th:href="@{/user/contact}" class="block py-2 px-3 text-white rounded-sm hover:bg-gray-900 md:hover:bg-transparent md:border-0  md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-            <i class="fas fa-envelope mr-1"></i>Contact</a>
-        </li>
-      </ul>
+    <!-- Brand Logo -->
+    <a th:href="@{/user/main}" style="text-decoration:none;display:flex;align-items:center;gap:10px;flex-shrink:0;">
+      <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#D4960A,#F0B830);display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+        🌿
+      </div>
+      <div>
+        <span class="brand-name" style="font-family:'Playfair Display',serif;font-weight:900;font-size:1.35rem;color:#F0B830;letter-spacing:0.3px;display:block;line-height:1.1;text-shadow:1px 1px 3px rgba(0,0,0,0.3);">TribalConnect</span>
+        <span style="font-size:0.62rem;color:#E8D5B0;display:block;font-family:'Kalam',cursive;letter-spacing:1px;">✦ Tribal Artisan Marketplace ✦</span>
+      </div>
+    </a>
+
+    <!-- Search Bar -->
+    <div style="flex:1;max-width:480px;">
+      <form th:action="@{/search}" method="get" style="display:flex;align-items:center;">
+        <div style="position:relative;width:100%;">
+          <input type="text"
+                 name="keyword"
+                 th:value="${param.keyword}"
+                 placeholder="Search handcrafted products, artisans..."
+                 style="width:100%;background:#fff;border:none;border-radius:8px;padding:9px 40px 9px 14px;font-size:0.88rem;color:#2C2416;font-family:'Poppins',sans-serif;outline:none;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+          <button type="submit"
+                  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#C05C2E;">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Nav Links (desktop) -->
+    <div style="display:flex;align-items:center;gap:4px;">
+      <a th:href="@{/user/about}"
+         style="color:#FDF6E9;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:0.85rem;font-weight:500;transition:background 0.2s;white-space:nowrap;"
+         onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='transparent'">
+        <i class="fas fa-leaf mr-1"></i>About
+      </a>
+      <a th:href="@{/user/support}"
+         style="color:#FDF6E9;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:0.85rem;font-weight:500;transition:background 0.2s;white-space:nowrap;"
+         onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='transparent'">
+        <i class="fas fa-headset mr-1"></i>Support
+      </a>
+      <a th:href="@{/user/contact}"
+         style="color:#FDF6E9;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:0.85rem;font-weight:500;transition:background 0.2s;white-space:nowrap;"
+         onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='transparent'">
+        <i class="fas fa-envelope mr-1"></i>Contact
+      </a>
+      <a th:href="@{/user/wishlist}"
+         style="color:#FDF6E9;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:0.85rem;font-weight:500;transition:background 0.2s;white-space:nowrap;position:relative;"
+         onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='transparent'">
+        <i class="fas fa-heart mr-1" style="color:#E85D04;"></i>Wishlist
+        <span id="nav-wishlist-count" th:text="${wishlistCount != null ? wishlistCount : 0}" style="position:absolute;top:0px;right:2px;background:#E85D04;color:#fff;font-size:0.65rem;font-weight:bold;border-radius:50%;padding:1px 5px;box-shadow:0 1px 3px rgba(0,0,0,0.3);">0</span>
+      </a>
+      <a th:href="@{/user/cart}"
+         style="color:#F0B830;text-decoration:none;padding:8px 12px;border-radius:8px;font-size:0.85rem;font-weight:600;transition:background 0.2s;white-space:nowrap;"
+         onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='transparent'">
+        <i class="fas fa-shopping-basket mr-1"></i>Cart
+      </a>
     </div>
   </div>
 </nav>

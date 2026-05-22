@@ -1,87 +1,117 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{base}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
 <head>
-    <title>About Us - Apni Dukaan</title>
+  <title>About TribalConnect — Tribal Artisan Marketplace</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div layout:fragment="content" class="min-h-screen overflow-auto bg-red-300">
-    
-    <!-- Hero Section -->
-    <section class="relative bg-gradient-to-r border-white bg-red-300 text-black py-16">
-        <div class="container mx-auto px-6 text-center">
-            <h1 class="text-4xl text-black md:text-5xl font-bold mb-4">About <span class="text-black">Apni Dukaan</span></h1>
-            <p class="text-lg md:text-xl max-w-2xl mx-auto opacity-90">
-                Your one-stop destination for the latest fashion, unbeatable prices, and quality products delivered to your doorstep.
-            </p>
+<div layout:fragment="content">
+
+  <!-- Hero -->
+  <section style="background:linear-gradient(135deg,#6B4226,#C05C2E,#D4960A);padding:64px 24px;text-align:center;color:#fff;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;opacity:0.05;background-image:url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23fff\' fill-opacity=\'1\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E');"></div>
+    <div style="position:relative;max-width:700px;margin:0 auto;">
+      <div style="font-size:3.5rem;margin-bottom:14px;">🌿</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:900;margin:0 0 14px;text-shadow:2px 2px 8px rgba(0,0,0,0.2);">About TribalConnect</h1>
+      <p style="font-size:1.05rem;line-height:1.8;opacity:0.93;margin:0;">
+        India's premier tribal e-marketplace — connecting indigenous artisans with conscious buyers to preserve ancient crafts, empower communities, and celebrate heritage.
+      </p>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <section style="max-width:1100px;margin:0 auto;padding:64px 24px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+      <div>
+        <div style="font-family:'Kalam',cursive;color:#C05C2E;font-size:0.95rem;margin-bottom:6px;">✦ Our Mission</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:#2C2416;margin:0 0 18px;">Empowering Tribal India, One Craft at a Time</h2>
+        <p style="color:#4a3520;line-height:1.8;font-size:0.95rem;margin:0 0 16px;">
+          TribalConnect was born from a deep belief — that every tribal artisan deserves a fair marketplace. We bridge the gap between indigenous craftsmen in remote tribal regions and buyers across the globe who value authenticity.
+        </p>
+        <p style="color:#4a3520;line-height:1.8;font-size:0.95rem;margin:0 0 24px;">
+          Every product on our platform carries a story of culture, tradition, and community. When you buy from TribalConnect, you're not just purchasing a product — you're sustaining a livelihood.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a th:href="@{/user/products}" class="btn-tribal">Shop Now</a>
+          <a th:href="@{/sellers/register}" class="btn-forest" style="border-radius:8px;">Become an Artisan</a>
         </div>
-        <div class="absolute bottom-0 left-0 right-0 h-12 bg-white rounded-t-[40px]"></div>
-    </section>
-
-    <!-- Mission Section -->
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-            <img src="https://cdn-icons-png.flaticon.com/512/891/891462.png" alt="Our Mission" class="w-64 mx-auto animate-bounce">
-            <div>
-                <h2 class="text-3xl font-semibold text-gray-800 mb-4">Our Mission</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    At <strong>Apni Dukaan</strong>, our mission is to make online shopping easy, affordable, and enjoyable for everyone. 
-                    We’re dedicated to connecting customers with trusted sellers while providing an intuitive and secure platform for all your fashion needs.
-                </p>
-            </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="background:#FDF6E9;border:1px solid #E8D5B0;border-radius:14px;padding:22px;text-align:center;border-top:3px solid #C05C2E;">
+          <div style="font-size:2rem;font-weight:800;font-family:'Playfair Display',serif;color:#C05C2E;">5000+</div>
+          <div style="font-size:0.82rem;color:#8B7355;margin-top:4px;">Tribal Products</div>
         </div>
-    </section>
-
-    <!-- Vision Section -->
-    <section class="py-16 bg-red-300">
-        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-            <div>
-                <h2 class="text-3xl font-semibold text-gray-800 mb-4">Our Vision</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    To become India’s most loved and trusted online fashion store by offering top-quality products, 
-                    seamless user experience, and outstanding customer support. We believe in empowering both buyers and sellers.
-                </p>
-            </div>
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Our Vision" class="w-64 mx-auto">
+        <div style="background:#FDF6E9;border:1px solid #E8D5B0;border-radius:14px;padding:22px;text-align:center;border-top:3px solid #3D6B45;">
+          <div style="font-size:2rem;font-weight:800;font-family:'Playfair Display',serif;color:#3D6B45;">500+</div>
+          <div style="font-size:0.82rem;color:#8B7355;margin-top:4px;">Tribal Artisans</div>
         </div>
-    </section>
-
-    <!-- Why Choose Us -->
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl font-semibold text-gray-800 mb-8">Why Choose Us?</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-gray-200 hover:bg-red-300 shadow-md rounded-2xl p-8 hover:shadow-lg transition">
-                    <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Quality Products" class="w-16 mx-auto mb-4">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Quality Products</h3>
-                    <p class="text-gray-600">We partner with verified sellers to ensure every item meets high-quality standards.</p>
-                </div>
-
-                <div class="bg-gray-200 shadow-md rounded-2xl p-8 hover:shadow-lg transition">
-                    <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png" alt="Fast Delivery" class="w-16 mx-auto mb-4">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Fast & Safe Delivery</h3>
-                    <p class="text-gray-600">Your products are delivered swiftly with real-time tracking and secure packaging.</p>
-                </div>
-
-                <div class="bg-gray-200 shadow-md rounded-2xl p-8 hover:shadow-lg transition">
-                    <img src="https://cdn-icons-png.flaticon.com/512/709/709496.png" alt="Customer Support" class="w-16 mx-auto mb-4">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-2">24/7 Support</h3>
-                    <p class="text-gray-600">Our dedicated support team is always ready to assist you anytime, anywhere.</p>
-                </div>
-            </div>
+        <div style="background:#FDF6E9;border:1px solid #E8D5B0;border-radius:14px;padding:22px;text-align:center;border-top:3px solid #D4960A;">
+          <div style="font-size:2rem;font-weight:800;font-family:'Playfair Display',serif;color:#D4960A;">28</div>
+          <div style="font-size:0.82rem;color:#8B7355;margin-top:4px;">States Covered</div>
         </div>
-    </section>
+        <div style="background:#FDF6E9;border:1px solid #E8D5B0;border-radius:14px;padding:22px;text-align:center;border-top:3px solid #6B4226;">
+          <div style="font-size:2rem;font-weight:800;font-family:'Playfair Display',serif;color:#6B4226;">700+</div>
+          <div style="font-size:0.82rem;color:#8B7355;margin-top:4px;">Craft Traditions</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Footer Call to Action -->
-    <section class="py-16  bg-gradient-to-r bg-red-300  text-black text-center">
-        <h2 class="text-3xl text-black font-semibold mb-4">Join the Apni Dukaan Family Today!</h2>
-        <p class="mb-6 text-black text-lg">Shop smart, sell better — and be part of India’s fastest-growing online marketplace.</p>
-        <a th:href="@{/user/products}" class="bg-red-800 text-white font-semibold px-8 py-3 rounded-full shadow-md hover:bg-gray-800 transition">
-            Start Shopping
-        </a>
-    </section>
+  <!-- Values -->
+  <section style="background:linear-gradient(135deg,#FDF6E9,#F5EAD2);padding:60px 24px;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:40px;">
+        <h2 class="section-title" style="font-size:1.8rem;">Our Core Values</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+        <div style="background:#fff;border-radius:14px;padding:24px;text-align:center;box-shadow:0 2px 12px rgba(107,66,38,0.08);">
+          <div style="font-size:2.5rem;margin-bottom:12px;">🤝</div>
+          <h3 style="font-family:'Playfair Display',serif;color:#6B4226;font-size:1.05rem;margin:0 0 10px;">Fair Trade</h3>
+          <p style="color:#8B7355;font-size:0.84rem;line-height:1.6;margin:0;">Artisans earn directly with no middlemen. 100% of the listed price goes to the creator.</p>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:24px;text-align:center;box-shadow:0 2px 12px rgba(107,66,38,0.08);">
+          <div style="font-size:2.5rem;margin-bottom:12px;">🌿</div>
+          <h3 style="font-family:'Playfair Display',serif;color:#6B4226;font-size:1.05rem;margin:0 0 10px;">Sustainability</h3>
+          <p style="color:#8B7355;font-size:0.84rem;line-height:1.6;margin:0;">All products use natural, forest-sourced materials. Eco-friendly by tradition.</p>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:24px;text-align:center;box-shadow:0 2px 12px rgba(107,66,38,0.08);">
+          <div style="font-size:2.5rem;margin-bottom:12px;">🏛️</div>
+          <h3 style="font-family:'Playfair Display',serif;color:#6B4226;font-size:1.05rem;margin:0 0 10px;">Heritage Preservation</h3>
+          <p style="color:#8B7355;font-size:0.84rem;line-height:1.6;margin:0;">Every sale keeps a centuries-old craft tradition alive for future generations.</p>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:24px;text-align:center;box-shadow:0 2px 12px rgba(107,66,38,0.08);">
+          <div style="font-size:2.5rem;margin-bottom:12px;">💡</div>
+          <h3 style="font-family:'Playfair Display',serif;color:#6B4226;font-size:1.05rem;margin:0 0 10px;">Digital Empowerment</h3>
+          <p style="color:#8B7355;font-size:0.84rem;line-height:1.6;margin:0;">Bringing tribal artisans online — simple tools, multilingual support, direct payments.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Govt Support -->
+  <section style="max-width:1100px;margin:0 auto;padding:60px 24px;">
+    <div class="govt-banner">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <span style="font-size:2.5rem;">🇮🇳</span>
+        <div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#fff;margin:0 0 8px;">Government Supported Initiative</h3>
+          <p style="color:#a0c8a8;font-size:0.9rem;line-height:1.7;margin:0;">TribalConnect is aligned with India's Van Dhan Vikas Kendra (VDVK) scheme under the Ministry of Tribal Affairs and TRIFED. We support tribal SHGs, artisan cooperatives, and GI-tagged products from across India.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background:linear-gradient(135deg,#C05C2E,#D4960A);padding:56px 24px;text-align:center;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:2rem;color:#fff;margin:0 0 14px;">Ready to Explore Tribal India?</h2>
+    <p style="color:rgba(255,255,255,0.87);margin:0 0 28px;font-size:0.95rem;">Browse thousands of authentic handcrafted products and support the artisans who make them.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a th:href="@{/user/products}" style="background:#fff;color:#C05C2E;padding:13px 32px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.95rem;">🛒 Shop Tribal Crafts</a>
+      <a th:href="@{/sellers/register}" style="background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.6);color:#fff;padding:13px 32px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.95rem;">🎨 Sell Your Craft</a>
+    </div>
+  </section>
 </div>
 </body>
 </html>

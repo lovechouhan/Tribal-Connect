@@ -30,15 +30,13 @@ public class CartService {
         }
         if (cart != null) {
             cart.setTotalItems(cart.getCartItems().size());
-            cart.setTotalMRPPrice((int) cart.getCartItems().stream()
-                    .mapToDouble(item -> item.getMRPprice() * item.getQuantity())
-                    .sum());
-
+            int totalMRP = cart.getCartItems().stream()
+                    .mapToInt(item -> item.getMRPprice() * item.getQuantity()).sum();
             double totalAmount = cart.getCartItems().stream()
-                    .mapToDouble(item -> item.getSellingPrice() * item.getQuantity())
-                    .sum();
+                    .mapToDouble(item -> item.getSellingPrice() * item.getQuantity()).sum();
+            cart.setTotalMRPPrice(totalMRP);
             cart.setTotalAmount(totalAmount);
-            cart.setDiscount(cart.getTotalMRPPrice() - (int) totalAmount);
+            cart.setDiscount(totalMRP - (int) totalAmount);
             cartRepo.save(cart);
             return cartItem;
         }
@@ -55,8 +53,8 @@ public class CartService {
             cartRepo.save(cart); // Save the cart first to get an ID
         }
 
-        // Check if product already exists in cart
-        CartItem existingItem = cartItemRepo.findByCartAndProductAndSize(cart, product, product.getSizes().get(0));
+        // Check if product already exists in cart (no size support — tribal products are one-size)
+        CartItem existingItem = cartItemRepo.findByCartAndProductAndSize(cart, product, null);
 
         if (existingItem != null) {
             // Update existing item quantity
@@ -71,42 +69,35 @@ public class CartService {
             cartItem.setUserId(user.getId());
             cartItem.setMRPprice(product.getMRPprice());
             cartItem.setSellingPrice(product.getSellingPrice());
-
-            cartItem.setSize(product.getSizes().get(0));
+            cartItem.setSize(null);
             cartItemRepo.save(cartItem);
             cart.getCartItems().add(cartItem);
         }
 
-        // Update cart totals
+        // Update cart totals from all items
         cart.setTotalItems(cart.getCartItems().size());
-        double currentCartAmount = cart.getTotalAmount();
-        // Calculate totals from saved cart items to ensure accuracy
-        double totalAmount = cartItemRepo.findByCartAndProductAndSize(cart, product, product.getSizes().get(0))
-                .getSellingPrice() * cartItemRepo.findByCartAndProductAndSize(cart, product, product.getSizes().get(0))
-                        .getQuantity();
-
-        double currentTotalMRPPrice = cart.getTotalMRPPrice();
-        double totalMRPPrice = cartItemRepo.findByCartAndProductAndSize(cart, product, product.getSizes().get(0))
-                .getMRPprice() * cartItemRepo.findByCartAndProductAndSize(cart, product, product.getSizes().get(0))
-                        .getQuantity();
-
-        cart.setTotalMRPPrice((int) totalMRPPrice + (int)currentTotalMRPPrice);
-        cart.setTotalAmount(totalAmount + currentCartAmount);
-        cart.setDiscount((int) (totalMRPPrice - totalAmount));
-
+        int totalMRP = cart.getCartItems().stream()
+                .mapToInt(item -> item.getMRPprice() * item.getQuantity()).sum();
+        double totalAmount = cart.getCartItems().stream()
+                .mapToDouble(item -> item.getSellingPrice() * item.getQuantity()).sum();
+        cart.setTotalMRPPrice(totalMRP);
+        cart.setTotalAmount(totalAmount);
+        cart.setDiscount(totalMRP - (int) totalAmount);
         cartRepo.save(cart);
     }
 
                 
 
     public void clearCart(User user) {
-    Cart cart = getCartByUser(user);
-    if(cart != null){
-        cart.getCartItems().clear(); // saare items remove
-        cart.setTotalAmount(0);
-        cart.setDiscount(0);
-        cart.setDeliveryCharge(0);
-        cartRepo.save(cart); // update cart
-    }
+        Cart cart = getCartByUser(user);
+        if (cart != null) {
+            cart.getCartItems().clear();
+            cart.setTotalAmount(0.0);
+            cart.setDiscount(0);
+            cart.setDeliveryCharge(0.0);
+            cart.setTotalMRPPrice(0);
+            cart.setTotalItems(0);
+            cartRepo.save(cart);
+        }
     }
 }

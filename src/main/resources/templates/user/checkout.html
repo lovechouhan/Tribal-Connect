@@ -1,164 +1,291 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
  layout:decorate="~{base}">
 <head>
-   
-    <title>Checkout</title>
+    <title>Checkout — TribalConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .co-page {
+            background: linear-gradient(160deg, #fdf6ed 0%, #f5e8d3 100%);
+            min-height: 100vh; padding: 36px 16px 80px;
+        }
+        .co-wrap { max-width: 1000px; margin: 0 auto; }
+
+        /* Back */
+        .back-link { display:inline-flex; align-items:center; gap:8px; color:#6B4226; font-size:.88rem; font-weight:700; text-decoration:none; margin-bottom:20px; }
+        .back-link:hover { color:#C05C2E; }
+
+        /* Hero */
+        .co-hero {
+            background: linear-gradient(135deg, #2C1810 0%, #6B4226 55%, #C05C2E 100%);
+            border-radius: 22px; padding: 24px 36px; margin-bottom: 28px;
+            display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+            box-shadow: 0 8px 40px rgba(44,24,16,.22); position: relative; overflow: hidden;
+        }
+        .co-hero::after { content:''; position:absolute; right:-60px; top:-60px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.06); }
+        .co-hero h1 { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:#fff; margin:0 0 4px; }
+        .co-hero p { color:rgba(255,255,255,.72); margin:0; font-size:.86rem; }
+
+        /* Stepper */
+        .stepper-card { background:#fff; border-radius:18px; border:1px solid #f0e4cf; box-shadow:0 4px 24px rgba(107,66,38,.07); padding:22px 30px; margin-bottom:24px; }
+        .stepper { display:flex; align-items:center; }
+        .step { display:flex; align-items:center; gap:10px; flex:1; }
+        .step:last-child { flex:none; }
+        .step-circle {
+            width:38px; height:38px; border-radius:50%; border:2px solid #e2d5c3;
+            background:#fdf6ed; color:#a89070; display:flex; align-items:center; justify-content:center;
+            font-size:.82rem; font-weight:800; flex-shrink:0; transition: background .2s, border-color .2s, color .2s;
+        }
+        .step-label { font-size:.82rem; font-weight:700; color:#a89070; white-space:nowrap; transition:color .2s; }
+        .step-line { flex:1; height:2px; background:#e2d5c3; margin:0 12px; border-radius:2px; transition:background .3s; }
+
+        .step.active .step-circle { background:linear-gradient(135deg,#6B4226,#C05C2E); border-color:#C05C2E; color:#fff; box-shadow:0 4px 12px rgba(192,92,46,.25); }
+        .step.active .step-label  { color:#2C2416; }
+        .step.done .step-circle   { background:#dcfce7; border-color:#16a34a; color:#16a34a; }
+        .step.done .step-label    { color:#16a34a; }
+        .step-line.done           { background:linear-gradient(90deg,#6B4226,#C05C2E); }
+
+        /* Grid */
+        .co-grid { display:grid; grid-template-columns:1fr 320px; gap:22px; align-items:start; }
+        @media(max-width:860px) { .co-grid { grid-template-columns:1fr; } }
+
+        /* Form card */
+        .form-card { background:#fff; border-radius:18px; border:1px solid #f0e4cf; box-shadow:0 4px 24px rgba(107,66,38,.07); overflow:hidden; }
+        .card-hdr { display:flex; align-items:center; gap:12px; padding:16px 24px; background:#fdf6ed; border-bottom:1px solid #f0e4cf; }
+        .ch-icon { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.88rem; flex-shrink:0; }
+        .ch-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:#2C2416; }
+        .card-body { padding:22px 24px; display:flex; flex-direction:column; gap:14px; }
+
+        /* Fields */
+        .field { display:flex; flex-direction:column; gap:5px; }
+        .field label { font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:#6B4226; }
+        .field input {
+            padding:11px 14px; border-radius:10px; border:1.5px solid #e2d5c3;
+            background:#fff; font-size:.92rem; color:#2C2416; outline:none;
+            transition:border-color .2s,box-shadow .2s; font-family:inherit; width:100%; box-sizing:border-box;
+        }
+        .field input:focus { border-color:#C05C2E; box-shadow:0 0 0 3px rgba(192,92,46,.12); }
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        @media(max-width:480px) { .grid-2 { grid-template-columns:1fr; } }
+
+        .btn-next {
+            width:100%; padding:13px 20px; border-radius:12px;
+            background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff;
+            font-size:.95rem; font-weight:700; border:none; cursor:pointer;
+            display:flex; align-items:center; justify-content:center; gap:10px;
+            box-shadow:0 4px 16px rgba(192,92,46,.25); transition:opacity .2s,transform .18s;
+        }
+        .btn-next:hover { opacity:.9; transform:translateY(-1px); }
+
+        /* Summary sidebar */
+        .summary-card { background:#fff; border-radius:18px; border:1px solid #f0e4cf; box-shadow:0 4px 24px rgba(107,66,38,.07); overflow:hidden; position:sticky; top:24px; }
+        .summary-body { padding:20px; display:flex; flex-direction:column; gap:0; }
+        .s-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px dashed #f0e4cf; }
+        .s-row:last-of-type { border-bottom:none; }
+        .s-label { font-size:.83rem; color:#6B4226; display:flex; align-items:center; gap:6px; }
+        .s-value { font-size:.88rem; font-weight:700; color:#2C2416; }
+        .s-value.green { color:#16a34a; }
+        .total-band { background:linear-gradient(135deg,#2C1810,#6B4226); border-radius:12px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; margin:14px 0; }
+        .tl-label { color:rgba(255,255,255,.8); font-size:.88rem; font-weight:600; }
+        .tl-value { color:#fff; font-size:1.4rem; font-weight:800; font-family:'Playfair Display',serif; }
+
+        /* Items preview */
+        .items-list { display:flex; flex-direction:column; gap:10px; margin-top:4px; }
+        .item-row { display:flex; gap:10px; align-items:center; }
+        .item-thumb { width:44px; height:44px; border-radius:8px; background:#f5ede0; overflow:hidden; flex-shrink:0; border:1.5px solid #f0e4cf; display:flex; align-items:center; justify-content:center; }
+        .item-thumb img { width:100%; height:100%; object-fit:cover; }
+        .item-info { flex:1; min-width:0; }
+        .item-name { font-size:.78rem; font-weight:700; color:#2C2416; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .item-meta { font-size:.72rem; color:#8B7355; }
+
+        /* Trust */
+        .trust-row { display:flex; justify-content:center; gap:16px; padding:14px; flex-wrap:wrap; }
+        .trust-item { display:flex; align-items:center; gap:5px; font-size:.72rem; color:#8B7355; font-weight:600; }
+    </style>
 </head>
 <body>
-        <div layout:fragment="content" class="min-h-screen overflow-auto bg-red-300 flex flex-col items-center justify-center py-12">
-            <div class="w-full max-w-3xl mx-auto px-4">
-                <!-- Card Container -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <!-- Stepper -->
-                    <div class="px-6 pt-8 pb-4 border-b border-gray-200">
-                            <ol id="stepper" class="flex items-center w-full text-sm font-medium text-center text-gray-500 sm:text-base">
-                                <li class="flex-1 flex items-center after:content-[''] after:flex-1 after:border-b-2 after:mx-2" id="step-1">
-                                    <span class="flex items-center gap-2">
-                                        <span class="w-7 h-7 flex items-center justify-center rounded-full step-circle">1</span>
-                                        Shipping
-                                    </span>
-                                </li>
-                                
-                                <li class="flex-1 flex items-center after:content-[''] after:flex-1 after:border-b-2 after:mx-2" id="step-2">
-                                    <span class="flex items-center gap-2">
-                                        <span class="w-7 h-7 flex items-center justify-center rounded-full step-circle">2</span>
-                                        Payment
-                                    </span>
-                                </li>
-                                <li class="flex-1 flex items-center" id="step-3">
-                                    <span class="flex items-center gap-2">
-                                        <span class="w-7 h-7 flex items-center justify-center rounded-full step-circle">3</span>
-                                        Order Summary
-                                    </span>
-                                </li>
+<div layout:fragment="content" class="co-page">
+<div class="co-wrap">
 
-                                
-                            </ol>
-                            
-                        </div>
+    <!-- Back -->
+    <a th:href="@{/user/cart}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Cart
+    </a>
 
-                        <style>
-                            .step-circle {
-                                background-color: #d1d5db; /* gray-300 */
-                                color: #4b5563; /* gray-600 */
-                            }
-                            .active-step .step-circle {
-                                background-color: #020408; /* blue-600 */
-                                color: #fff;
-                            }
-                            .active-step {
-                                color: #020408;
-                            }
-                            .active-step + li .after\:border-b-2 {
-                                border-color: #020408 !important;
-                            }
-                        </style>
-                        <script>
-                            let currentStep = 1;
-                            const totalSteps = 3;
-                            function updateStepper() {
-                                for (let i = 1; i <= totalSteps; i++) {
-                                    const step = document.getElementById('step-' + i);
-                                    if (i === currentStep) {
-                                        step.classList.add('active-step');
-                                    } else {
-                                        step.classList.remove('active-step');
-                                    }
-                                }
-                            }
-                            document.addEventListener('DOMContentLoaded', function() {
-                                updateStepper();
-                                document.getElementById('nextStepBtn').addEventListener('click', function() {
-                                    if (currentStep < totalSteps) {
-                                        currentStep++;
-                                        updateStepper();
-                                    }
-                                });
-                            });
-                        </script>
+    <!-- Hero -->
+    <div class="co-hero">
+        <div style="font-size:2rem;">🔒</div>
+        <div>
+            <h1>Secure Checkout</h1>
+            <p>Your payment is protected by 256-bit SSL encryption</p>
+        </div>
+    </div>
 
-              
-                <main class="p-6 md:p-8">
-                    <!-- Shipping Section -->
-                    <section class="space-y-6">
-                        <h2 class="text-xl font-semibold">Shipping Address</h2>
-                        <form th:action="@{/api/payments/create-order}" method="post" class="space-y-4">
-                            <input type="text" name="fullName" placeholder="Full Name" required 
-                                class="w-full border border-red-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                            <input type="text" name="streetAddress" placeholder="Street Address" required 
-                                class="w-full border border-red-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                            <input type="email" name="email" placeholder="Email Address" required
-                                class="w-full border border-red-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                            <div class="grid grid-cols-2 gap-4">
-                                <input type="text" name="city" placeholder="City" required 
-                                    class="w-full border border-red-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                                <input type="text" name="state" placeholder="State" required 
-                                    class="w-full border border-red-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <input type="text" name="zipCode" placeholder="ZIP Code" required 
-                                    class="w-full border border-red-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                                <input type="tel" name="mobile" placeholder="Mobile Number" required pattern="[0-9]{10}" 
-                                    class="w-full border border-red-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-
-                                   
-
-                            <div class="flex justify-end mt-6">
-                                <button type="button" class="bg-red-800 text-white px-8 py-3 rounded-lg hover:bg-gray-900 transition-colors font-medium" id="pay-button">Continue to Payment</button>
-                                <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-                                <script>
-                                    document.getElementById('pay-button').onclick = function (e) {
-                                        e.preventDefault();
-                                        fetch('/api/payments/create-order', {
-                                            method: 'POST'
-                                        })
-                                            .then(response => response.json())
-                                            .then(order => {
-                                                const options = {
-                                                    key: "rzp_test_RTq0pZ3gH0hMCJ", // Replace with your Razorpay API Key
-                                                    amount: order.amount, // Amount in paise
-                                                    currency: order.currency,
-                                                    name: "Apni Dukaan",
-                                                    description: "Test Transaction",
-                                                    order_id: order.id,
-                                                    handler: function (response) {
-                                                       // Notify backend
-                                                        fetch('/api/payments/payment-success', {
-                                                            method: 'POST',
-                                                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                                            body: 'paymentId=' + response.razorpay_payment_id
-                                                        })
-                                                        .then(res => res.text())
-                                                        .then(msg => {
-                                                            alert("✅ " + msg);
-                                                            window.location.href = "/user/ordersummary"; // redirect to summary page
-                                                        });
-                                                    },
-                                                    theme: {
-                                                        color: "#3399cc"
-                                                    }
-                                                };
-                                                const rzp = new Razorpay(options);
-                                                rzp.open();
-                                            })
-                                            .catch(err => console.error(err));
-                                    };
-                                </script>
-
-
-
-                            </div>
-                       </form>
-
-
-                    </section>
-                </main>
+    <!-- Stepper -->
+    <div class="stepper-card">
+        <div class="stepper">
+            <div class="step active" id="step-1">
+                <div class="step-circle"><i class="fas fa-truck"></i></div>
+                <span class="step-label">Shipping</span>
+            </div>
+            <div class="step-line" id="line-1"></div>
+            <div class="step" id="step-2">
+                <div class="step-circle"><i class="fas fa-credit-card"></i></div>
+                <span class="step-label">Payment</span>
+            </div>
+            <div class="step-line" id="line-2"></div>
+            <div class="step" id="step-3">
+                <div class="step-circle"><i class="fas fa-check"></i></div>
+                <span class="step-label">Confirmation</span>
             </div>
         </div>
     </div>
-</body>
 
+    <!-- Layout Grid -->
+    <div class="co-grid">
+
+        <!-- ── Left: Shipping Form ── -->
+        <div class="form-card">
+            <div class="card-hdr">
+                <div class="ch-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <span class="ch-title">Shipping Address</span>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/api/payments/create-order}" method="post">
+                    <div style="display:flex;flex-direction:column;gap:14px;">
+                        <div class="field">
+                            <label>Full Name <span style="color:#dc2626">*</span></label>
+                            <input type="text" name="fullName" placeholder="Enter your full name" required/>
+                        </div>
+                        <div class="field">
+                            <label>Street Address <span style="color:#dc2626">*</span></label>
+                            <input type="text" name="streetAddress" placeholder="House no., Street, Area" required/>
+                        </div>
+                        <div class="field">
+                            <label>Email Address <span style="color:#dc2626">*</span></label>
+                            <input type="email" name="email" placeholder="you@example.com" required/>
+                        </div>
+                        <div class="grid-2">
+                            <div class="field">
+                                <label>City <span style="color:#dc2626">*</span></label>
+                                <input type="text" name="city" placeholder="City" required/>
+                            </div>
+                            <div class="field">
+                                <label>State <span style="color:#dc2626">*</span></label>
+                                <input type="text" name="state" placeholder="State" required/>
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="field">
+                                <label>ZIP / PIN Code <span style="color:#dc2626">*</span></label>
+                                <input type="text" name="zipCode" placeholder="110001" required/>
+                            </div>
+                            <div class="field">
+                                <label>Mobile Number <span style="color:#dc2626">*</span></label>
+                                <input type="tel" name="mobile" placeholder="10-digit number" pattern="[0-9]{10}" required/>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-next" id="pay-button" style="margin-top:8px;">
+                            <i class="fas fa-lock"></i> Continue to Payment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ── Right: Order Summary ── -->
+        <div class="summary-card">
+            <div class="card-hdr">
+                <div class="ch-icon"><i class="fas fa-receipt"></i></div>
+                <span class="ch-title">Order Summary</span>
+            </div>
+            <div class="summary-body">
+
+                <!-- Item list -->
+                <div class="items-list" th:if="${cart != null and cart.cartItems != null}">
+                    <div class="item-row" th:each="item : ${cart.cartItems}">
+                        <div class="item-thumb">
+                            <img th:if="${item.product.images != null and !#strings.isEmpty(item.product.images)}"
+                                 th:src="${item.product.images}" alt=""/>
+                            <i th:unless="${item.product.images != null and !#strings.isEmpty(item.product.images)}"
+                               class="fas fa-image" style="font-size:.9rem;color:#d4c4a0;"></i>
+                        </div>
+                        <div class="item-info">
+                            <div class="item-name" th:text="${item.product.name}">Product</div>
+                            <div class="item-meta" th:text="'Qty: ' + ${item.quantity} + '  ·  ₹' + ${item.sellingPrice * item.quantity}">Qty: 1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="border-top:1px solid #f0e4cf;margin:14px 0;"></div>
+
+                <div class="s-row">
+                    <span class="s-label">Subtotal</span>
+                    <span class="s-value" th:text="'₹' + ${cart.totalAmount}">₹0</span>
+                </div>
+                <div class="s-row">
+                    <span class="s-label"><i class="fas fa-truck" style="color:#C05C2E;"></i> Shipping</span>
+                    <span class="s-value" th:text="'₹' + ${cart.deliveryCharge}">₹0</span>
+                </div>
+                <div class="s-row">
+                    <span class="s-label"><i class="fas fa-tag" style="color:#16a34a;"></i> Discount</span>
+                    <span class="s-value green" th:text="'-₹' + ${cart.discount}">-₹0</span>
+                </div>
+
+                <div class="total-band">
+                    <span class="tl-label">Total to Pay</span>
+                    <span class="tl-value" th:text="'₹' + ${cart.totalAmount + cart.deliveryCharge - cart.discount}">₹0</span>
+                </div>
+            </div>
+            <div class="trust-row">
+                <span class="trust-item"><i class="fas fa-shield-alt" style="color:#C05C2E;"></i> Secure</span>
+                <span class="trust-item"><i class="fas fa-undo" style="color:#C05C2E;"></i> Returns</span>
+                <span class="trust-item"><i class="fas fa-headset" style="color:#C05C2E;"></i> Support</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script th:inline="javascript">
+    document.getElementById('pay-button').onclick = function (e) {
+        e.preventDefault();
+        fetch('/api/payments/create-order', { method: 'POST' })
+            .then(response => response.json())
+            .then(order => {
+                const options = {
+                    key: /*[[${razorpayKey}]]*/ "rzp_test_dummy",
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "TribalConnect",
+                    description: "Tribal Artisan Products",
+                    image: "/images/logo.png",
+                    order_id: order.id,
+                    handler: function (response) {
+                        fetch('/api/payments/payment-success', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'paymentId=' + response.razorpay_payment_id
+                        })
+                        .then(res => res.text())
+                        .then(msg => {
+                            alert("✅ " + msg);
+                            window.location.href = "/user/ordersummary";
+                        });
+                    },
+                    theme: { color: "#6B4226" }
+                };
+                const rzp = new Razorpay(options);
+                rzp.open();
+            })
+            .catch(err => console.error(err));
+    };
+</script>
+
+</div>
+</body>
 </html>

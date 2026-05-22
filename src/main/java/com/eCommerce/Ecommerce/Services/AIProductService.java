@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class AIProductService {
 

@@ -213,8 +213,8 @@ public class SettingController {
         return "seller/sellerBank";
     }
 
-    @GetMapping("/seller/settings/updateInfo/{email}")
-    public String getUpdateSellerInfo(Model model, @PathVariable("email") String email) {
+    @GetMapping("/seller/settings/updateInfo")
+    public String getUpdateSellerInfo(Model model, @RequestParam("email") String email) {
         Seller sellerinfo = sellerSettingsService.getSellerByEmail(email);
         if (sellerinfo == null)
             return "redirect:/login";

@@ -3,35 +3,128 @@
  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
  layout:decorate="~{base}">
 <head>
-   
-    <title>OTP</title>
+    <title>OTP Verification - TribalConnect</title>
 </head>
 <body>
-  <div layout:fragment="content" class="min-h-screen overflow-auto">
-
-
-
+  <div layout:fragment="content" class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style="background-color: #FAFAFA;">
     
-<form
- th:action="@{/verify-otp}" method="post">
-    <div class="grid gap-6 mb-6 md:grid-cols-2">
+    <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-2xl shadow-xl border border-[#E8D5B0]">
+      <div>
+        <h2 class="mt-2 text-center text-3xl font-extrabold text-[#6B4226]">Verify Your Email</h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+          We've sent a 4-digit code to <br/>
+          <span class="font-semibold text-[#8B5A33]" th:text="${email}">user@example.com</span>
+        </p>
+      </div>
       
-    <div class="mb-6">
-        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-        <input type="email" id="email" name="email" th:value="${email}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="john.doe@company.com" required />
-    </div> 
-    <div class="mb-6">
-        <label for="otp" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">OTP</label>
-        <input type="text" id="otp" name="otp" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter OTP" required />
+      <!-- Error Flash Message -->
+      <div th:if="${error}" class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+        <p class="text-sm text-red-700" th:text="${error}"></p>
+      </div>
+      
+      <!-- Success Flash Message -->
+      <div th:if="${message}" class="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+        <p class="text-sm text-green-700" th:text="${message}"></p>
+      </div>
+
+      <form class="mt-8 space-y-6" th:action="@{/verify-otp}" method="post">
+        <input type="hidden" id="email" name="email" th:value="${email}" />
+        
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="otp" class="sr-only">OTP Code</label>
+            <input type="text" id="otp" name="otp" required 
+                   class="appearance-none rounded-lg relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#8B5A33] focus:border-[#8B5A33] focus:z-10 sm:text-lg text-center tracking-widest font-semibold" 
+                   placeholder="Enter 4-digit code" maxlength="4" autocomplete="off" />
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#8B5A33] hover:bg-[#6B4226] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8B5A33] transition-colors duration-200 shadow-md">
+            Verify Account
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+          Didn't receive the code?
+          <button type="button" id="resendBtn" disabled onclick="resendOtp()" class="ml-1 font-medium text-gray-400 cursor-not-allowed transition-colors duration-200">
+            Resend in <span id="timer">60</span>s
+          </button>
+        </p>
+      </div>
     </div>
-   
-    <button type="submit" class="text-white bg-red-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-</form>
 
+    <!-- Security Token for AJAX -->
+    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" id="csrfToken" />
 
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let timeLeft = 60;
+        let timerId = null;
+        
+        function startTimer() {
+            const btn = document.getElementById('resendBtn');
+            const timerSpan = document.getElementById('timer');
+            
+            btn.disabled = true;
+            btn.classList.add('text-gray-400', 'cursor-not-allowed');
+            btn.classList.remove('text-[#8B5A33]', 'hover:text-[#6B4226]', 'cursor-pointer', 'underline');
+            
+            clearInterval(timerId);
+            timeLeft = 60;
+            
+            timerId = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    btn.disabled = false;
+                    btn.innerHTML = 'Resend OTP';
+                    btn.classList.remove('text-gray-400', 'cursor-not-allowed');
+                    btn.classList.add('text-[#8B5A33]', 'hover:text-[#6B4226]', 'cursor-pointer', 'underline', 'font-semibold');
+                } else {
+                    btn.innerHTML = `Resend in <span id="timer">${timeLeft}</span>s`;
+                }
+            }, 1000);
+        }
 
+        function resendOtp() {
+            const email = document.getElementById('email').value;
+            const csrfToken = document.getElementById('csrfToken') ? document.getElementById('csrfToken').value : '';
+            
+            // Start UI timer immediately to prevent spam
+            startTimer();
+            
+            fetch('/resend-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: new URLSearchParams({ email: email })
+            })
+            .then(response => {
+                if(response.ok) {
+                    // Show a toast or small alert
+                    alert("A new OTP has been sent to your email!");
+                } else {
+                    alert("Failed to resend OTP. Please try again later.");
+                    // Reset timer if failed
+                    timeLeft = 0;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Network error while resending OTP.");
+                timeLeft = 0;
+            });
+        }
 
+        // Start countdown on page load
+        window.onload = startTimer;
+        /*]]>*/
+    </script>
   </div>
-
 </body>
 </html>

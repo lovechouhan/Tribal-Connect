@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${categoryName + ' - TribalConnect'}">Category - TribalConnect</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container mx-auto px-4 py-8" style="max-width:1280px;">
+
+    <!-- Category Hero Banner -->
+    <div style="background:linear-gradient(135deg,#6B4226 0%,#C05C2E 60%,#f5ecd8 100%);
+                border-radius:18px;padding:40px 36px 32px;margin-bottom:36px;
+                box-shadow:0 6px 32px rgba(107,66,38,0.18);position:relative;overflow:hidden;">
+      <!-- Decorative circle -->
+      <div style="position:absolute;right:-40px;top:-40px;width:220px;height:220px;
+                  border-radius:50%;background:rgba(255,255,255,0.07);"></div>
+      <div style="position:absolute;right:40px;bottom:-60px;width:140px;height:140px;
+                  border-radius:50%;background:rgba(255,255,255,0.05);"></div>
+
+      <div style="display:flex;align-items:center;gap:20px;position:relative;z-index:1;">
+        <div style="font-size:3.6rem;line-height:1;" th:text="${categoryEmoji}">🌿</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+            <a th:href="@{/user/products}" style="color:rgba(255,255,255,0.75);font-size:0.85rem;text-decoration:none;">
+              ← All Categories
+            </a>
+          </div>
+          <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;
+                     color:#fff;margin:0 0 8px;"
+              th:text="${categoryName}">Category Name</h1>
+          <p style="color:rgba(255,255,255,0.82);font-size:0.97rem;margin:0;max-width:520px;"
+             th:text="${categoryDescription}">Browse products in this category.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Pills / Breadcrumb Navigation -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;">
+      <a th:href="@{/user/category/handicrafts}"
+         th:class="${categorySlug == 'handicrafts'} ? 'cat-pill active' : 'cat-pill'">🏺 Handicrafts</a>
+      <a th:href="@{/user/category/paintings}"
+         th:class="${categorySlug == 'paintings'} ? 'cat-pill active' : 'cat-pill'">🖼️ Paintings</a>
+      <a th:href="@{/user/category/bamboo}"
+         th:class="${categorySlug == 'bamboo'} ? 'cat-pill active' : 'cat-pill'">🎋 Bamboo</a>
+      <a th:href="@{/user/category/jewelry}"
+         th:class="${categorySlug == 'jewelry'} ? 'cat-pill active' : 'cat-pill'">💎 Jewelry</a>
+      <a th:href="@{/user/category/textiles}"
+         th:class="${categorySlug == 'textiles'} ? 'cat-pill active' : 'cat-pill'">🧶 Textiles</a>
+      <a th:href="@{/user/category/wood}"
+         th:class="${categorySlug == 'wood'} ? 'cat-pill active' : 'cat-pill'">🪵 Wooden Art</a>
+      <a th:href="@{/user/category/forest}"
+         th:class="${categorySlug == 'forest'} ? 'cat-pill active' : 'cat-pill'">🌿 Forest</a>
+      <a th:href="@{/user/category/honey}"
+         th:class="${categorySlug == 'honey'} ? 'cat-pill active' : 'cat-pill'">🍯 Honey &amp; Herbs</a>
+      <a th:href="@{/user/category/clay}"
+         th:class="${categorySlug == 'clay'} ? 'cat-pill active' : 'cat-pill'">🏺 Clay</a>
+      <a th:href="@{/user/category/decor}"
+         th:class="${categorySlug == 'decor'} ? 'cat-pill active' : 'cat-pill'">🎭 Home Decor</a>
+      <a th:href="@{/user/category/baskets}"
+         th:class="${categorySlug == 'baskets'} ? 'cat-pill active' : 'cat-pill'">🧺 Baskets</a>
+      <a th:href="@{/user/category/eco}"
+         th:class="${categorySlug == 'eco'} ? 'cat-pill active' : 'cat-pill'">♻️ Eco-Friendly</a>
+    </div>
+
+    <!-- Product Filters -->
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Filters</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Price Range -->
+        <div class="filter-group">
+          <h3 class="font-semibold mb-2">Price Range</h3>
+          <select id="filter-price" class="w-full p-2 border rounded border-gray-300">
+            <option value="all">All Prices</option>
+            <option value="under500">Under ₹500</option>
+            <option value="500to1500">₹500 - ₹1500</option>
+            <option value="1500to5000">₹1500 - ₹5000</option>
+            <option value="above5000">Above ₹5000</option>
+          </select>
+        </div>
+
+        <!-- Artisan / Tribe -->
+        <div class="filter-group">
+          <h3 class="font-semibold mb-2">Artisan Origin</h3>
+          <select id="filter-origin" class="w-full p-2 border rounded border-gray-300">
+            <option value="all">All Origins</option>
+            <option value="Bastar">Bastar Art</option>
+            <option value="Gond">Gond Tribe</option>
+            <option value="Bhil">Bhil Artisans</option>
+            <option value="Warli">Warli Co-op</option>
+            <option value="Tribal">Tribal Arts Co.</option>
+          </select>
+        </div>
+
+        <!-- Sort By -->
+        <div class="filter-group">
+          <h3 class="font-semibold mb-2">Sort By</h3>
+          <select id="filter-sort" class="w-full p-2 border rounded border-gray-300">
+            <option value="featured">Featured Artisans</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="newest">Newest Arrivals</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid">
+      <!-- Has products -->
+      <div th:if="${not #lists.isEmpty(products)}" id="products-wrapper"
+           style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px;">
+
+        <div th:each="product,iter : ${products}"
+             class="tribal-card fade-in-up product-item"
+             th:attr="data-index=${iter.index}, data-id=${product.id}, data-price=${product.sellingPrice}, data-origin=${product.sellerName}, data-category=${product.category}, data-date=${product.createdAt}, data-desc=${product.description}">
+          <div class="card-img-wrap" style="height:220px;display:flex;align-items:center;justify-content:center;padding:12px;">
+            <img th:if="${product.images != null and product.images != ''}"
+                 th:src="@{${product.images}}"
+                 style="max-height:196px;max-width:100%;object-fit:contain;border-radius:8px;"
+                 alt="Handcrafted Product"/>
+            <div th:if="${product.images == null or product.images == ''}"
+                 style="color:#8B7355;text-align:center;">
+              <i class="fas fa-image" style="font-size:2.5rem;opacity:0.4;"></i>
+              <p style="font-size:0.78rem;margin-top:8px;">No image yet</p>
+            </div>
+          </div>
+          <div style="padding:16px;">
+            <!-- Badges -->
+            <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+              <span class="badge-handcrafted">🤲 Handcrafted</span>
+              <span th:if="${product.category != null}" class="badge-verified" th:text="${product.category}"></span>
+            </div>
+            <h3 th:text="${product.name}"
+                style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#2C2416;
+                       margin:0 0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h3>
+            <p th:text="${product.description}"
+               style="font-size:0.8rem;color:#8B7355;margin:0 0 10px;overflow:hidden;
+                      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"></p>
+            <!-- Artisan info -->
+            <p th:if="${product.sellerName != null}" style="font-size:0.75rem;color:#C05C2E;margin:0 0 10px;">
+              <i class="fas fa-paint-brush mr-1"></i>By <span th:text="${product.sellerName}"></span>
+            </p>
+            <!-- Price -->
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px;">
+              <span class="price-selling" th:text="'₹' + ${product.sellingPrice}"></span>
+              <span class="price-mrp"
+                    th:if="${product.MRPprice != null and product.sellingPrice != null and product.MRPprice > product.sellingPrice}"
+                    th:text="'₹' + ${product.MRPprice}"></span>
+              <span class="price-saving"
+                    th:if="${product.MRPprice != null and product.sellingPrice != null and product.MRPprice > product.sellingPrice}"
+                    th:text="'Save ₹' + (${product.MRPprice - product.sellingPrice})"></span>
+            </div>
+            <!-- Actions -->
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <a th:href="@{/user/products/view/{id}(id=${product.id})}"
+                 class="btn-tribal" style="text-align:center;padding:9px 16px;font-size:0.86rem;">View Details</a>
+              <div style="display:flex;gap:8px;">
+                <button type="button"
+                        th:onclick="|openAISummary(${product.id})|"
+                        style="flex:1;background:#f5ecd8;color:#6B4226;border:1px solid #d4c4a0;
+                               border-radius:8px;padding:7px 10px;font-size:0.78rem;font-weight:600;cursor:pointer;">
+                  🤖 AI Insight
+                </button>
+                <button type="button"
+                        class="wishlist-btn"
+                        th:attr="data-product-id=${product.id}"
+                        style="flex:1;background:#fff;color:#C05C2E;border:1px solid #C05C2E;
+                               border-radius:8px;padding:7px 10px;font-size:0.78rem;font-weight:600;cursor:pointer;">
+                  <i class="fa-regular fa-heart mr-1"></i>Wishlist
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div th:if="${#lists.isEmpty(products)}"
+           style="text-align:center;padding:80px 20px;">
+        <div style="font-size:4rem;margin-bottom:20px;" th:text="${categoryEmoji}">🌿</div>
+        <h2 style="font-family:'Playfair Display',serif;color:#2C2416;margin-bottom:10px;"
+            th:text="'No ' + ${categoryName} + ' products yet'">No products yet</h2>
+        <p style="color:#8B7355;font-size:1rem;max-width:380px;margin:0 auto 28px;">
+          Our artisans are crafting beautiful products for this category. Check back soon!
+        </p>
+        <a th:href="@{/user/products}" class="btn-tribal" style="padding:12px 28px;">
+          Browse All Products
+        </a>
+      </div>
+    </div>
+
+    <!-- Pagination Bar -->
+    <div id="pagination-bar" style="display:none;margin-top:36px;padding:20px 0 8px;">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;">
+        <p id="pagination-info" style="font-size:0.88rem;color:#8B7355;margin:0;"></p>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label for="per-page-select" style="font-size:0.85rem;color:#6B4226;font-weight:600;">Products per page:</label>
+          <select id="per-page-select" onchange="changePerPage(this.value)"
+                  style="border:1px solid #d4c4a0;border-radius:8px;padding:5px 10px;font-size:0.85rem;
+                         color:#2C2416;background:#fff;cursor:pointer;">
+            <option value="8">8</option>
+            <option value="12" selected>12</option>
+            <option value="24">24</option>
+            <option value="48">48</option>
+          </select>
+        </div>
+      </div>
+      <div id="pagination-controls" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;"></div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* Category pills */
+  .cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #d4c4a0;
+    background: #fff;
+    color: #6B4226;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.12s;
+    cursor: pointer;
+  }
+  .cat-pill:hover {
+    background: #f5ecd8;
+    border-color: #C05C2E;
+    transform: translateY(-1px);
+  }
+  .cat-pill.active {
+    background: linear-gradient(135deg, #6B4226, #C05C2E);
+    color: #fff;
+    border-color: #6B4226;
+    box-shadow: 0 2px 10px rgba(107,66,38,0.22);
+  }
+
+  /* Pagination */
+  .page-btn {
+    border: 1px solid #d4c4a0;
+    background: #fff;
+    color: #6B4226;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.12s;
+    min-width: 38px;
+  }
+  .page-btn:hover:not(:disabled) {
+    background: #f5ecd8;
+    border-color: #C05C2E;
+    transform: translateY(-1px);
+  }
+  .page-btn.active {
+    background: linear-gradient(135deg, #6B4226, #C05C2E);
+    color: #fff;
+    border-color: #6B4226;
+    box-shadow: 0 2px 8px rgba(107,66,38,0.25);
+  }
+  .page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .page-ellipsis {
+    color: #8B7355;
+    padding: 7px 4px;
+    font-size: 0.9rem;
+    user-select: none;
+  }
+</style>
+
+<script>
+(function () {
+    const STORAGE_KEY = 'tribalconnect_cat_per_page';
+    let currentPage = 1;
+    let perPage = parseInt(localStorage.getItem(STORAGE_KEY) || '12');
+
+    const wrapper   = document.getElementById('products-wrapper');
+    const bar       = document.getElementById('pagination-bar');
+    const controls  = document.getElementById('pagination-controls');
+    const info      = document.getElementById('pagination-info');
+    const perSelect = document.getElementById('per-page-select');
+
+    const filterPrice  = document.getElementById('filter-price');
+    const filterOrigin = document.getElementById('filter-origin');
+    const filterSort   = document.getElementById('filter-sort');
+
+    if (!wrapper) return;
+
+    const allCards = Array.from(wrapper.querySelectorAll('.product-item'));
+    const total    = allCards.length;
+    let filteredCards = [...allCards];
+
+    if (total === 0) return;
+
+    if (perSelect) {
+        const exists = Array.from(perSelect.options).some(o => parseInt(o.value) === perPage);
+        if (!exists) { const opt = new Option(perPage, perPage); perSelect.add(opt, 1); }
+        perSelect.value = perPage;
+    }
+
+    bar.style.display = 'block';
+
+    function totalPages() { return Math.ceil(filteredCards.length / perPage); }
+
+    function render(page) {
+        const totalFiltered = filteredCards.length;
+        if (totalFiltered === 0) {
+            info.textContent = 'No products match your filters.';
+            controls.innerHTML = '';
+            allCards.forEach(card => card.style.display = 'none');
+            return;
+        }
+
+        currentPage = Math.max(1, Math.min(page, totalPages()));
+        const start = (currentPage - 1) * perPage;
+        const end   = start + perPage;
+
+        allCards.forEach(card => card.style.display = 'none');
+
+        filteredCards.slice(start, end).forEach(card => {
+            card.style.display = '';
+        });
+
+        const from = start + 1;
+        const to   = Math.min(end, totalFiltered);
+        info.textContent = `Showing ${from}–${to} of ${totalFiltered} products (filtered from ${total})`;
+        buildControls();
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function applyFilters() {
+        const priceVal  = filterPrice ? filterPrice.value : 'all';
+        const originVal = filterOrigin ? filterOrigin.value : 'all';
+        const sortVal   = filterSort ? filterSort.value : 'featured';
+
+        // 1. Filter
+        filteredCards = allCards.filter(card => {
+            const price  = parseFloat(card.getAttribute('data-price')) || 0;
+            const origin = (card.getAttribute('data-origin') || '').toLowerCase();
+            const desc   = (card.getAttribute('data-desc') || '').toLowerCase();
+
+            // Price filter
+            if (priceVal === 'under500' && price >= 500) return false;
+            if (priceVal === '500to1500' && (price < 500 || price > 1500)) return false;
+            if (priceVal === '1500to5000' && (price < 1500 || price > 5000)) return false;
+            if (priceVal === 'above5000' && price <= 5000) return false;
+
+            // Origin filter
+            if (originVal !== 'all') {
+                const query = originVal.toLowerCase();
+                if (!origin.includes(query) && !desc.includes(query)) return false;
+            }
+
+            return true;
+        });
+
+        // 2. Sort
+        if (sortVal === 'price-asc') {
+            filteredCards.sort((a, b) => (parseFloat(a.getAttribute('data-price')) || 0) - (parseFloat(b.getAttribute('data-price')) || 0));
+        } else if (sortVal === 'price-desc') {
+            filteredCards.sort((a, b) => (parseFloat(b.getAttribute('data-price')) || 0) - (parseFloat(a.getAttribute('data-price')) || 0));
+        } else if (sortVal === 'newest') {
+            filteredCards.sort((a, b) => (parseInt(b.getAttribute('data-id')) || 0) - (parseInt(a.getAttribute('data-id')) || 0));
+        } else {
+            // featured: original order
+            filteredCards.sort((a, b) => (parseInt(a.getAttribute('data-index')) || 0) - (parseInt(b.getAttribute('data-index')) || 0));
+        }
+
+        filteredCards.forEach(card => wrapper.appendChild(card));
+
+        currentPage = 1;
+        render(1);
+    }
+
+    if (filterPrice) filterPrice.addEventListener('change', applyFilters);
+    if (filterOrigin) filterOrigin.addEventListener('change', applyFilters);
+    if (filterSort) filterSort.addEventListener('change', applyFilters);
+
+    function buildControls() {
+        controls.innerHTML = '';
+        const tp = totalPages();
+        if (tp <= 1) return;
+
+        const prev = btn('‹ Prev', () => render(currentPage - 1));
+        if (currentPage === 1) prev.disabled = true;
+        controls.appendChild(prev);
+
+        const pages = getPageRange(currentPage, tp);
+        let lastWasEllipsis = false;
+
+        pages.forEach(p => {
+            if (p === '...') {
+                if (!lastWasEllipsis) {
+                    const el = document.createElement('span');
+                    el.className = 'page-ellipsis'; el.textContent = '…';
+                    controls.appendChild(el);
+                    lastWasEllipsis = true;
+                }
+            } else {
+                lastWasEllipsis = false;
+                const b = btn(p, () => render(p));
+                if (p === currentPage) b.classList.add('active');
+                controls.appendChild(b);
+            }
+        });
+
+        const next = btn('Next ›', () => render(currentPage + 1));
+        if (currentPage === tp) next.disabled = true;
+        controls.appendChild(next);
+    }
+
+    function getPageRange(cur, tp) {
+        if (tp <= 7) return Array.from({ length: tp }, (_, i) => i + 1);
+        const range = [1];
+        if (cur > 3) range.push('...');
+        for (let i = Math.max(2, cur - 1); i <= Math.min(tp - 1, cur + 1); i++) range.push(i);
+        if (cur < tp - 2) range.push('...');
+        range.push(tp);
+        return range;
+    }
+
+    function btn(label, onClick) {
+        const b = document.createElement('button');
+        b.className = 'page-btn';
+        b.textContent = label;
+        b.addEventListener('click', onClick);
+        return b;
+    }
+
+    window.changePerPage = function(val) {
+        perPage = parseInt(val);
+        localStorage.setItem(STORAGE_KEY, perPage);
+        render(1);
+    };
+
+    render(1);
+})();
+</script>
+</body>
+</html>

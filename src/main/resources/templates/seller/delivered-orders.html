@@ -4,76 +4,276 @@
       layout:decorate="~{base}">
 <head>
   <meta charset="UTF-8" />
-  <title>Delivered Orders - Seller</title>
+  <title>Delivered Orders — TribalConnect</title>
+  <style>
+    .do-page {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #fdf6ee 0%, #f5e8d4 100%);
+      padding: 40px 20px 60px;
+    }
+    .do-container { max-width: 1100px; margin: 0 auto; }
+
+    /* Page header */
+    .do-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .do-header-left { display: flex; align-items: center; gap: 16px; }
+    .do-icon-box {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 20px rgba(74,222,128,0.3);
+    }
+    .do-title h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #2C1810;
+      margin: 0 0 4px;
+    }
+    .do-title p { color: #9a7a66; font-size: 0.85rem; margin: 0; }
+    .do-count-badge {
+      background: linear-gradient(135deg, #C05C2E, #8B3A1F);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 8px 20px;
+      border-radius: 50px;
+      box-shadow: 0 4px 16px rgba(192,92,46,0.3);
+    }
+
+    /* Summary stats */
+    .do-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 640px) { .do-stats { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 24px;
+      border: 1px solid rgba(107,66,38,0.1);
+      box-shadow: 0 2px 16px rgba(44,24,16,0.06);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .stat-icon { font-size: 1.6rem; }
+    .stat-text span { display: block; font-size: 0.72rem; color: #9a7a66; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+    .stat-text strong { font-size: 1.3rem; font-weight: 800; color: #2C1810; font-family: 'Playfair Display', serif; }
+
+    /* Empty state */
+    .do-empty {
+      background: #fff;
+      border-radius: 24px;
+      padding: 70px 40px;
+      text-align: center;
+      border: 2px dashed rgba(107,66,38,0.15);
+      box-shadow: 0 4px 30px rgba(44,24,16,0.06);
+    }
+    .do-empty .empty-icon { font-size: 4rem; margin-bottom: 16px; display: block; }
+    .do-empty h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #2C1810; margin: 0 0 10px; }
+    .do-empty p { color: #9a7a66; font-size: 0.9rem; margin: 0; line-height: 1.6; }
+
+    /* Table */
+    .do-table-wrap {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(44,24,16,0.08);
+      border: 1px solid rgba(107,66,38,0.1);
+    }
+    .do-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .do-table thead tr {
+      background: linear-gradient(135deg, #2C1810, #3d2218);
+    }
+    .do-table thead th {
+      padding: 16px 18px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: left;
+    }
+    .do-table thead th:first-child { border-radius: 0; }
+    .do-table tbody tr {
+      border-bottom: 1px solid rgba(107,66,38,0.07);
+      transition: background 0.15s;
+    }
+    .do-table tbody tr:last-child { border-bottom: none; }
+    .do-table tbody tr:hover { background: #fdf6ee; }
+    .do-table td { padding: 16px 18px; color: #3d2218; vertical-align: middle; }
+    .row-num {
+      width: 28px; height: 28px;
+      background: rgba(107,66,38,0.08);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: #7a5c48;
+    }
+    .order-id {
+      font-weight: 700;
+      color: #2C1810;
+      font-family: 'Inter', monospace;
+      font-size: 0.82rem;
+      background: rgba(107,66,38,0.07);
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .buyer-name { font-weight: 600; color: #2C1810; }
+    .item-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(240,184,48,0.1);
+      border: 1px solid rgba(240,184,48,0.25);
+      color: #7a5c48;
+      font-size: 0.75rem;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin: 2px;
+      font-weight: 500;
+    }
+    .amount-cell { font-size: 1rem; font-weight: 800; color: #2C1810; font-family: 'Playfair Display', serif; }
+    .date-badge {
+      background: linear-gradient(135deg,#d1fae5,#a7f3d0);
+      color: #065f46;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .view-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #2C1810, #3d2218);
+      color: #F0B830;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .view-btn:hover {
+      background: linear-gradient(135deg, #C05C2E, #8B3A1F);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(192,92,46,0.3);
+    }
+  </style>
 </head>
 <body>
-  <div layout:fragment="content">
-    
-    <div class="min-h-screen bg-red-300 py-8 px-4 sm:px-6 lg:px-8">
-      <div class="w-full bg-white shadow-xl rounded p-6 lg:p-8">
-        
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6 border-b pb-4">
-          <h2 class="text-2xl font-bold text-gray-800">Delivered Orders</h2>
-          <span class="text-sm text-gray-500" th:text="'Total: ' + ${#lists.size(deliveredOrders)} + ' orders'">Total: 10 orders</span>
-        </div>
+<div layout:fragment="content">
+  <div class="do-page">
+    <div class="do-container">
 
-        <!-- No orders found -->
-        <div th:if="${deliveredOrders == null or #lists.isEmpty(deliveredOrders)}" 
-             class="text-center text-gray-500 py-10">
-          <p class="text-lg">No delivered orders found.</p>
+      <!-- Header -->
+      <div class="do-header">
+        <div class="do-header-left">
+          <div class="do-icon-box">✅</div>
+          <div class="do-title">
+            <h1>Delivered Orders</h1>
+            <p>All successfully delivered orders to your customers</p>
+          </div>
         </div>
-
-        <!-- Orders Table -->
-        <div th:if="${deliveredOrders != null and !#lists.isEmpty(deliveredOrders)}" class="overflow-x-auto w-full">
-          <table class="min-w-full w-full border-collapse">
-            <thead>
-              <tr class="bg-gray-100 text-left text-gray-700">
-                <th class="py-3 px-4 text-sm font-semibold">S.No</th>
-                <th class="py-3 px-4 text-sm font-semibold">Order ID</th>
-                <th class="py-3 px-4 text-sm font-semibold">Buyer</th>
-                <th class="py-3 px-4 text-sm font-semibold">Items</th>
-                <th class="py-3 px-4 text-sm font-semibold">Total</th>
-                <th class="py-3 px-4 text-sm font-semibold">Delivered On</th>
-                <th class="py-3 px-4 text-sm font-semibold text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <tr th:each="order, stat : ${deliveredOrders}" 
-                  class="hover:bg-gray-50 transition-all duration-150">
-                <td class="py-3 px-4 text-gray-600" th:text="${stat.index + 1}">1</td>
-                <td class="py-3 px-4 font-semibold text-gray-800" th:text="${order.orderId}">ORD-123</td>
-                <td class="py-3 px-4 text-gray-700" th:text="${order?.user?.name} ?: '—'">Buyer Name</td>
-                <td class="py-3 px-4">
-                  <ul class="space-y-1">
-                    <li th:each="item : ${order.orderItems}" class="text-gray-600 text-sm">
-                      <span class="font-medium text-gray-800" 
-                            th:text="${item?.product?.name} ?: 'Product'">Product</span>
-                      × <span th:text="${item.quantity}">1</span>
-                      <small th:text="${item.sellingPrice != null ? '(@' + item.sellingPrice + ')' : ''}"></small>
-                    </li>
-                  </ul>
-                </td>
-                <td class="py-3 px-4 font-semibold text-gray-800"
-                    th:text="${'₹' + (#numbers.formatDecimal(order.totalAmount != null ? order.totalAmount : 0, 1, 'COMMA', 2, 'POINT'))}">₹0.00</td>
-                <td class="py-3 px-4">
-                  <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium" 
-                        th:text="${order.deliveryDate != null ? #temporals.format(order.deliveryDate, 'dd MMM yyyy') : '—'}">22 Oct 2025</span>
-                </td>
-                <td class="py-3 px-4 text-center">
-                  <a th:href="@{/sellers/ordersDelivered/{id}(id=${order.id})}"
-                     class="inline-block bg-red-800 hover:bg-gray-900 text-white text-sm px-4 py-2 rounded-lg shadow transition">
-                    View Details
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
+        <div class="do-count-badge" th:text="'📦 ' + ${#lists.size(deliveredOrders)} + ' Orders Delivered'">📦 0 Orders Delivered</div>
       </div>
-    </div>
 
+      <!-- Stats -->
+      <div class="do-stats" th:if="${deliveredOrders != null and !#lists.isEmpty(deliveredOrders)}">
+        <div class="stat-card">
+          <div class="stat-icon">🎉</div>
+          <div class="stat-text">
+            <span>Total Delivered</span>
+            <strong th:text="${#lists.size(deliveredOrders)}">0</strong>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-text">
+            <span>Total Revenue</span>
+            <strong th:text="${'₹' + #numbers.formatDecimal(totalRevenue, 1, 'COMMA', 0, 'POINT')}">₹0</strong>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-text">
+            <span>Success Rate</span>
+            <strong>100%</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div th:if="${deliveredOrders == null or #lists.isEmpty(deliveredOrders)}" class="do-empty">
+        <span class="empty-icon">📭</span>
+        <h3>No Delivered Orders Yet</h3>
+        <p>Your completed deliveries will appear here once customers receive their orders.<br>Keep crafting amazing products!</p>
+      </div>
+
+      <!-- Table -->
+      <div th:if="${deliveredOrders != null and !#lists.isEmpty(deliveredOrders)}" class="do-table-wrap">
+        <table class="do-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Order ID</th>
+              <th>Buyer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Delivered On</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="order, stat : ${deliveredOrders}">
+              <td><div class="row-num" th:text="${stat.index + 1}">1</div></td>
+              <td><span class="order-id" th:text="${order.orderId}">ORD-123</span></td>
+              <td><span class="buyer-name" th:text="${order?.user?.name} ?: '—'">Buyer</span></td>
+              <td>
+                <div style="display:flex;flex-wrap:wrap;">
+                  <span th:each="item : ${order.orderItems}" class="item-chip">
+                    <span th:text="${item?.product?.name} ?: 'Product'">Product</span>
+                    × <span th:text="${item.quantity}">1</span>
+                  </span>
+                </div>
+              </td>
+              <td>
+                <span class="amount-cell"
+                  th:text="${'₹' + #numbers.formatDecimal(order.totalAmount != null ? order.totalAmount : 0, 1, 'COMMA', 2, 'POINT')}">₹0.00</span>
+              </td>
+              <td>
+                <span class="date-badge"
+                  th:text="${order.deliveryDate != null ? #temporals.format(order.deliveryDate, 'dd MMM yyyy') : '—'}">Date</span>
+              </td>
+              <td>
+                <a th:href="@{/sellers/ordersDelivered/{id}(id=${order.id})}" class="view-btn">
+                  👁 View
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
   </div>
+</div>
 </body>
 </html>

@@ -1,128 +1,85 @@
+<div id="sidebar-backdrop" class="fixed inset-0 z-40 hidden bg-black bg-opacity-50"></div>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 
-
-<!-- Backdrop overlay for mobile sidebar -->
-<div id="sidebar-backdrop" class="fixed inset-0 z-40 hidden bg-black bg-opacity-40"></div>
-
-<!-- Viewport meta tag for responsive design -->
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover" />
-      
-<!-- Responsive Sidebar -->
 <aside th:fragment="userSidebar"
        id="logo-sidebar"
-       class="fixed left-0 top-0 z-40
-              w-64 max-w-full
-              h-screen
-              transform transition-transform duration-300
-              -translate-x-full
-              bg-red-800 text-white dark:bg-gray-800
-              pb-[env(safe-area-inset-bottom)]"
-       aria-label="Sidebar">
+       style="position:fixed;left:0;top:0;z-index:200;width:256px;height:100vh;transform:translateX(-100%);transition:transform 0.3s ease;background:linear-gradient(180deg,#6B4226 0%,#4A2E16 100%);border-right:3px solid #D4960A;display:flex;flex-direction:column;"
+       aria-label="User Sidebar">
 
 <script th:inline="javascript">
-// Sidebar toggle logic for all screens
 document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.getElementById('logo-sidebar');
-    const toggleBtn = document.getElementById('sidebar-toggle');
-    const backdrop = document.getElementById('sidebar-backdrop');
-    
-    if (sidebar && toggleBtn) {  // Only initialize if elements exist
-        function openSidebar() {
-            sidebar.classList.remove('-translate-x-full');
-            if (backdrop) backdrop.classList.remove('hidden');
-        }
-        
-        function closeSidebar() {
-            sidebar.classList.add('-translate-x-full');
-            if (backdrop) backdrop.classList.add('hidden');
-        }
-        
-        toggleBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (sidebar.classList.contains('-translate-x-full')) {
-                openSidebar();
-            } else {
-                closeSidebar();
-            }
-        });
-        
-        // Close sidebar when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
-                closeSidebar();
-            }
-        });
-        
-        if (backdrop) {
-            backdrop.addEventListener('click', closeSidebar);
-        }
-        
-        // Close sidebar on ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeSidebar();
-        });
-    }
+  const sidebar = document.getElementById('logo-sidebar');
+  const toggleBtn = document.getElementById('sidebar-toggle');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar && toggleBtn) {
+    const open  = () => { sidebar.style.transform='translateX(0)'; if(backdrop) backdrop.classList.remove('hidden'); };
+    const close = () => { sidebar.style.transform='translateX(-100%)'; if(backdrop) backdrop.classList.add('hidden'); };
+    toggleBtn.addEventListener('click', e => { e.stopPropagation(); sidebar.style.transform.includes('-100%') ? open() : close(); });
+    document.addEventListener('click', e => { if(!sidebar.contains(e.target)&&!toggleBtn.contains(e.target)) close(); });
+    if(backdrop) backdrop.addEventListener('click', close);
+    document.addEventListener('keydown', e => { if(e.key==='Escape') close(); });
+  }
 });
 </script>
-  <div class="flex flex-col h-full px-3 py-4">
-    <a th:href="@{'/user/main'}" class="flex flex-col items-center ps-2.5 mb-5">
-      <img th:src="@{/images/ApniDukkan.png}" class=" border h-20 rounded-full me-3 sm:h-16" alt="Logo"/>
-      
-    </a>
-    <ul class="flex-1 space-y-2 font-medium overflow-y-auto">
-      <li>
-        <a th:href="@{'/user/dashboard'}" class="border flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-900 hover:text-black dark:hover:bg-gray-700 group">
-          <img th:src="@{/images/dashboard.png}" alt="Dashboard" class="w-5 h-5 me-2">
-          <span class="ms-3">Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a th:href="@{'/user/main'}" class="border flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-900 hover:text-black dark:hover:bg-gray-700 group">
-          <img th:src="@{/images/home.png}" alt="Cart" class="w-5 h-5 me-2">
-          <span class="ms-3">home</span>
-        </a>
-      </li>
-      <li>
-        <a th:href="@{'/user/products'}" class="border flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-900 hover:text-black dark:hover:bg-gray-700 group">
-          <img th:src="@{/images/product.png}" alt="Profile" class="w-5 h-5 me-2">
-          <span class="ms-3">Products</span>
-        </a>
-      </li>
-       <!-- product detail -->
 
-      <li>
-        <a th:href="@{'/user/cart'}" class="border flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-900 hover:text-black dark:hover:bg-gray-700 group">
-          <img th:src="@{/images/cart.png}" alt="Add Contact" class="w-5 h-5 me-2">
-          <span class="ms-3">cart</span>
-        </a>
-      </li>
-      
-      <li>
-        <a th:href="@{'/user/ordersummary'}" class="border flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-900 hover:text-black dark:hover:bg-gray-700 group">
-          <img th:src="@{/images/order.png}" alt="Contacts" class="w-5 h-5 me-2">
-          <span class="ms-3">Orders</span>
-        </a>
-      </li>
-    
-      <li>
-        <a th:href="@{'/user/settings'}" class="border flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-900 hover:text-black dark:hover:bg-gray-700 group">
-          <img th:src="@{/images/settings.png}" alt="Settings" class="w-5 h-5 me-2">
-          <span class="ms-3">Settings</span>
+  <!-- Brand -->
+  <div style="padding:20px 16px;border-bottom:1px solid rgba(212,150,10,0.3);text-align:center;">
+    <div style="font-size:2rem;margin-bottom:4px;">🌿</div>
+    <div style="font-family:'Playfair Display',serif;color:#F0B830;font-size:1rem;font-weight:900;">TribalConnect</div>
+    <div style="font-size:0.68rem;color:#D4960A;font-family:'Kalam',cursive;">Tribal Marketplace</div>
+  </div>
 
+  <!-- Nav Links -->
+  <nav style="flex:1;padding:16px 12px;overflow-y:auto;">
+    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px;">
+      <li>
+        <a th:href="@{'/user/dashboard'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#E8D5B0;text-decoration:none;font-size:0.88rem;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='rgba(212,150,10,0.15)';this.style.color='#F0B830'" onmouseout="this.style.background='transparent';this.style.color='#E8D5B0'">
+          <i class="fas fa-tachometer-alt" style="width:18px;color:#D4960A;"></i> Dashboard
         </a>
       </li>
-
-     
+      <li>
+        <a th:href="@{'/user/main'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#E8D5B0;text-decoration:none;font-size:0.88rem;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='rgba(212,150,10,0.15)';this.style.color='#F0B830'" onmouseout="this.style.background='transparent';this.style.color='#E8D5B0'">
+          <i class="fas fa-home" style="width:18px;color:#D4960A;"></i> Home
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/user/products'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#E8D5B0;text-decoration:none;font-size:0.88rem;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='rgba(212,150,10,0.15)';this.style.color='#F0B830'" onmouseout="this.style.background='transparent';this.style.color='#E8D5B0'">
+          <i class="fas fa-store" style="width:18px;color:#D4960A;"></i> Browse Crafts
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/user/cart'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#E8D5B0;text-decoration:none;font-size:0.88rem;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='rgba(212,150,10,0.15)';this.style.color='#F0B830'" onmouseout="this.style.background='transparent';this.style.color='#E8D5B0'">
+          <i class="fas fa-shopping-basket" style="width:18px;color:#D4960A;"></i> My Cart
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/user/ordersummary'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#E8D5B0;text-decoration:none;font-size:0.88rem;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='rgba(212,150,10,0.15)';this.style.color='#F0B830'" onmouseout="this.style.background='transparent';this.style.color='#E8D5B0'">
+          <i class="fas fa-box-open" style="width:18px;color:#D4960A;"></i> My Orders
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/user/checkout'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#E8D5B0;text-decoration:none;font-size:0.88rem;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='rgba(212,150,10,0.15)';this.style.color='#F0B830'" onmouseout="this.style.background='transparent';this.style.color='#E8D5B0'">
+          <i class="fas fa-credit-card" style="width:18px;color:#D4960A;"></i> Checkout
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/user/settings'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#E8D5B0;text-decoration:none;font-size:0.88rem;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='rgba(212,150,10,0.15)';this.style.color='#F0B830'" onmouseout="this.style.background='transparent';this.style.color='#E8D5B0'">
+          <i class="fas fa-cog" style="width:18px;color:#D4960A;"></i> Settings
+        </a>
+      </li>
     </ul>
-    
-    <!-- Bottom Logout Button -->
-    <div class="mt-auto pt-4 border-t border-red-800/20">
-      <a th:href="@{'/logout'}" class="border flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-900 hover:text-black dark:hover:bg-gray-700 group">
-        <img th:src="@{/images/logout.png}" alt="Logout" class="w-5 h-5 me-2">
-        <span class="ms-3">Logout</span>
+
+    <div style="border-top:1px solid rgba(212,150,10,0.2);margin:16px 0 0;padding-top:12px;">
+      <a th:href="@{'/sellers/register'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#F0B830;text-decoration:none;font-size:0.85rem;font-weight:600;background:rgba(212,150,10,0.12);">
+        <i class="fas fa-paint-brush" style="width:18px;"></i> Become an Artisan
       </a>
     </div>
+  </nav>
 
-
+  <!-- Logout -->
+  <div style="padding:12px;border-top:1px solid rgba(212,150,10,0.3);">
+    <a th:href="@{'/logout'}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#E8D5B0;text-decoration:none;font-size:0.88rem;font-weight:500;background:rgba(192,92,46,0.15);transition:background 0.2s;" onmouseover="this.style.background='rgba(192,92,46,0.3)'" onmouseout="this.style.background='rgba(192,92,46,0.15)'">
+      <i class="fas fa-sign-out-alt" style="width:18px;color:#C05C2E;"></i> Logout
+    </a>
   </div>
 </aside>

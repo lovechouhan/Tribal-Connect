@@ -1,89 +1,103 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{base}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{base}">
+
 <head>
-    <title>Login | Apni Dukan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign In — TribalConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body class=" bg-red-300">
 
-<div layout:fragment="content" class="flex justify-center  p-4 min-h-screen items-center">
-    <div class="w-full max-w-md bg-gradient-to-br bg-red-500
- rounded-lg shadow-2xl p-6 sm:p-8 text-white border border-white/30 transition hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)]">
+<body>
+  <div layout:fragment="content"
+    style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:linear-gradient(135deg,rgba(192,92,46,0.08),rgba(212,150,10,0.05),rgba(61,107,69,0.08));">
+    <div style="width:100%;max-width:420px;">
 
-      <!-- Logo -->
-      <div class="flex justify-center mb-4">
-        <img th:src="@{/images/ApniDukkan.png}" alt="Apni Dukan Logo"
-             class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl shadow-md border border-white/40 bg-white/30 p-1" />
+      <!-- Brand Header -->
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="font-size:3.5rem;margin-bottom:8px;">🌿</div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#6B4226;margin:0 0 4px;">
+          TribalConnect</h1>
+        <p style="font-family:'Kalam',cursive;color:#C05C2E;font-size:0.9rem;margin:0;">Tribal Artisan Marketplace</p>
       </div>
 
-      <!-- Title -->
-      <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6">Welcome👋</h2>
+      <div class="auth-card" style="padding:32px 28px;">
+        <h2
+          style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800;color:#2C2416;margin:0 0 24px;text-align:center;">
+          Welcome Back 👋</h2>
 
-      <!-- Success message -->
-      <div th:if="${param.verified}"
-         class="p-3 bg-green-200/30 border border-green-300 text-green-100 rounded mb-3 text-sm sm:text-base">
-        Account verified successfully! Please sign in with your credentials.
-      </div>
-
-      <!-- Error message -->
-      <div th:if="${param.error}"
-         class="p-3 bg-red-200/30 border border-red-300 text-red-100 rounded mb-3 text-sm sm:text-base">
-        Invalid credentials. Please try again.
-      </div>
-
-      <!-- Form -->
-      <form th:action="@{/authenticate}" th:method="post" class="space-y-5">
-        <!-- Email -->
-        <div>
-            <label for="email" class="block text-sm font-medium text-white/90 mb-1">Email</label>
-            <input id="email" type="email" name="email" required
-                 class="w-full px-3 py-2 sm:px-4 sm:py-2 rounded-lg border border-white/40 bg-white/80 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-white focus:outline-none transition text-sm sm:text-base"
-                 placeholder="Enter your email" />
+        <!-- Alerts -->
+        <div th:if="${param.verified}" class="tribal-alert-success" style="margin-bottom:16px;">
+          Account verified! Please sign in.
+        </div>
+        <div th:if="${param.error}" class="tribal-alert-error" style="margin-bottom:16px;">
+          Invalid credentials. Please check and try again.
         </div>
 
-            <!-- Password -->
-            <div>
-                <label for="password" class="block text-sm font-medium text-white/90 mb-1">Password</label>
-                <input id="password" type="password" name="password" required
-                       class="w-full px-4 py-2 rounded-lg border border-white/40 bg-white/80 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-white focus:outline-none transition text-sm sm:text-base" placeholder="Enter your password" />
-            </div>
-
-            <!-- Note -->
-            <p class="text-xs text-white/80 text-center">
-                <strong>Note:</strong> Google Sign-In is only for users, not for sellers.
-            </p>
-
-            <!-- Login button -->
-            <div class="mb-3">
-                <button type="submit"
-                        class="w-full bg-gray-200 text-indigo-700 font-semibold py-2.5 rounded-lg shadow-md hover:bg-indigo-100 transition transform hover:scale-[1.02]">
-                    Login
-                </button>
-            </div>
-
-            <!-- Google Sign-In -->
-            <div>
-                <a th:href="@{'/oauth2/authorization/google'}"
-                   class="flex items-center justify-center w-full px-4 py-2 bg-white border-white/50 rounded-lg shadow-sm hover:bg-white transition">
-                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2">
-                    <span class="text-indigo-700 font-medium">Sign in with Google</span>
-                </a>
-            </div>
+        <!-- Login Form -->
+        <form th:action="@{/authenticate}" method="post" style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <label for="email"
+              style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;"><i
+                class="fas fa-envelope mr-1" style="color:#C05C2E;"></i>Email Address</label>
+            <input id="email" type="email" name="email" required placeholder="Enter your email" class="tribal-input">
+          </div>
+          <div>
+            <label for="password"
+              style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;"><i
+                class="fas fa-lock mr-1" style="color:#C05C2E;"></i>Password</label>
+            <input id="password" type="password" name="password" required placeholder="Enter your password"
+              class="tribal-input">
+          </div>
+          <!-- <p
+            style="font-size:0.76rem;color:#8B7355;text-align:center;background:#FDF6E9;padding:8px;border-radius:8px;">
+            <i class="fas fa-info-circle mr-1" style="color:#D4960A;"></i>Google Sign-In is for buyers only, not for
+            artisan/seller accounts.
+          </p> -->
+          <button type="submit" class="btn-tribal"
+            style="padding:13px; font-size:0.95rem;text-align:center;width:100%;">
+            <i class="fas fa-sign-in-alt mr-2 text-black-500"></i>Sign In to Marketplace
+          </button>
         </form>
 
-        <!-- Links -->
-        <div class="mt-6 text-center text-sm space-y-1 text-white/90">
-            <!-- <a th:href="@{'/forgot-password'}" class="hover:underline">Forgot Password?</a> -->
-            <p>Don't have an account? 
-                <a th:href="@{'/register'}" class="font-semibold hover:underline">Register</a>
-            </p>
-            <p class="text-white/70">OR</p>
-            <a th:href="@{'/sellers/sellerRegister'}" class="font-semibold hover:underline">Register as Seller</a>
-        </div>
-    </div>
-</div>
+        <!-- Divider
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0;">
+        <hr style="flex:1;border:none;border-top:1px solid #E8D5B0;">
+        <span style="font-size:0.78rem;color:#8B7355;font-weight:500;">OR</span>
+        <hr style="flex:1;border:none;border-top:1px solid #E8D5B0;">
+      </div> -->
 
+        <!-- Google Sign-In -->
+        <!-- <a th:href="@{'/oauth2/authorization/google'}"
+         style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px;border:1.5px solid #E8D5B0;border-radius:8px;background:#fff;text-decoration:none;color:#4a3520;font-size:0.9rem;font-weight:500;transition:box-shadow 0.2s;"
+         onmouseover="this.style.boxShadow='0 4px 12px rgba(107,66,38,0.12)'" onmouseout="this.style.boxShadow='none'">
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width:20px;height:20px;">
+        Sign in with Google
+      </a> -->
+
+        <!-- Register Links -->
+        <div style="margin-top:20px;text-align:center;display:flex;flex-direction:column;gap:8px;">
+          <p style="font-size:0.84rem;color:#8B7355;margin:0;">
+            New buyer? <a th:href="@{'/register'}" style="color:#C05C2E;font-weight:700;text-decoration:none;">Create
+              Account</a>
+          </p>
+          <p style="font-size:0.84rem;color:#8B7355;margin:0;">
+            Tribal artisan? <a th:href="@{'/sellers/register'}"
+              style="color:#3D6B45;font-weight:700;text-decoration:none;">Register as Artisan</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Trust Badges -->
+      <div style="display:flex;justify-content:center;gap:16px;margin-top:20px;flex-wrap:wrap;">
+        <span style="font-size:0.74rem;color:#8B7355;display:flex;align-items:center;gap:4px;"><i
+            class="fas fa-shield-alt" style="color:#3D6B45;"></i>Secure Login</span>
+        <span style="font-size:0.74rem;color:#8B7355;display:flex;align-items:center;gap:4px;"><i class="fas fa-lock"
+            style="color:#3D6B45;"></i>Encrypted</span>
+        <span style="font-size:0.74rem;color:#8B7355;display:flex;align-items:center;gap:4px;"><i
+            class="fas fa-check-circle" style="color:#3D6B45;"></i>TRIFED Verified</span>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

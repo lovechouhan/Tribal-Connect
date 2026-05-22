@@ -85,7 +85,7 @@ public class SellerController {
         return "seller/sellerdashboard";
     }
 
-    @GetMapping("/sellerRegister")
+    @GetMapping("/register")
     public String showSellerRegistrationForm(Model model) {
         model.addAttribute("sellerForm", new SellerForm());
         return "seller/sellerreg";
@@ -126,15 +126,23 @@ public class SellerController {
             user.setPassword(passwordEncoder.encode(sellerForm.getPassword()));
             user.setEmail(sellerForm.getEmail());
             user.setPhoneNumber(sellerForm.getPhoneNumber());
-            user.setEnabled(false); // User is disabled until OTP verification
+            user.setEnabled(false); // User must verify OTP first
             user.setRole(UserRoles.SELLER); // Set role as SELLER
 
             userServices.saveUser(user);
             sellerService.saveSeller(seller);
-            redirectAttributes.addFlashAttribute("message", "Registration successful! Please verify your email.");
-            String emailParam = URLEncoder.encode(sellerForm.getEmail(), StandardCharsets.UTF_8);
-            return "redirect:/sellers/verify-seller-otp?email=" + emailParam;
+            
+            // Generate and send OTP using n8n webhook and SMS
+            verificationService.generateAndSendOtp(user.getEmail());
+            
+            redirectAttributes.addFlashAttribute("message", "Registration successful! Please check your email for the OTP.");
+            return "redirect:/sellers/verify-seller-otp?email=" + URLEncoder.encode(seller.getEmail(), StandardCharsets.UTF_8);
         } catch (Exception e) {
+            if ("UNVERIFIED_SELLER".equals(e.getMessage()) || "UNVERIFIED".equals(e.getMessage())) {
+                verificationService.generateAndSendOtp(sellerForm.getEmail());
+                redirectAttributes.addFlashAttribute("message", "Your seller account exists but is unverified. We have sent a new OTP!");
+                return "redirect:/sellers/verify-seller-otp?email=" + URLEncoder.encode(sellerForm.getEmail(), StandardCharsets.UTF_8);
+            }
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "seller/sellerreg";
         }
@@ -150,6 +158,8 @@ public class SellerController {
     @PostMapping("/verify-seller-otp")
     public String verifyOtpforseller(@RequestParam("email") String email, @RequestParam("otp") int otp,
             RedirectAttributes redirectAttributes) {
+        // BREAKPOINT: Check the email and otp received from the user form.
+        System.out.println("DEBUG [verifyOtpforseller]: Received verification request for email: " + email + ", otp: " + otp);
         try {
             Seller seller = sellerService.getSellerByEmail(email);
             User user = userServices.getUserByEmail(email);
@@ -160,12 +170,20 @@ public class SellerController {
                 return "redirect:/login?error=SellerNotFound";
             }
 
-            System.out.println("Stored OTP: " + seller.getOtp() + ", Received OTP: " + otp);
+            // BREAKPOINT: Compare the stored OTP against the received OTP.
+            System.out.println("DEBUG [verifyOtpforseller]: Stored OTP: " + seller.getOtp() + ", Received OTP: " + otp);
             if (seller.getOtp() == otp) {
+                if (seller.getOtpExpiryTime() != null && java.time.LocalDateTime.now().isAfter(seller.getOtpExpiryTime())) {
+                    redirectAttributes.addFlashAttribute("error", "OTP has expired. Please register again to receive a new OTP.");
+                    return "redirect:/sellers/register";
+                }
+                
                 seller.setIsemailVerified(true);
                 // user.setIsemailVerified(true);
                 user.setEnabled(true);
                 seller.setOtp(0); // Clear the OTP after successful verification
+                seller.setOtpExpiryTime(null);
+                user.setOtpExpiryTime(null);
                 seller.setEnabled(true);
                 sellerService.updateSellerStatus(seller);
                 userServices.updateUserstatus(user);
@@ -336,6 +354,59 @@ public class SellerController {
         List<Orders> deliveredOrders = orderService.getAllOrdersForCurrentSeller();
         model.addAttribute("deliveredOrders", deliveredOrders);
 
+        // Compute total revenue in Java — SpEL cannot parse Java lambdas
+        double totalRevenue = deliveredOrders.stream()
+                .mapToDouble(o -> o.getTotalAmount())
+                .sum();
+        model.addAttribute("totalRevenue", totalRevenue);
+
         return "seller/delivered-orders";
+    }
+
+    @GetMapping("/orders/{id}/invoice")
+    public String viewInvoice(@PathVariable Long id, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
+        Orders order = orderService.findOrderById(id);
+        if (order == null) {
+            model.addAttribute("error", "Order not found");
+            return "error";
+        }
+
+        model.addAttribute("order", order);
+        return "seller/invoice";
+    }
+
+    @GetMapping("/payments")
+    public String getPaymentHistory(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
+        List<Orders> orders = orderService.getAllOrdersForCurrentSeller();
+
+        // Compute summary stats in Java to avoid SpEL lambda limitations
+        double totalEarnings = orders.stream()
+                .mapToDouble(Orders::getTotalAmount)
+                .sum();
+
+        long paidCount = orders.stream()
+                .filter(o -> com.eCommerce.Ecommerce.Entities.PaymentStatus.COMPLETED
+                        .equals(o.getPaymentStatus()))
+                .count();
+
+        long pendingCount = orders.size() - paidCount;
+
+        model.addAttribute("paymentOrders", orders);
+        model.addAttribute("totalEarnings", totalEarnings);
+        model.addAttribute("paidCount", paidCount);
+        model.addAttribute("pendingCount", pendingCount);
+        model.addAttribute("orderCount", orders.size());
+
+        return "seller/payment-history";
     }
 }

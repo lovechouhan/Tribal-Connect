@@ -3,173 +3,412 @@
  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
  layout:decorate="~{base}">
 <head>
+  <title>Support — TribalConnect</title>
+  <style>
+    .support-page-wrapper {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0f0a 0%, #2c1810 50%, #1a0f0a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .support-page-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(240,184,48,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(192,92,46,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .tribal-pattern-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F0B830' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .chat-container {
+      width: 100%;
+      max-width: 780px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(240,184,48,0.15);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(240,184,48,0.08);
+      position: relative;
+      z-index: 1;
+    }
+    .chat-header {
+      background: linear-gradient(135deg, #1a0f0a, #2c1810);
+      border-bottom: 1px solid rgba(240,184,48,0.2);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+    .chat-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #F0B830, #C05C2E, #F0B830, transparent);
+    }
+    .chat-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #F0B830, #C05C2E);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(240,184,48,0.3);
+    }
+    .chat-header-text h2 {
+      color: #F0B830;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 3px;
+    }
+    .chat-header-text p {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.78rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      background: #4ade80;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse-green 2s ease-in-out infinite;
+    }
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.3); }
+    }
+    .chat-header-badges {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+    .badge-pill {
+      font-size: 0.65rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .badge-ai { background: rgba(240,184,48,0.15); color: #F0B830; border: 1px solid rgba(240,184,48,0.3); }
+    .badge-24h { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
 
-    <title>Support</title>
+    .chat-messages {
+      height: 440px;
+      overflow-y: auto;
+      padding: 24px;
+      background: rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(240,184,48,0.3); border-radius: 4px; }
+
+    .msg-row { display: flex; align-items: flex-end; gap: 10px; animation: msgSlide 0.3s ease; }
+    .msg-row.user { flex-direction: row-reverse; }
+    @keyframes msgSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .msg-icon {
+      width: 30px; height: 30px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .msg-icon.ai { background: linear-gradient(135deg,#F0B830,#C05C2E); }
+    .msg-icon.user-icon { background: rgba(240,184,48,0.15); border: 1px solid rgba(240,184,48,0.3); }
+    .msg-bubble {
+      max-width: 72%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .msg-bubble.ai {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(240,184,48,0.12);
+      color: rgba(255,255,255,0.88);
+      border-bottom-left-radius: 4px;
+    }
+    .msg-bubble.user {
+      background: linear-gradient(135deg, #C05C2E, #8B3A1F);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 16px rgba(192,92,46,0.3);
+    }
+    .typing-bubble {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 12px 16px;
+    }
+    .typing-bubble span {
+      width: 7px; height: 7px;
+      background: #F0B830;
+      border-radius: 50%;
+      display: inline-block;
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.6; }
+      40% { transform: translateY(-8px); opacity: 1; }
+    }
+
+    .quick-questions {
+      padding: 0 24px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quick-btn {
+      font-size: 0.75rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(240,184,48,0.08);
+      border: 1px solid rgba(240,184,48,0.2);
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .quick-btn:hover {
+      background: rgba(240,184,48,0.15);
+      color: #F0B830;
+      border-color: rgba(240,184,48,0.4);
+      transform: translateY(-1px);
+    }
+
+    .chat-input-area {
+      padding: 16px 20px;
+      background: rgba(0,0,0,0.35);
+      border-top: 1px solid rgba(240,184,48,0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #support-chat-input {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(240,184,48,0.2);
+      border-radius: 50px;
+      padding: 12px 20px;
+      color: #fff;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    #support-chat-input::placeholder { color: rgba(255,255,255,0.35); }
+    #support-chat-input:focus {
+      border-color: rgba(240,184,48,0.5);
+      background: rgba(255,255,255,0.1);
+    }
+    .send-btn {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F0B830, #C05C2E);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(240,184,48,0.3);
+    }
+    .send-btn:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(240,184,48,0.45); }
+    .send-btn:active { transform: scale(0.96); }
+    .send-btn svg { width: 18px; height: 18px; }
+  </style>
 </head>
 <body>
-        <div layout:fragment="content" class="min-h-screen overflow-auto">
-            <div class="max-w-3xl mx-auto py-6 px-4">
-                <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                    <!-- Header -->
-                    <div class="bg-gray-900 text-white px-4 py-3 flex items-center gap-3">
-                        <img th:src="@{/images/ApniDukkan.png}" alt="Logo" class="w-8 h-8 rounded" />
-                        <div>
-                            <div class="font-semibold">Apni Dukan Support</div>
-                            <div class="text-xs opacity-90">Online • Ask anything about products, orders, returns</div>
-                        </div>
-                    </div>
+<div layout:fragment="content">
+  <div class="support-page-wrapper">
+    <div class="tribal-pattern-bg"></div>
 
-                    <!-- Messages -->
-                    <div id="support-chat-messages" class="h-[60vh] md:h-[70vh] overflow-y-auto p-4 space-y-3 bg-gray-50">
-                        <!-- Messages will be appended here -->
-                    </div>
+    <div class="chat-container">
+      <!-- Header -->
+      <div class="chat-header">
+        <div class="chat-avatar">🪬</div>
+        <div class="chat-header-text">
+          <h2>TribalConnect Support</h2>
+          <p><span class="online-dot"></span> AI-powered • Available 24/7</p>
+        </div>
+        <div class="chat-header-badges">
+          <span class="badge-pill badge-ai">✨ AI</span>
+          <span class="badge-pill badge-24h">24/7</span>
+        </div>
+      </div>
 
-                    <!-- Input -->
-                    <div class="border-t p-3 bg-white">
-                        <form th:action="@{/api/support/query}" method="post" id="support-chat-form" class="flex items-center gap-2">
-                            <input id="support-chat-input" name="question" type="text" placeholder="Type your message..." class="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" required />
-                            <button type="submit" class="bg-gray-900 hover:bg-green-700 text-white px-4 py-2 rounded-full">Send</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        
+      <!-- Messages -->
+      <div id="support-chat-messages" class="chat-messages"></div>
 
-                <!-- Response Modal -->
-                <div id="support-response-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-                    <div class="bg-gray-900 w-11/12 max-w-2xl rounded-2xl p-5 relative shadow-xl">
-                        <button id="support-modal-close" type="button" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
-                        <h3 class="text-lg font-semibold mb-2">AI Response</h3>
-                        <div id="support-modal-content" class="text-gray-800 whitespace-pre-wrap max-h-[60vh] overflow-y-auto"></div>
-                    </div>
-                </div>
+      <!-- Quick Questions -->
+      <div class="quick-questions" id="quick-questions">
+        <button class="quick-btn" onclick="sendQuick('Track my order')">📦 Track Order</button>
+        <button class="quick-btn" onclick="sendQuick('How do I return a product?')">↩️ Returns</button>
+        <button class="quick-btn" onclick="sendQuick('Payment methods accepted')">💳 Payments</button>
+        <button class="quick-btn" onclick="sendQuick('How to become an artisan seller?')">🎨 Sell on TribalConnect</button>
+        <button class="quick-btn" onclick="sendQuick('Tell me about authentic tribal products')">🏺 Tribal Products</button>
+      </div>
+
+      <!-- Input -->
+      <form id="support-chat-form" class="chat-input-area" th:action="@{/api/support/query}" method="post">
+        <input id="support-chat-input" name="question" type="text"
+               placeholder="Ask anything about products, orders, artisans…" required autocomplete="off" />
+        <button type="submit" class="send-btn" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
 
 <script th:inline="javascript">
 /*<![CDATA[*/
-    // Use support-specific IDs to avoid collision with floating chatbot IDs used in base layout
-    const messagesEl = document.getElementById('support-chat-messages');
-    const formEl = document.getElementById('support-chat-form');
-    const inputEl = document.getElementById('support-chat-input');
-        const history = [];
+const messagesEl = document.getElementById('support-chat-messages');
+const formEl = document.getElementById('support-chat-form');
+const inputEl = document.getElementById('support-chat-input');
+const quickQEl = document.getElementById('quick-questions');
+const history = [];
 
-    function appendMessage(role, text) {
-        const wrapper = document.createElement('div');
-        const isUser = role === 'user';
-        wrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
-        const bubble = document.createElement('div');
-        bubble.className = `${isUser ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} max-w-[80%] rounded-2xl px-4 py-2 shadow`;
-        bubble.textContent = text;
-        wrapper.appendChild(bubble);
-        messagesEl.appendChild(wrapper);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
+function appendMessage(role, text) {
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + (role === 'user' ? 'user' : '');
 
-                // Greeting from assistant on load (optional to show in thread)
-                appendMessage('assistant', "Hi! I'm your shopping assistant. Ask me about products, orders, returns, or anything you need help with.");
-                history.push({ role: 'assistant', content: "Hi! I'm your shopping assistant. Ask me about products, orders, returns, or anything you need help with." });
+  const icon = document.createElement('div');
+  icon.className = 'msg-icon ' + (role === 'user' ? 'user-icon' : 'ai');
+  icon.textContent = role === 'user' ? '👤' : '🪬';
 
-        // Modal helpers
-        const modal = document.getElementById('support-response-modal');
-        const modalContent = document.getElementById('support-modal-content');
-        const modalClose = document.getElementById('support-modal-close');
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble ' + (role === 'user' ? 'user' : 'ai');
+  bubble.textContent = text;
 
-        function openModal() {
-            modal.classList.remove('hidden');
-            // ensure flex centering applies
-            modal.classList.add('flex');
-        }
-        function closeModal() {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            modalContent.textContent = '';
-        }
-        modalClose.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
-        });
+  row.appendChild(icon);
+  row.appendChild(bubble);
+  messagesEl.appendChild(row);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  return bubble;
+}
 
-    formEl.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const text = inputEl.value.trim();
-        if (!text) return;
-        inputEl.value = '';
+function appendTyping() {
+  const row = document.createElement('div');
+  row.className = 'msg-row';
+  const icon = document.createElement('div');
+  icon.className = 'msg-icon ai'; icon.textContent = '🪬';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble ai typing-bubble';
+  bubble.innerHTML = '<span></span><span></span><span></span>';
+  row.appendChild(icon); row.appendChild(bubble);
+  messagesEl.appendChild(row);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  return { row, bubble };
+}
 
-        // Show user message in the thread (right aligned)
-        appendMessage('user', text);
-        history.push({ role: 'user', content: text });
+// Greeting
+appendMessage('assistant', "Namaste! 🙏 I'm your TribalConnect support assistant. I'm here to help with products, orders, artisan information, and more. How can I assist you today?");
+history.push({ role: 'assistant', content: "Namaste! 🙏 I'm your TribalConnect support assistant. How can I assist you today?" });
 
-            // Prepare assistant bubble (left aligned) and show typing indicator
-            const wrap = document.createElement('div');
-            wrap.className = 'flex justify-start';
-            const bubble = document.createElement('div');
-            bubble.className = 'bg-white text-gray-800 max-w-[80%] rounded-2xl px-4 py-2 shadow whitespace-pre-wrap';
-            bubble.innerHTML = '<div class="inline-flex items-center gap-1 text-gray-500">Assistant is typing<span class="typing-dots ml-2"><span></span><span></span><span></span></span></div>';
-            wrap.appendChild(bubble);
-            messagesEl.appendChild(wrap);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
+function sendQuick(text) {
+  inputEl.value = text;
+  formEl.dispatchEvent(new Event('submit'));
+  if (quickQEl) quickQEl.style.display = 'none';
+}
 
-            try {
-                const base = /*[[@{/}]]*/ '/';
-                const url = base.replace(/\/$/, '') + '/api/support/query';
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({ question: text })
-                });
+formEl.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const text = inputEl.value.trim();
+  if (!text) return;
+  inputEl.value = '';
+  if (quickQEl) quickQEl.style.display = 'none';
 
-                if (!resp.ok) {
-                    const errText = await resp.text();
-                    throw new Error('Server error ' + resp.status + ': ' + errText);
-                }
+  appendMessage('user', text);
+  history.push({ role: 'user', content: text });
 
-                // Stream the response (Flux<String>)
-                const reader = resp.body?.getReader();
-                const decoder = new TextDecoder();
-                bubble.textContent = '';
+  const { row: typingRow, bubble: typingBubble } = appendTyping();
 
-                if (reader) {
-                    let buffer = '';
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-                        const chunk = decoder.decode(value, { stream: true });
-                        buffer += chunk;
-
-                        // If backend is SSE, lines start with "data:" per event; otherwise plain text chunks
-                                                                        const parts = buffer.split(/\n\n/); // SSE events separated by blank line
-                        // Keep the last partial segment in buffer
-                        buffer = parts.pop() || '';
-                        for (const p of parts) {
-                          const line = p.replace(/^data:\s*/gm, '').trimEnd();
-                                                                            bubble.textContent += line + '\n';
-                        }
-                        // For plain chunking (non-SSE), also append as it comes
-                        if (!resp.headers.get('content-type')?.includes('text/event-stream')) {
-                                                                            bubble.textContent += chunk;
-                        }
-
-                                                messagesEl.scrollTop = messagesEl.scrollHeight;
-                    }
-                                        bubble.textContent = bubble.textContent.trimEnd();
-                } else {
-                    // Fallback if body streaming not available
-                    const full = await resp.text();
-                                        bubble.textContent = full || 'Sorry, I could not respond right now.';
-                }
-
-                                    history.push({ role: 'assistant', content: bubble.textContent });
-
-            } catch (err) {
-                                    bubble.textContent = 'There was an error connecting to support. Please try again in a moment.';
-            }
+  try {
+    const base = /*[[@{/}]]*/ '/';
+    const url = base.replace(/\/$/, '') + '/api/support/query';
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ question: text })
     });
+    if (!resp.ok) throw new Error('Server error ' + resp.status);
+
+    // Replace typing with real bubble
+    const realRow = document.createElement('div');
+    realRow.className = 'msg-row';
+    const realIcon = document.createElement('div');
+    realIcon.className = 'msg-icon ai'; realIcon.textContent = '🪬';
+    const realBubble = document.createElement('div');
+    realBubble.className = 'msg-bubble ai';
+    realBubble.textContent = '';
+    realRow.appendChild(realIcon); realRow.appendChild(realBubble);
+    messagesEl.replaceChild(realRow, typingRow);
+
+    const reader = resp.body?.getReader();
+    const decoder = new TextDecoder();
+    if (reader) {
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+        const parts = buffer.split(/\n\n/);
+        buffer = parts.pop() || '';
+        for (const p of parts) {
+          const line = p.replace(/^data:\s*/gm, '').trimEnd();
+          realBubble.textContent += line + '\n';
+        }
+        if (!resp.headers.get('content-type')?.includes('text/event-stream')) {
+          realBubble.textContent += chunk;
+        }
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+      realBubble.textContent = realBubble.textContent.trimEnd();
+    } else {
+      realBubble.textContent = (await resp.text()) || 'Sorry, I could not respond right now.';
+    }
+    history.push({ role: 'assistant', content: realBubble.textContent });
+  } catch (err) {
+    typingBubble.className = 'msg-bubble ai';
+    typingBubble.textContent = 'There was a connection error. Please try again in a moment.';
+  }
+});
 /*]]>*/
 </script>
-
 </div>
-
 </body>
 </html>

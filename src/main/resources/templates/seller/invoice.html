@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <title>Invoice - TribalConnect</title>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @media print {
+            .no-print { display:none !important; }
+            .invoice-page { background:#fff !important; padding:0 !important; }
+            .invoice-wrapper { box-shadow:none !important; border:none !important; }
+        }
+
+        .invoice-page {
+            background:linear-gradient(160deg,#fdf6ed 0%,#f0e0c8 100%);
+            min-height:100vh; padding:36px 16px 72px;
+        }
+
+        /* ── Action bar ── */
+        .action-bar {
+            max-width:860px; margin:0 auto 24px;
+            display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+        }
+        .btn-back {
+            display:inline-flex; align-items:center; gap:8px;
+            color:#6B4226; font-size:.88rem; font-weight:700; text-decoration:none;
+            background:#fff; border:1.5px solid #d4c4a0; border-radius:10px; padding:9px 18px;
+            transition:background .2s, border-color .2s;
+        }
+        .btn-back:hover { background:#f5ede0; border-color:#C05C2E; }
+        .btn-print {
+            display:inline-flex; align-items:center; gap:8px;
+            background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff;
+            border:none; border-radius:10px; padding:9px 22px; font-size:.88rem; font-weight:700;
+            cursor:pointer; box-shadow:0 4px 14px rgba(192,92,46,.22);
+            transition:opacity .2s, transform .18s;
+        }
+        .btn-print:hover { opacity:.9; transform:translateY(-1px); }
+
+        /* ── Invoice wrapper ── */
+        .invoice-wrapper {
+            max-width:860px; margin:0 auto;
+            background:#fff; border-radius:22px; overflow:hidden;
+            box-shadow:0 8px 48px rgba(107,66,38,.16), 0 2px 8px rgba(0,0,0,.05);
+        }
+
+        /* ── Header ── */
+        .inv-header {
+            background:linear-gradient(135deg,#1a0e08 0%,#6B4226 50%,#C05C2E 100%);
+            padding:40px 48px; display:flex; justify-content:space-between; align-items:flex-start;
+            flex-wrap:wrap; gap:24px; position:relative; overflow:hidden;
+        }
+        .inv-header::before {
+            content:''; position:absolute; right:-80px; bottom:-80px;
+            width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,.06);
+        }
+        .inv-header::after {
+            content:''; position:absolute; left:-40px; top:-40px;
+            width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,.04);
+        }
+        .brand-section { position:relative; z-index:1; }
+        .brand-name {
+            font-family:'Playfair Display',serif; font-size:2rem; font-weight:800;
+            color:#fff; margin:0 0 4px; display:flex; align-items:center; gap:10px;
+        }
+        .brand-tag  { color:rgba(255,255,255,.7); font-size:.85rem; margin:0 0 4px; }
+        .brand-sub  { color:rgba(255,255,255,.55); font-size:.78rem; margin:0; }
+        .meta-section { text-align:right; position:relative; z-index:1; }
+        .invoice-label { font-size:1.4rem; font-weight:800; color:#fff; letter-spacing:2px; margin:0 0 8px; }
+        .meta-row { font-size:.88rem; color:rgba(255,255,255,.78); margin:3px 0; }
+        .meta-row strong { color:#fff; }
+
+        /* Status badge */
+        .inv-badge {
+            display:inline-flex; align-items:center; gap:5px;
+            padding:5px 14px; border-radius:20px; font-size:.75rem; font-weight:700; margin-top:8px;
+        }
+        .badge-delivered { background:#dcfce7; color:#15803d; }
+        .badge-shipped   { background:#dbeafe; color:#1d4ed8; }
+        .badge-pending   { background:#fef9c3; color:#b45309; }
+        .badge-cancelled { background:#fee2e2; color:#dc2626; }
+
+        /* ── Body ── */
+        .inv-body { padding:40px 48px; }
+
+        /* Info grid */
+        .info-section { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:36px; }
+        @media(max-width:600px) { .info-section { grid-template-columns:1fr; } }
+
+        .info-block {}
+        .info-block-title {
+            font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;
+            color:#C05C2E; border-bottom:2px solid #f5e6d3; padding-bottom:6px; margin-bottom:12px;
+        }
+        .info-line { font-size:.88rem; color:#4b3621; margin:4px 0; line-height:1.5; }
+        .info-line strong { color:#2C2416; font-weight:700; display:block; font-size:.95rem; margin-bottom:2px; }
+        .info-kv { display:flex; gap:6px; }
+        .info-kv-key { color:#8B7355; min-width:120px; }
+        .info-kv-val { color:#2C2416; font-weight:600; }
+
+        /* ── Items table ── */
+        .items-title {
+            font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1px;
+            color:#C05C2E; border-bottom:2px solid #f5e6d3; padding-bottom:6px; margin-bottom:0;
+        }
+        .inv-table { width:100%; border-collapse:collapse; margin-bottom:28px; }
+        .inv-table thead tr {
+            background:#f9f3eb;
+        }
+        .inv-table th {
+            font-size:.73rem; font-weight:800; text-transform:uppercase; letter-spacing:.5px;
+            color:#6B4226; padding:13px 16px; text-align:left;
+        }
+        .inv-table th.right { text-align:right; }
+        .inv-table th.center { text-align:center; }
+        .inv-table tbody tr { border-bottom:1px solid #f5e6d3; transition:background .15s; }
+        .inv-table tbody tr:last-child { border-bottom:none; }
+        .inv-table tbody tr:hover { background:#fdf6ed; }
+        .inv-table td { padding:14px 16px; font-size:.9rem; color:#2C2416; vertical-align:middle; }
+        .inv-table td.center { text-align:center; }
+        .inv-table td.right  { text-align:right; }
+        .td-num { color:#8B7355; font-size:.82rem; }
+        .td-product-name { font-weight:700; color:#2C2416; }
+        .td-product-size { font-size:.78rem; color:#8B7355; margin-top:2px; }
+
+        /* ── Totals ── */
+        .totals-wrap { display:flex; justify-content:flex-end; margin-bottom:36px; }
+        .totals-box { width:300px; border-radius:14px; overflow:hidden; border:1.5px solid #f0e4cf; }
+        .total-row { display:flex; justify-content:space-between; padding:11px 20px; font-size:.9rem; }
+        .total-row:not(:last-child) { border-bottom:1px solid #f5e6d3; }
+        .total-label { color:#6B4226; }
+        .total-val   { color:#2C2416; font-weight:600; }
+        .total-discount { color:#16a34a !important; }
+        .grand-row {
+            background:linear-gradient(135deg,#2C1810,#6B4226);
+            display:flex; justify-content:space-between; align-items:center;
+            padding:16px 20px;
+        }
+        .grand-row span { color:#fff; font-weight:800; font-size:1rem; }
+
+        /* ── Footer note ── */
+        .inv-footer {
+            text-align:center; border-top:1px solid #f0e4cf; padding-top:24px;
+            margin-top:8px;
+        }
+        .inv-footer p { font-size:.8rem; color:#8B7355; margin:3px 0; line-height:1.5; }
+        .inv-footer .highlight { color:#C05C2E; font-weight:600; }
+
+        /* Watermark stripe */
+        .inv-stripe {
+            height:5px;
+            background:linear-gradient(90deg,#2C1810,#6B4226,#C05C2E,#f5a623,#C05C2E,#6B4226,#2C1810);
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="invoice-page">
+
+    <!-- ── Action Bar ── -->
+    <div class="action-bar no-print">
+        <a th:href="@{/user/ordersummary}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Orders
+        </a>
+        <button onclick="window.print()" class="btn-print">
+            <i class="fas fa-print"></i> Print / Download PDF
+        </button>
+    </div>
+
+    <!-- ── Invoice ── -->
+    <div class="invoice-wrapper" th:if="${order != null}">
+
+        <!-- Rainbow stripe accent -->
+        <div class="inv-stripe"></div>
+
+        <!-- Header -->
+        <div class="inv-header">
+            <div class="brand-section">
+                <div class="brand-name">🌿 TribalConnect</div>
+                <p class="brand-tag">Tribal Artisan Marketplace</p>
+                <p class="brand-sub">India's Premier Tribal Products Platform</p>
+            </div>
+            <div class="meta-section">
+                <div class="invoice-label">INVOICE</div>
+                <div class="meta-row">Order # <strong th:text="${order.id}">1</strong></div>
+                <div class="meta-row">Date: <strong th:text="${#temporals.format(order.orderDate, 'dd MMMM yyyy')}">Date</strong></div>
+                <!-- Status -->
+                <span th:class="${'inv-badge badge-' + (order.orderStatus != null ? order.orderStatus.name().toLowerCase() : 'pending')}"
+                      th:text="${order.orderStatus}">PENDING</span>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="inv-body">
+
+            <!-- Billing + Payment Info -->
+            <div class="info-section">
+                <div class="info-block">
+                    <div class="info-block-title">Bill To</div>
+                    <div class="info-line">
+                        <strong th:text="${order.user != null ? order.user.name : 'Customer'}">Customer Name</strong>
+                        <span th:text="${order.user != null ? order.user.email : ''}">email@example.com</span>
+                    </div>
+                    <div th:if="${order.shippingAddress != null}" class="info-line">
+                        <span th:text="${order.shippingAddress.addressLine1 ?: ''}"></span><br/>
+                        <span th:text="${(order.shippingAddress.city ?: '') + ', ' + (order.shippingAddress.state ?: '')}"></span><br/>
+                        <span th:text="'PIN: ' + (order.shippingAddress.pinCode ?: '')"></span>
+                    </div>
+                </div>
+                <div class="info-block">
+                    <div class="info-block-title">Payment Info</div>
+                    <div th:if="${order.orderId != null}" class="info-line info-kv">
+                        <span class="info-kv-key">Razorpay ID</span>
+                        <span class="info-kv-val" th:text="${order.orderId}" style="font-size:.8rem;word-break:break-all;">—</span>
+                    </div>
+                    <div class="info-line info-kv">
+                        <span class="info-kv-key">Payment</span>
+                        <span class="info-kv-val" th:text="${order.paymentStatus}">COMPLETED</span>
+                    </div>
+                    <div class="info-line info-kv">
+                        <span class="info-kv-key">Delivery By</span>
+                        <span class="info-kv-val" th:text="${order.deliveryDate != null ? #temporals.format(order.deliveryDate, 'dd MMM yyyy') : 'N/A'}">—</span>
+                    </div>
+                    <div class="info-line info-kv">
+                        <span class="info-kv-key">Order Status</span>
+                        <span class="info-kv-val" th:text="${order.orderStatus}">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="items-title" style="margin-bottom:12px;">Order Items</div>
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th style="width:42px;">#</th>
+                        <th>Product</th>
+                        <th class="center" style="width:72px;">Qty</th>
+                        <th class="right" style="width:110px;">Unit Price</th>
+                        <th class="right" style="width:110px;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item, stat : ${order.orderItems}">
+                        <td class="td-num" th:text="${stat.count}">1</td>
+                        <td>
+                            <div class="td-product-name" th:text="${item.product != null ? item.product.name : 'Product'}">Product</div>
+                            <div class="td-product-size" th:if="${item.size != null}" th:text="'Size: ' + ${item.size}">Size</div>
+                        </td>
+                        <td class="center" th:text="${item.quantity}">1</td>
+                        <td class="right">₹<span th:text="${#numbers.formatDecimal(item.sellingPrice ?: 0, 0, 'COMMA', 0, 'POINT')}">0</span></td>
+                        <td class="right" style="font-weight:700;">₹<span th:text="${#numbers.formatDecimal((item.sellingPrice ?: 0) * item.quantity, 0, 'COMMA', 0, 'POINT')}">0</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Totals -->
+            <div class="totals-wrap">
+                <div class="totals-box">
+                    <div style="background:#f9f3eb;">
+                        <div class="total-row">
+                            <span class="total-label">Subtotal (MRP)</span>
+                            <span class="total-val">₹<span th:text="${#numbers.formatDecimal(order.totalMRPPrice, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Discount</span>
+                            <span class="total-val total-discount">− ₹<span th:text="${#numbers.formatDecimal(order.discount, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Delivery</span>
+                            <span class="total-val">₹<span th:text="${#numbers.formatDecimal(order.deliveryCharge, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+                        </div>
+                    </div>
+                    <div class="grand-row">
+                        <span>Grand Total</span>
+                        <span>₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="inv-footer">
+                <p>🌿 Thank you for supporting tribal artisans through <span class="highlight">TribalConnect</span>.</p>
+                <p>This is a computer-generated invoice and does not require a physical signature.</p>
+                <p>Queries? Contact us at <span class="highlight">support@tribalconnect.in</span></p>
+            </div>
+        </div>
+
+        <!-- Bottom stripe -->
+        <div class="inv-stripe"></div>
+    </div>
+
+    <!-- Not found -->
+    <div class="invoice-wrapper" style="padding:60px 40px;text-align:center;" th:unless="${order != null}">
+        <div style="font-size:3rem;margin-bottom:16px;">😕</div>
+        <h2 style="font-family:'Playfair Display',serif;color:#2C2416;margin-bottom:8px;">Order Not Found</h2>
+        <p style="color:#8B7355;margin-bottom:24px;">We couldn't find the order you're looking for.</p>
+        <a th:href="@{/user/ordersummary}" class="btn-back" style="display:inline-flex;">← Back to Orders</a>
+    </div>
+
+</div>
+</body>
+</html>

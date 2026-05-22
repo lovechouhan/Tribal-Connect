@@ -1,154 +1,540 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products - Our Store</title>
-    <!-- Include your CSS files here -->
+  <meta charset="UTF-8">
+  <title>Products - TribalConnect</title>
 </head>
 <body>
-    <!-- Include header fragment -->
-    <div th:replace="~{user/header :: header}"></div>
+<div layout:fragment="content">
+    <div class="container mx-auto px-4 py-8" style="max-width: 1320px;">
+        
+        <!-- Atmospheric Hero Banner -->
+        <div class="mb-12 relative overflow-hidden" style="background: linear-gradient(135deg, #6B4226 0%, #C05C2E 50%, #3D6B45 100%); border-radius: 28px; padding: 56px 36px; color: #fff; text-align: center; box-shadow: 0 16px 40px rgba(107, 66, 38, 0.25);">
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+            <div class="relative z-10">
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase" style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.3);">
+                    🌟 Discover Indigenous Artistry
+                </span>
+                <h1 style="font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 800; margin: 16px 0 12px; text-shadow: 0 2px 6px rgba(0,0,0,0.3);">
+                    Authentic Tribal Masterpieces
+                </h1>
+                <p style="font-size: 1.1rem; color: #FDF6E9; max-width: 680px; margin: 0 auto; font-weight: 300; line-height: 1.6; opacity: 0.95;">
+                    Handcrafted by traditional tribal artisans across India. Every purchase directly empowers indigenous communities, ensures sustainable livelihoods, and preserves centuries-old heritage.
+                </p>
+            </div>
+        </div>
 
-    <div class="container mx-auto px-4 py-8">
         <!-- Categories Section -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Categories</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <!-- Men's Fashion -->
-                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-                    <a href="#" class="block">
-                        <img th:src="@{/images/mens1.jpg}" alt="Men's Fashion" class="w-full h-48 object-cover rounded-md mb-3">
-                        <h3 class="text-lg font-semibold">Men's Fashion</h3>
-                        <p class="text-gray-600 text-sm">Shirts, Pants, Suits & more</p>
-                    </a>
-                </div>
-
-                <!-- Women's Fashion -->
-                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-                    <a href="#" class="block">
-                        <img th:src="@{/images/womens1.jpg}" alt="Women's Fashion" class="w-full h-48 object-cover rounded-md mb-3">
-                        <h3 class="text-lg font-semibold">Women's Fashion</h3>
-                        <p class="text-gray-600 text-sm">Dresses, Tops, Accessories</p>
-                    </a>
-                </div>
-
-                <!-- Electronics -->
-                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-                    <a href="#" class="block">
-                        <img th:src="@{/images/speaker.png}" alt="Electronics" class="w-full h-48 object-cover rounded-md mb-3">
-                        <h3 class="text-lg font-semibold">Electronics</h3>
-                        <p class="text-gray-600 text-sm">Gadgets, Accessories & more</p>
-                    </a>
-                </div>
-
-                <!-- Accessories -->
-                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-                    <a href="#" class="block">
-                        <img th:src="@{/images/watch.jpeg}" alt="Accessories" class="w-full h-48 object-cover rounded-md mb-3">
-                        <h3 class="text-lg font-semibold">Accessories</h3>
-                        <p class="text-gray-600 text-sm">Watches, Jewelry & more</p>
-                    </a>
-                </div>
-
-                <!-- Footwear -->
-                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-                    <a href="#" class="block">
-                        <img th:src="@{/images/sneaker.jpeg}" alt="Footwear" class="w-full h-48 object-cover rounded-md mb-3">
-                        <h3 class="text-lg font-semibold">Footwear</h3>
-                        <p class="text-gray-600 text-sm">Sneakers, Formal Shoes & more</p>
-                    </a>
-                </div>
-
-                <!-- Bags -->
-                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-                    <a href="#" class="block">
-                        <img th:src="@{/images/backpack.jpeg}" alt="Bags" class="w-full h-48 object-cover rounded-md mb-3">
-                        <h3 class="text-lg font-semibold">Bags</h3>
-                        <p class="text-gray-600 text-sm">Backpacks, Handbags & more</p>
-                    </a>
-                </div>
-
-                <!-- Audio -->
-                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-                    <a href="#" class="block">
-                        <img th:src="@{/images/ear.jpeg}" alt="Audio" class="w-full h-48 object-cover rounded-md mb-3">
-                        <h3 class="text-lg font-semibold">Audio</h3>
-                        <p class="text-gray-600 text-sm">Headphones, Speakers & more</p>
-                    </a>
-                </div>
-
-                <!-- Fashion Accessories -->
-                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-                    <a href="#" class="block">
-                        <img th:src="@{/images/fashion.jpeg}" alt="Fashion Accessories" class="w-full h-48 object-cover rounded-md mb-3">
-                        <h3 class="text-lg font-semibold">Fashion Accessories</h3>
-                        <p class="text-gray-600 text-sm">Belts, Sunglasses & more</p>
-                    </a>
-                </div>
+        <div class="mb-12">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                <span style="background: #C05C2E; width: 5px; height: 28px; border-radius: 6px;"></span>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: #2C2416; margin: 0;">Browse by Craft</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
+                <a th:href="@{/user/category/handicrafts}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🏺</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-orange-600 transition-colors tracking-wide uppercase">Handicrafts</span>
+                </a>
+                <a th:href="@{/user/category/paintings}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🖼️</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-orange-600 transition-colors tracking-wide uppercase">Paintings</span>
+                </a>
+                <a th:href="@{/user/category/bamboo}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🎋</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-green-600 transition-colors tracking-wide uppercase">Bamboo</span>
+                </a>
+                <a th:href="@{/user/category/jewelry}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">💎</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-yellow-600 transition-colors tracking-wide uppercase">Jewelry</span>
+                </a>
+                <a th:href="@{/user/category/textiles}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🧶</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-orange-600 transition-colors tracking-wide uppercase">Textiles</span>
+                </a>
+                <a th:href="@{/user/category/wood}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🪵</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-amber-700 transition-colors tracking-wide uppercase">Wooden Art</span>
+                </a>
+                <a th:href="@{/user/category/forest}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🌿</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-green-700 transition-colors tracking-wide uppercase">Forest</span>
+                </a>
+                <a th:href="@{/user/category/honey}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🍯</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-yellow-500 transition-colors tracking-wide uppercase">Honey & Herbs</span>
+                </a>
+                <a th:href="@{/user/category/clay}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🏺</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-orange-700 transition-colors tracking-wide uppercase">Clay & Terracotta</span>
+                </a>
+                <a th:href="@{/user/category/decor}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🎭</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-green-600 transition-colors tracking-wide uppercase">Home Decor</span>
+                </a>
+                <a th:href="@{/user/category/baskets}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">🧺</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-yellow-600 transition-colors tracking-wide uppercase">Baskets</span>
+                </a>
+                <a th:href="@{/user/category/eco}" class="category-pill group">
+                    <span class="text-3xl block mb-2 group-hover:scale-110 transition-transform duration-300">♻️</span>
+                    <span class="text-xs font-bold text-gray-800 group-hover:text-green-500 transition-colors tracking-wide uppercase">Eco-Friendly</span>
+                </a>
             </div>
         </div>
 
         <!-- Product Filters -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Filters</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="mb-12" style="background: #fff; border-radius: 24px; padding: 28px 36px; box-shadow: 0 8px 30px rgba(107, 66, 38, 0.08); border: 1px solid rgba(192, 92, 46, 0.15);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="background: #FDF6E9; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #E8D5B0;">
+                        <i class="fa-solid fa-sliders" style="color: #C05C2E; font-size: 1.2rem;"></i>
+                    </div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #2C2416; margin: 0;">Refine Collection</h3>
+                </div>
+                <button onclick="window.resetFilters()" style="background: #FDF6E9; color: #C05C2E; border: 1px solid #C05C2E; padding: 8px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;" onmouseover="this.style.background='#C05C2E';this.style.color='#fff';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#FDF6E9';this.style.color='#C05C2E';this.style.transform='translateY(0)'">
+                    <i class="fa-solid fa-rotate-right"></i> Reset Filters
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <!-- Price Range -->
                 <div class="filter-group">
-                    <h3 class="font-semibold mb-2">Price Range</h3>
-                    <select class="w-full p-2 border rounded">
-                        <option>All Prices</option>
-                        <option>Under ₹500</option>
-                        <option>₹500 - ₹1000</option>
-                        <option>₹1000 - ₹2000</option>
-                        <option>Above ₹2000</option>
+                    <label class="block font-semibold mb-2 text-sm text-gray-700" style="display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-indian-rupee-sign text-terracotta"></i> Price Range
+                    </label>
+                    <select id="filter-price" class="w-full p-3 border rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-terracotta focus:ring-2 focus:ring-orange-100 transition-all text-sm font-medium">
+                        <option value="all">All Prices</option>
+                        <option value="under500">Under ₹500</option>
+                        <option value="500to1500">₹500 - ₹1500</option>
+                        <option value="1500to5000">₹1500 - ₹5000</option>
+                        <option value="above5000">Above ₹5000</option>
                     </select>
                 </div>
 
-                <!-- Brand -->
+                <!-- Artisan / Tribe -->
                 <div class="filter-group">
-                    <h3 class="font-semibold mb-2">Brand</h3>
-                    <select class="w-full p-2 border rounded">
-                        <option>All Brands</option>
-                        <option>Nike</option>
-                        <option>Adidas</option>
-                        <option>Puma</option>
-                        <option>Levi's</option>
+                    <label class="block font-semibold mb-2 text-sm text-gray-700" style="display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-map-location-dot text-terracotta"></i> Artisan Origin
+                    </label>
+                    <select id="filter-origin" class="w-full p-3 border rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-terracotta focus:ring-2 focus:ring-orange-100 transition-all text-sm font-medium">
+                        <option value="all">All Origins</option>
+                        <option value="Bastar">Bastar Art</option>
+                        <option value="Gond">Gond Tribe</option>
+                        <option value="Bhil">Bhil Artisans</option>
+                        <option value="Warli">Warli Co-op</option>
+                        <option value="Tribal">Tribal Arts Co.</option>
                     </select>
                 </div>
 
-                <!-- Size -->
+                <!-- Material -->
                 <div class="filter-group">
-                    <h3 class="font-semibold mb-2">Size</h3>
-                    <select class="w-full p-2 border rounded">
-                        <option>All Sizes</option>
-                        <option>S</option>
-                        <option>M</option>
-                        <option>L</option>
-                        <option>XL</option>
+                    <label class="block font-semibold mb-2 text-sm text-gray-700" style="display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-layer-group text-terracotta"></i> Material / Category
+                    </label>
+                    <select id="filter-material" class="w-full p-3 border rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-terracotta focus:ring-2 focus:ring-orange-100 transition-all text-sm font-medium">
+                        <option value="all">All Materials</option>
+                        <option value="bamboo">Bamboo &amp; Baskets</option>
+                        <option value="clay">Terracotta &amp; Clay</option>
+                        <option value="textiles">Textiles &amp; Apparel</option>
+                        <option value="wood">Wood &amp; Forest</option>
+                        <option value="jewelry">Jewelry &amp; Handicrafts</option>
+                        <option value="decor">Paintings &amp; Home Decor</option>
                     </select>
                 </div>
 
                 <!-- Sort By -->
                 <div class="filter-group">
-                    <h3 class="font-semibold mb-2">Sort By</h3>
-                    <select class="w-full p-2 border rounded">
-                        <option>Featured</option>
-                        <option>Price: Low to High</option>
-                        <option>Price: High to Low</option>
-                        <option>Newest First</option>
+                    <label class="block font-semibold mb-2 text-sm text-gray-700" style="display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-arrow-down-short-wide text-terracotta"></i> Sort By
+                    </label>
+                    <select id="filter-sort" class="w-full p-3 border rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-terracotta focus:ring-2 focus:ring-orange-100 transition-all text-sm font-medium">
+                        <option value="featured">Featured Artisans</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="newest">Newest Arrivals</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <!-- Products Grid will be added here -->
+        <!-- Products Grid -->
         <div class="products-grid">
-            <!-- Products will be dynamically loaded here -->
-        </div>
-    </div>
+            <div th:if="${not #lists.isEmpty(products)}" id="products-wrapper"
+                 style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px;">
+              <div th:each="product,iter : ${products}"
+                   class="tribal-card fade-in-up product-item group"
+                   th:attr="data-index=${iter.index}, data-id=${product.id}, data-price=${product.sellingPrice}, data-origin=${product.sellerName}, data-category=${product.category}, data-date=${product.createdAt}, data-desc=${product.description}"
+                   style="background: #fff; border-radius: 24px; border: 1px solid rgba(107, 66, 38, 0.1); box-shadow: 0 6px 24px rgba(107, 66, 38, 0.08); transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; display: flex; flex-direction: column;"
+                   onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 22px 40px rgba(107, 66, 38, 0.18)'; this.style.borderColor='#C05C2E'"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 24px rgba(107, 66, 38, 0.08)'; this.style.borderColor='rgba(107, 66, 38, 0.1)'">
+                
+                <!-- Image Wrapper -->
+                <div class="card-img-wrap" style="height: 250px; width: 100%; position: relative; overflow: hidden; background: #FDF6E9; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                  <img th:if="${product.images != null and product.images != ''}"
+                       th:src="@{${product.images}}"
+                       style="max-height: 210px; max-width: 100%; object-fit: contain; transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);"
+                       class="group-hover:scale-110"
+                       alt="Handcrafted Product"/>
+                  <div th:if="${product.images == null or product.images == ''}"
+                       style="color: #8B7355; text-align: center;">
+                    <i class="fas fa-image" style="font-size: 3rem; opacity: 0.3; margin-bottom: 10px;"></i>
+                    <p style="font-size: 0.85rem; font-weight: 500;">Craft Image Unavailable</p>
+                  </div>
+                  <!-- Badges Overlay -->
+                  <div style="position: absolute; top: 16px; left: 16px; display: flex; gap: 6px; flex-wrap: wrap; z-index: 10;">
+                    <span class="badge-handcrafted" style="box-shadow: 0 2px 8px rgba(192, 92, 46, 0.3);">🤲 Handcrafted</span>
+                    <span th:if="${product.category != null}" class="badge-verified" th:text="${product.category}" style="box-shadow: 0 2px 8px rgba(61, 107, 69, 0.3);"></span>
+                  </div>
+                </div>
 
-    <!-- Include footer fragment -->
-    <div th:replace="~{user/footer :: footer}"></div>
+                <!-- Content Area -->
+                <div style="padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                  <div>
+                    <h3 th:text="${product.name}" style="font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: #2C2416; margin: 0 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></h3>
+                    <p th:text="${product.description}" style="font-size: 0.88rem; color: #6B5E55; margin: 0 0 16px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.6;"></p>
+                    <!-- Artisan info -->
+                    <div th:if="${product.sellerName != null}" style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #C05C2E; font-weight: 600; margin-bottom: 16px; background: #FDF6E9; padding: 6px 12px; border-radius: 8px; width: fit-content; border: 1px solid #E8D5B0;">
+                      <i class="fa-solid fa-palette"></i>
+                      <span>Crafted by <span th:text="${product.sellerName}"></span></span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <!-- Price -->
+                    <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px; padding-top: 16px; border-top: 1px solid #F0EAE1;">
+                      <span class="price-selling" th:text="'₹' + ${product.sellingPrice}" style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; color: #2C2416;"></span>
+                      <span class="price-mrp" th:if="${product.MRPprice != null and product.sellingPrice != null and product.MRPprice > product.sellingPrice}" th:text="'₹' + ${product.MRPprice}" style="font-size: 1rem; color: #8B7355; text-decoration: line-through;"></span>
+                      <span class="price-saving" th:if="${product.MRPprice != null and product.sellingPrice != null and product.MRPprice > product.sellingPrice}" th:text="'Save ₹' + (${product.MRPprice - product.sellingPrice})" style="background: #E8F5E9; color: #2E7D32; font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;"></span>
+                    </div>
+                    <!-- Actions -->
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                      <a th:href="@{/user/products/view/{id}(id=${product.id})}" style="background: linear-gradient(135deg, #6B4226 0%, #C05C2E 100%); color: #fff; text-align: center; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 0.92rem; box-shadow: 0 4px 15px rgba(192, 92, 46, 0.25); transition: all 0.2s; text-decoration: none; display: block;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(192, 92, 46, 0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(192, 92, 46, 0.25)'">
+                        Explore Masterpiece
+                      </a>
+                      <div style="display: flex; gap: 12px;">
+                        <button type="button"
+                                th:onclick="|openAISummary(${product.id})|"
+                                style="flex: 1; background: linear-gradient(135deg, #2C2416 0%, #4A3B2C 100%); color: #F0B830; border: 1px solid #6B4226; border-radius: 12px; padding: 10px 12px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.background='linear-gradient(135deg, #1A150D 0%, #2C2416 100%)'" onmouseout="this.style.transform='translateY(0)';this.style.background='linear-gradient(135deg, #2C2416 0%, #4A3B2C 100%)'">
+                          <i class="fa-solid fa-wand-magic-sparkles"></i> AI Insight
+                        </button>
+                        <button type="button"
+                                class="wishlist-btn"
+                                th:attr="data-product-id=${product.id}"
+                                th:style="${wishlistedProductIds != null and wishlistedProductIds.contains(product.id)} ? 'flex: 1; background: #FDF6E9; color: #C05C2E; border: 1px solid #C05C2E; border-radius: 12px; padding: 10px 12px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;' : 'flex: 1; background: #fff; color: #C05C2E; border: 1px solid #C05C2E; border-radius: 12px; padding: 10px 12px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;'"
+                                onmouseover="this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.transform='translateY(0)'">
+                          <i th:class="${wishlistedProductIds != null and wishlistedProductIds.contains(product.id)} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'" th:style="${wishlistedProductIds != null and wishlistedProductIds.contains(product.id)} ? 'color: #C05C2E;' : ''"></i>
+                          <span th:text="${wishlistedProductIds != null and wishlistedProductIds.contains(product.id)} ? 'Wishlisted' : 'Wishlist'">Wishlist</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(products)}" style="text-align: center; padding: 80px 20px; background: #fff; border-radius: 28px; box-shadow: 0 8px 30px rgba(107, 66, 38, 0.06); border: 1px solid rgba(107, 66, 38, 0.1); margin: 40px 0;">
+              <div style="font-size: 4.5rem; margin-bottom: 24px; animation: pulse 2s infinite;">🏺</div>
+              <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: #2C2416; margin-bottom: 12px;">No Masterpieces Found</h3>
+              <p style="color: #8B7355; font-size: 1.1rem; max-width: 480px; margin: 0 auto 28px; line-height: 1.6;">Our tribal artisans are currently crafting new exquisite items matching these filters. Please try exploring different categories or resetting your filters.</p>
+              <button onclick="window.resetFilters()" style="background: linear-gradient(135deg, #6B4226 0%, #C05C2E 100%); color: #fff; border: none; padding: 12px 28px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; box-shadow: 0 6px 20px rgba(192, 92, 46, 0.3); transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 25px rgba(192, 92, 46, 0.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 6px 20px rgba(192, 92, 46, 0.3)'">Reset All Filters</button>
+            </div>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div id="pagination-bar" style="display: none; margin-top: 48px; padding: 28px 36px; background: #fff; border-radius: 24px; box-shadow: 0 8px 30px rgba(107, 66, 38, 0.06); border: 1px solid rgba(192, 92, 46, 0.15);">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px;">
+                <p id="pagination-info" style="font-size: 0.95rem; color: #8B7355; font-weight: 500; margin: 0;"></p>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label for="per-page-select" style="font-size: 0.9rem; color: #6B4226; font-weight: 700;">Products per page:</label>
+                    <select id="per-page-select" onchange="window.changePerPage(this.value)"
+                            style="border: 2px solid #E8D5B0; border-radius: 12px; padding: 8px 16px; font-size: 0.9rem; font-weight: 600; color: #2C2416; background: #FDF6E9; cursor: pointer; focus:outline-none; focus:border-terracotta transition: all 0.2s;">
+                        <option value="8">8</option>
+                        <option value="12" selected>12</option>
+                        <option value="24">24</option>
+                        <option value="48">48</option>
+                    </select>
+                </div>
+            </div>
+            <div id="pagination-controls" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;"></div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+  .category-pill {
+    background: #fff;
+    border-radius: 24px;
+    padding: 22px 16px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(107, 66, 38, 0.06);
+    border: 1px solid rgba(192, 92, 46, 0.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+  }
+  .category-pill:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 32px rgba(192, 92, 46, 0.18);
+    border-color: #C05C2E;
+    background: linear-gradient(145deg, #fff, #FDF6E9);
+  }
+
+  .page-btn {
+    border: 2px solid #E8D5B0;
+    background: #fff;
+    color: #6B4226;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .page-btn:hover:not(:disabled) {
+    background: #FDF6E9;
+    border-color: #C05C2E;
+    color: #C05C2E;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(192, 92, 46, 0.15);
+  }
+  .page-btn.active {
+    background: linear-gradient(135deg, #6B4226, #C05C2E);
+    color: #fff;
+    border-color: #6B4226;
+    box-shadow: 0 6px 18px rgba(107, 66, 38, 0.3);
+  }
+  .page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: #E8D5B0;
+  }
+  .page-ellipsis {
+    color: #8B7355;
+    padding: 10px 6px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    user-select: none;
+  }
+</style>
+
+<script>
+(function () {
+    const STORAGE_KEY = 'tribalconnect_per_page';
+    let currentPage = 1;
+    let perPage = parseInt(localStorage.getItem(STORAGE_KEY) || '12');
+
+    const wrapper    = document.getElementById('products-wrapper');
+    const bar        = document.getElementById('pagination-bar');
+    const controls   = document.getElementById('pagination-controls');
+    const info       = document.getElementById('pagination-info');
+    const perSelect  = document.getElementById('per-page-select');
+
+    const filterPrice    = document.getElementById('filter-price');
+    const filterOrigin   = document.getElementById('filter-origin');
+    const filterMaterial = document.getElementById('filter-material');
+    const filterSort     = document.getElementById('filter-sort');
+
+    window.resetFilters = function() {
+        if (filterPrice) filterPrice.value = 'all';
+        if (filterOrigin) filterOrigin.value = 'all';
+        if (filterMaterial) filterMaterial.value = 'all';
+        if (filterSort) filterSort.value = 'featured';
+        if (wrapper) applyFilters();
+    };
+
+    if (!wrapper) return; // no products — nothing to do
+
+    const allCards = Array.from(wrapper.querySelectorAll('.product-item'));
+    const total    = allCards.length;
+    let filteredCards = [...allCards];
+
+    if (total === 0) return;
+
+    // Set saved per-page in dropdown
+    if (perSelect) {
+        const exists = Array.from(perSelect.options).some(o => parseInt(o.value) === perPage);
+        if (!exists) {
+            const opt = new Option(perPage, perPage);
+            perSelect.add(opt, 1);
+        }
+        perSelect.value = perPage;
+    }
+
+    bar.style.display = 'block';
+
+    function totalPages() { return Math.ceil(filteredCards.length / perPage); }
+
+    function render(page) {
+        const totalFiltered = filteredCards.length;
+        if (totalFiltered === 0) {
+            info.textContent = 'No products match your filters.';
+            controls.innerHTML = '';
+            allCards.forEach(card => card.style.display = 'none');
+            return;
+        }
+
+        currentPage = Math.max(1, Math.min(page, totalPages()));
+        const start = (currentPage - 1) * perPage;
+        const end   = start + perPage;
+
+        // Hide all cards first
+        allCards.forEach(card => card.style.display = 'none');
+
+        // Show only the slice from filteredCards
+        filteredCards.slice(start, end).forEach(card => {
+            card.style.display = '';
+        });
+
+        // Info text
+        const from = start + 1;
+        const to   = Math.min(end, totalFiltered);
+        info.textContent = `Showing ${from}–${to} of ${totalFiltered} masterpieces (filtered from ${total})`;
+
+        buildControls();
+
+        // Smooth scroll to top of grid
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function applyFilters() {
+        const priceVal    = filterPrice ? filterPrice.value : 'all';
+        const originVal   = filterOrigin ? filterOrigin.value : 'all';
+        const materialVal = filterMaterial ? filterMaterial.value : 'all';
+        const sortVal     = filterSort ? filterSort.value : 'featured';
+
+        // 1. Filter
+        filteredCards = allCards.filter(card => {
+            const price    = parseFloat(card.getAttribute('data-price')) || 0;
+            const origin   = (card.getAttribute('data-origin') || '').toLowerCase();
+            const desc     = (card.getAttribute('data-desc') || '').toLowerCase();
+            const category = (card.getAttribute('data-category') || '').toLowerCase();
+
+            // Price filter
+            if (priceVal === 'under500' && price >= 500) return false;
+            if (priceVal === '500to1500' && (price < 500 || price > 1500)) return false;
+            if (priceVal === '1500to5000' && (price < 1500 || price > 5000)) return false;
+            if (priceVal === 'above5000' && price <= 5000) return false;
+
+            // Origin filter
+            if (originVal !== 'all') {
+                const query = originVal.toLowerCase();
+                if (!origin.includes(query) && !desc.includes(query)) return false;
+            }
+
+            // Material/Category filter
+            if (materialVal !== 'all') {
+                if (materialVal === 'bamboo' && !['bamboo', 'baskets', 'cane'].includes(category)) return false;
+                if (materialVal === 'clay' && !['clay', 'terracotta'].includes(category)) return false;
+                if (materialVal === 'textiles' && !['textiles', 'cotton', 'apparel'].includes(category)) return false;
+                if (materialVal === 'wood' && !['wood', 'forest', 'honey', 'eco'].includes(category)) return false;
+                if (materialVal === 'jewelry' && !['jewelry', 'handicrafts'].includes(category)) return false;
+                if (materialVal === 'decor' && !['decor', 'paintings'].includes(category)) return false;
+            }
+
+            return true;
+        });
+
+        // 2. Sort
+        if (sortVal === 'price-asc') {
+            filteredCards.sort((a, b) => (parseFloat(a.getAttribute('data-price')) || 0) - (parseFloat(b.getAttribute('data-price')) || 0));
+        } else if (sortVal === 'price-desc') {
+            filteredCards.sort((a, b) => (parseFloat(b.getAttribute('data-price')) || 0) - (parseFloat(a.getAttribute('data-price')) || 0));
+        } else if (sortVal === 'newest') {
+            filteredCards.sort((a, b) => (parseInt(b.getAttribute('data-id')) || 0) - (parseInt(a.getAttribute('data-id')) || 0));
+        } else {
+            // featured: original order
+            filteredCards.sort((a, b) => (parseInt(a.getAttribute('data-index')) || 0) - (parseInt(b.getAttribute('data-index')) || 0));
+        }
+
+        // Reorder DOM elements in wrapper so grid layout matches sorted order
+        filteredCards.forEach(card => wrapper.appendChild(card));
+
+        currentPage = 1;
+        render(1);
+    }
+
+    if (filterPrice) filterPrice.addEventListener('change', applyFilters);
+    if (filterOrigin) filterOrigin.addEventListener('change', applyFilters);
+    if (filterMaterial) filterMaterial.addEventListener('change', applyFilters);
+    if (filterSort) filterSort.addEventListener('change', applyFilters);
+
+    function buildControls() {
+        controls.innerHTML = '';
+        const tp = totalPages();
+        if (tp <= 1) return;
+
+        // Prev
+        const prev = btn('‹ Prev', () => render(currentPage - 1));
+        if (currentPage === 1) prev.disabled = true;
+        controls.appendChild(prev);
+
+        // Page number buttons with ellipsis logic
+        const pages = getPageRange(currentPage, tp);
+        let lastWasEllipsis = false;
+
+        pages.forEach(p => {
+            if (p === '...') {
+                if (!lastWasEllipsis) {
+                    const el = document.createElement('span');
+                    el.className = 'page-ellipsis';
+                    el.textContent = '…';
+                    controls.appendChild(el);
+                    lastWasEllipsis = true;
+                }
+            } else {
+                lastWasEllipsis = false;
+                const b = btn(p, () => render(p));
+                if (p === currentPage) b.classList.add('active');
+                controls.appendChild(b);
+            }
+        });
+
+        // Next
+        const next = btn('Next ›', () => render(currentPage + 1));
+        if (currentPage === tp) next.disabled = true;
+        controls.appendChild(next);
+    }
+
+    function getPageRange(cur, tp) {
+        if (tp <= 7) return Array.from({ length: tp }, (_, i) => i + 1);
+        const range = [1];
+        if (cur > 3) range.push('...');
+        for (let i = Math.max(2, cur - 1); i <= Math.min(tp - 1, cur + 1); i++) range.push(i);
+        if (cur < tp - 2) range.push('...');
+        range.push(tp);
+        return range;
+    }
+
+    function btn(label, onClick) {
+        const b = document.createElement('button');
+        b.className = 'page-btn';
+        b.textContent = label;
+        b.addEventListener('click', onClick);
+        return b;
+    }
+
+    // Expose globally for the per-page selector onchange
+    window.changePerPage = function(val) {
+        perPage = parseInt(val);
+        localStorage.setItem(STORAGE_KEY, perPage);
+        render(1);
+    };
+
+    // Initial render
+    render(1);
+})();
+</script>
 </body>
 </html>

@@ -1,53 +1,101 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
  layout:decorate="~{base}">
 <head>
-    <title>User Settings - ApniDukkan</title>
+    <title>User Settings - TribalConnect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .us-page { background:linear-gradient(160deg,#fdf6ed 0%,#f5e8d3 100%); min-height:100vh; padding:40px 16px 72px; }
+        .us-hero {
+            max-width:860px; margin:0 auto 36px;
+            background:linear-gradient(135deg,#2C1810 0%,#6B4226 55%,#C05C2E 100%);
+            border-radius:22px; padding:34px 40px;
+            display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+            box-shadow:0 8px 40px rgba(44,24,16,.22); position:relative; overflow:hidden;
+        }
+        .us-hero::after { content:''; position:absolute; right:-70px; top:-70px; width:240px; height:240px; border-radius:50%; background:rgba(255,255,255,.06); }
+        .hero-icon { width:62px; height:62px; border-radius:18px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:1.7rem; flex-shrink:0; backdrop-filter:blur(8px); }
+        .us-hero h1 { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:800; color:#fff; margin:0 0 4px; }
+        .us-hero p  { color:rgba(255,255,255,.72); margin:0; font-size:.88rem; }
+        .us-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; max-width:860px; margin:0 auto; }
+        .us-card {
+            background:#fff; border-radius:16px; padding:26px 22px; text-decoration:none;
+            box-shadow:0 3px 16px rgba(107,66,38,.08); border:1.5px solid #f0e4cf;
+            display:flex; align-items:flex-start; gap:16px;
+            transition:transform .22s,box-shadow .22s,border-color .22s; position:relative; overflow:hidden;
+        }
+        .us-card::before { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,#6B4226,#C05C2E); transform:scaleX(0); transform-origin:left; transition:transform .28s; }
+        .us-card:hover { transform:translateY(-4px); box-shadow:0 12px 36px rgba(107,66,38,.14); border-color:#d4c4a0; }
+        .us-card:hover::before { transform:scaleX(1); }
+        .us-card:hover .sc-icon { background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff; }
+        .us-card:hover .sc-arr  { opacity:1; transform:translateX(0); }
+        .sc-icon { width:50px; height:50px; border-radius:13px; flex-shrink:0; background:#f5ede0; color:#6B4226; display:flex; align-items:center; justify-content:center; font-size:1.2rem; transition:background .22s,color .22s; }
+        .sc-title { font-size:.98rem; font-weight:700; color:#2C2416; margin-bottom:4px; }
+        .sc-desc  { font-size:.8rem; color:#8B7355; line-height:1.45; }
+        .sc-arr   { color:#C05C2E; font-size:1rem; align-self:center; opacity:0; transform:translateX(-6px); transition:opacity .22s,transform .22s; }
+        .ss-flash { background:#dcfce7; border:1px solid #86efac; color:#15803d; border-radius:12px; padding:14px 20px; margin-bottom:22px; max-width:860px; margin-left:auto; margin-right:auto; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        .back-link { display:inline-flex; align-items:center; gap:8px; color:#6B4226; font-size:.88rem; font-weight:700; text-decoration:none; margin-bottom:22px; max-width:860px; margin-left:auto; margin-right:auto; display:flex; width:fit-content; }
+        .back-link:hover { color:#C05C2E; }
+    </style>
 </head>
 <body>
-    <div layout:fragment="content" class="min-h-screen bg-red-300">
-        <a th:href="@{/user/main}" class="inline-flex items-center bg-red-800 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-            <i class="fas fa-arrow-left mr-2"></i>Back
+<div layout:fragment="content" class="us-page">
+
+    <!-- Back to Home -->
+    <div style="max-width:860px;margin:0 auto 20px;">
+        <a th:href="@{/user/main}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Home
         </a>
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex items-center mb-6">
-                <i class="fas fa-cog text-2xl text-gray-900 mr-3"></i>
-                <h1 class="text-2xl font-bold text-gray-900">User Settings</h1>
-            </div>
-            
-            <!-- Success Message -->
-            <div th:if="${message}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
-                <span class="block sm:inline" th:text="${message}"></span>
-                <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+    </div>
 
-            <!-- Settings Navigation -->
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="w-full md:w-1/4">
-                    <nav class="flex flex-col space-y-2">
-                        <a th:href="@{/user/settings/account}"
-                           class="text-white bg-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
-                           <i class="fas fa-user mr-2"></i> Account Info
-                        </a>
-                        <a th:href="@{/user/settings/password}"
-                           class="text-white bg-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
-                           <i class="fas fa-key mr-2"></i> Password Management
-                        </a>
-                       
-                    </nav>
-                </div>
-
-                
-
-                        
-                  
-             
-            </div>
+    <!-- Hero -->
+    <div class="us-hero">
+        <div class="hero-icon">⚙️</div>
+        <div>
+            <h1>Account Settings</h1>
+            <p>Manage your profile, password, and account preferences</p>
         </div>
     </div>
+
+    <!-- Flash -->
+    <div th:if="${message}" class="ss-flash" style="max-width:860px;margin:0 auto 22px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${message}"></span>
+        </div>
+        <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;color:#15803d;font-size:1.1rem;">✕</button>
+    </div>
+
+    <!-- Cards -->
+    <div class="us-grid">
+        <a th:href="@{/user/settings/account}" class="us-card">
+            <div class="sc-icon"><i class="fas fa-user"></i></div>
+            <div style="flex:1;">
+                <div class="sc-title">Account Info</div>
+                <div class="sc-desc">View and edit your personal details, name, phone, and profile picture</div>
+            </div>
+            <i class="fas fa-chevron-right sc-arr"></i>
+        </a>
+
+        <a th:href="@{/user/settings/password}" class="us-card">
+            <div class="sc-icon"><i class="fas fa-key"></i></div>
+            <div style="flex:1;">
+                <div class="sc-title">Password Management</div>
+                <div class="sc-desc">Change your login password and keep your account secure</div>
+            </div>
+            <i class="fas fa-chevron-right sc-arr"></i>
+        </a>
+
+        <a th:href="@{/user/ordersummary}" class="us-card">
+            <div class="sc-icon"><i class="fas fa-box"></i></div>
+            <div style="flex:1;">
+                <div class="sc-title">My Orders</div>
+                <div class="sc-desc">Track your orders and view order history</div>
+            </div>
+            <i class="fas fa-chevron-right sc-arr"></i>
+        </a>
+    </div>
+</div>
 </body>
 </html>

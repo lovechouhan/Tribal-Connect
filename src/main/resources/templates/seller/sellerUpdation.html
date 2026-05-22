@@ -1,171 +1,244 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
  layout:decorate="~{base}">
 <head>
-    <title>Update Seller Profile - ApniDukkan</title>
+    <title>Update Profile - TribalConnect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .up-page { background:linear-gradient(160deg,#fdf6ed 0%,#f5e8d3 100%); min-height:100vh; padding:36px 16px 72px; }
+
+        /* ── Shared form styles ── */
+        .form-card {
+            background:#fff; border-radius:18px;
+            box-shadow:0 4px 24px rgba(107,66,38,.09); border:1px solid #f0e4cf;
+            overflow:hidden; margin-bottom:24px;
+        }
+        .form-card-header {
+            display:flex; align-items:center; gap:14px;
+            padding:20px 28px; background:#fdf6ed; border-bottom:1px solid #f0e4cf;
+        }
+        .fch-icon {
+            width:44px; height:44px; border-radius:12px;
+            background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff;
+            display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;
+        }
+        .fch-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:#2C2416; }
+
+        .form-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; padding:28px; }
+        .form-full  { grid-column:1/-1; }
+
+        .form-group { display:flex; flex-direction:column; gap:6px; }
+        .form-label {
+            font-size:.78rem; font-weight:700; color:#6B4226;
+            text-transform:uppercase; letter-spacing:.4px;
+        }
+        .form-label span { color:#C05C2E; margin-left:2px; }
+
+        .form-input, .form-textarea {
+            padding:11px 14px; border-radius:10px;
+            border:1.5px solid #e2d5c3; background:#fff;
+            font-size:.92rem; color:#2C2416;
+            outline:none; transition:border-color .2s, box-shadow .2s;
+            font-family:inherit; width:100%; box-sizing:border-box;
+        }
+        .form-input:focus, .form-textarea:focus {
+            border-color:#C05C2E; box-shadow:0 0 0 3px rgba(192,92,46,.12);
+        }
+        .form-input[readonly] { background:#fdf6ed; color:#8B7355; cursor:not-allowed; }
+        .form-textarea { resize:vertical; min-height:90px; }
+        .form-hint { font-size:.76rem; color:#8B7355; margin-top:2px; }
+
+        /* File input */
+        .file-input-wrap { position:relative; }
+        .file-input-wrap input[type="file"] {
+            padding:10px 14px; border-radius:10px; border:1.5px dashed #d4c4a0;
+            background:#fdf6ed; width:100%; box-sizing:border-box;
+            font-size:.86rem; color:#6B4226; cursor:pointer;
+        }
+        .file-input-wrap input[type="file"]:focus { outline:none; border-color:#C05C2E; }
+
+        /* Section divider */
+        .form-divider {
+            grid-column:1/-1; display:flex; align-items:center; gap:14px;
+            padding:4px 0 0;
+        }
+        .form-divider span {
+            font-size:.8rem; font-weight:700; color:#8B7355;
+            text-transform:uppercase; letter-spacing:.5px; white-space:nowrap;
+        }
+        .form-divider::before, .form-divider::after {
+            content:''; flex:1; height:1px; background:#f0e4cf;
+        }
+
+        /* Action row */
+        .form-actions {
+            display:flex; align-items:center; justify-content:flex-end; gap:14px;
+            padding:20px 28px; background:#fdf6ed; border-top:1px solid #f0e4cf;
+        }
+        .btn-cancel {
+            padding:10px 22px; border-radius:10px; border:1.5px solid #d4c4a0;
+            background:#fff; color:#6B4226; font-size:.9rem; font-weight:700;
+            cursor:pointer; transition:background .2s;
+        }
+        .btn-cancel:hover { background:#f5ede0; }
+        .btn-submit {
+            padding:10px 28px; border-radius:10px;
+            background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff;
+            font-size:.9rem; font-weight:700; border:none; cursor:pointer;
+            display:flex; align-items:center; gap:8px;
+            box-shadow:0 4px 14px rgba(192,92,46,.25);
+            transition:opacity .2s, transform .18s;
+        }
+        .btn-submit:hover { opacity:.9; transform:translateY(-1px); }
+
+        /* Back link */
+        .back-link {
+            display:inline-flex; align-items:center; gap:8px;
+            color:#6B4226; font-size:.88rem; font-weight:700; text-decoration:none;
+            margin-bottom:28px;
+        }
+        .back-link:hover { color:#C05C2E; }
+
+        /* Page title */
+        .page-title { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:800; color:#2C2416; margin:0 0 6px; }
+        .page-sub   { color:#8B7355; font-size:.9rem; margin:0 0 32px; }
+    </style>
 </head>
 <body>
-    <div layout:fragment="content" class="min-h-screen bg-red-300 py-8 px-4">
-        <div class="mb-6">
-            <a th:href="@{/seller/settings}" class="inline-flex items-center bg-red-800 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-                <i class="fas fa-arrow-left mr-2"></i>Back
+    <div layout:fragment="content" class="up-page">
+        <div style="max-width:820px;margin:0 auto;">
+
+            <a th:href="@{/seller/settings}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Settings
             </a>
-        </div>
-        <div class="max-w-3xl mx-auto">
-            <!-- Header -->
-            <div class="flex items-center mb-6">
-                <i class="fas fa-store text-3xl text-red-800 mr-3"></i>
-                <h1 class="text-2xl font-bold text-gray-900">Update Seller Profile</h1>
-                   
-                <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
 
-            <!-- Simplified Form (no section restructuring) -->
-            <div class="bg-gray-100 rounded-lg shadow-lg overflow-hidden">
-                <form th:action="@{/seller/settings/updateInfo}" method="post" th:object="${sellerForm}"
-                       enctype="multipart/form-data" class="p-6 space-y-4">
-                    <!-- Business Name -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Business Name*</label>
-                        <input type="text" th:field="*{bussinessDetails.businessName}" 
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+            <h1 class="page-title">Update Seller Profile</h1>
+            <p class="page-sub">Keep your store information accurate and up-to-date</p>
+
+            <form th:action="@{/seller/settings/updateInfo}" method="post" th:object="${sellerForm}" enctype="multipart/form-data">
+
+                <!-- ── Personal Info ── -->
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="fch-icon"><i class="fas fa-user"></i></div>
+                        <span class="fch-title">Personal Information</span>
                     </div>
-
-                  
-
-                    <!-- Contact Name -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Contact Name*</label>
-                        <input type="text" th:field="*{SellerName}" 
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-
-                    <!-- Email -->
-                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email Address {Read Only}</label>
-                        <input type="email" th:field="*{email}"  readonly
-                               class="w-full rounded-md border-gray-300 bg-gray-50 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-
-                    <!-- Phone -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number*</label>
-                        <input type="tel" th:field="*{phoneNumber}"  pattern="[0-9]{10}"
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                        <p class="mt-1 text-sm text-gray-500">10-digit mobile number</p>
-                    </div>
-
-                    <!-- Street Address -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Street Address*</label>
-                        <input type="text" th:field="*{pickupAddress.streetAddress}" 
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-
-                    <!-- City -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">City*</label>
-                        <input type="text" th:field="*{pickupAddress.city}" 
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-
-                    <!-- State -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">State*</label>
-                        <input type="text" th:field="*{pickupAddress.state}" 
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-
-                    <!-- Pincode -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Pincode*</label>
-                        <input type="text" th:field="*{pickupAddress.zipCode}"  pattern="[0-9]{6}"
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-
-                    <!-- Country (readonly) -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                        <input type="text" value="India" readonly
-                               class="w-full rounded-md border-gray-300 bg-gray-50"/>
-                    </div>
-
-                    <!-- Bank Details: Account Holder -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Account Holder Name*</label>
-                        <input type="text" th:field="*{bankDetails.accountHolderName}" 
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-
-                    <!-- Bank Name -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Bank Name*</label>
-                        <input type="text" th:field="*{bankDetails.bankName}" 
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-
-                    <!-- Account Number -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Account Number*</label>
-                        <input type="text" th:field="*{bankDetails.accountNumber}"  pattern="[0-9]+"
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                    </div>
-                    
-                        <!-- Business Address -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
-                            <input type="text" th:field="*{bussinessDetails.businessAddress}"
-                                   class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Contact Name <span>*</span></label>
+                            <input type="text" th:field="*{SellerName}" class="form-input" placeholder="Your full name"/>
                         </div>
-
-                        <!-- Business Email -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Email</label>
-                            <input type="email" th:field="*{bussinessDetails.businessEmail}"
-                                   class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" th:field="*{email}" readonly class="form-input" placeholder="email@example.com"/>
+                            <span class="form-hint">🔒 Email cannot be changed</span>
                         </div>
-
-                        <!-- Business Contact -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Contact</label>
-                            <input type="tel" th:field="*{bussinessDetails.businessContact}" pattern="[0-9]{10}"
-                                   class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                            <p class="mt-1 text-sm text-gray-500">10-digit contact number</p>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number <span>*</span></label>
+                            <input type="tel" th:field="*{phoneNumber}" pattern="[0-9]{10}" class="form-input" placeholder="10-digit mobile number"/>
+                            <span class="form-hint">Enter 10-digit mobile number</span>
                         </div>
-
-                    <!-- IFSC -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">IFSC Code*</label>
-                        <input type="text" th:field="*{bankDetails.ifscCode}"  pattern="^[A-Z]{4}0[A-Z0-9]{6}$"
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
-                        <p class="mt-1 text-sm text-gray-500">11-character IFSC code</p>
+                        <div class="form-group">
+                            <label class="form-label">Profile Picture</label>
+                            <div class="file-input-wrap">
+                                <input type="file" th:field="*{profilePic}" accept="image/*"/>
+                            </div>
+                            <span class="form-hint">JPG, PNG or WEBP · Max 5MB</span>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- Profile Picture -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
-                        <!-- Bind to MultipartFile field on SellerForm to avoid String conversion errors -->
-                        <input type="file" th:field="*{profilePic}" accept="image/*"
-                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                <!-- ── Business Details ── -->
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="fch-icon"><i class="fas fa-store"></i></div>
+                        <span class="fch-title">Business Details</span>
                     </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Business Name <span>*</span></label>
+                            <input type="text" th:field="*{bussinessDetails.businessName}" class="form-input" placeholder="Your store / shop name"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Business Email</label>
+                            <input type="email" th:field="*{bussinessDetails.businessEmail}" class="form-input" placeholder="business@example.com"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Business Contact</label>
+                            <input type="tel" th:field="*{bussinessDetails.businessContact}" pattern="[0-9]{10}" class="form-input" placeholder="10-digit number"/>
+                        </div>
+                        <div class="form-group form-full">
+                            <label class="form-label">Business Address</label>
+                            <input type="text" th:field="*{bussinessDetails.businessAddress}" class="form-input" placeholder="Full business address"/>
+                        </div>
+                    </div>
+                </div>
 
-                    <!-- Actions -->
-                    <div class="flex items-center justify-end space-x-3 pt-4 border-t">
-                        <button type="button" onclick="history.back()"
-                                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                                class="px-6 py-2 bg-red-800 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                            Update Profile
-                        </button>
+                <!-- ── Pickup Address ── -->
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="fch-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <span class="fch-title">Pickup Address</span>
                     </div>
-                </form>
-            </div>
+                    <div class="form-grid">
+                        <div class="form-group form-full">
+                            <label class="form-label">Street Address <span>*</span></label>
+                            <input type="text" th:field="*{pickupAddress.streetAddress}" class="form-input" placeholder="House no., street, locality"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">City <span>*</span></label>
+                            <input type="text" th:field="*{pickupAddress.city}" class="form-input" placeholder="City"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">State <span>*</span></label>
+                            <input type="text" th:field="*{pickupAddress.state}" class="form-input" placeholder="State"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pincode <span>*</span></label>
+                            <input type="text" th:field="*{pickupAddress.zipCode}" pattern="[0-9]{6}" class="form-input" placeholder="6-digit pincode"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Country</label>
+                            <input type="text" value="India" readonly class="form-input"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Bank Details ── -->
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="fch-icon"><i class="fas fa-university"></i></div>
+                        <span class="fch-title">Bank Details</span>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Account Holder Name <span>*</span></label>
+                            <input type="text" th:field="*{bankDetails.accountHolderName}" class="form-input" placeholder="Name as on bank account"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bank Name <span>*</span></label>
+                            <input type="text" th:field="*{bankDetails.bankName}" class="form-input" placeholder="e.g. State Bank of India"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Account Number <span>*</span></label>
+                            <input type="text" th:field="*{bankDetails.accountNumber}" pattern="[0-9]+" class="form-input" placeholder="Account number"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">IFSC Code <span>*</span></label>
+                            <input type="text" th:field="*{bankDetails.ifscCode}" pattern="^[A-Z]{4}0[A-Z0-9]{6}$" class="form-input" placeholder="e.g. SBIN0001234"/>
+                            <span class="form-hint">11-character IFSC code</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Action Buttons ── -->
+                <div class="form-actions" style="border-radius:0 0 18px 18px;background:#fdf6ed;border:1px solid #f0e4cf;border-top:none;margin-top:-24px;border-radius:0 0 18px 18px;">
+                    <button type="button" onclick="history.back()" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Update Profile</button>
+                </div>
+
+            </form>
         </div>
     </div>
 </body>

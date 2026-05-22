@@ -56,6 +56,7 @@ public class Seller implements UserDetails {
     private String role = UserRoles.SELLER;
 
     private int otp;
+    private LocalDateTime otpExpiryTime;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 

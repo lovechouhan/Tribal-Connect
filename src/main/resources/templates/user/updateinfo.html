@@ -1,54 +1,93 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
  layout:decorate="~{base}">
 <head>
-   
-    <title>Update User Information</title>
+    <title>Update Profile - TribalConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .ui-page { background:linear-gradient(160deg,#fdf6ed 0%,#f5e8d3 100%); min-height:100vh; padding:36px 16px 72px; }
+        .form-card { max-width:700px; margin:0 auto 24px; background:#fff; border-radius:18px; box-shadow:0 4px 24px rgba(107,66,38,.09); border:1px solid #f0e4cf; overflow:hidden; }
+        .fch { display:flex; align-items:center; gap:14px; padding:18px 28px; background:#fdf6ed; border-bottom:1px solid #f0e4cf; }
+        .fch-icon { width:42px; height:42px; border-radius:11px; background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+        .fch-title { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:#2C2416; }
+        .form-body { padding:26px 28px; display:flex; flex-direction:column; gap:18px; }
+        .field-group { display:flex; flex-direction:column; gap:6px; }
+        .field-label { font-size:.75rem; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:#6B4226; }
+        .field-input { padding:11px 14px; border-radius:10px; border:1.5px solid #e2d5c3; background:#fff; font-size:.92rem; color:#2C2416; outline:none; transition:border-color .2s,box-shadow .2s; font-family:inherit; width:100%; box-sizing:border-box; }
+        .field-input:focus { border-color:#C05C2E; box-shadow:0 0 0 3px rgba(192,92,46,.12); }
+        .file-input { padding:10px 14px; border-radius:10px; border:1.5px dashed #d4c4a0; background:#fdf6ed; width:100%; box-sizing:border-box; font-size:.86rem; color:#6B4226; cursor:pointer; }
+        .field-err { font-size:.76rem; color:#dc2626; }
+        .field-hint { font-size:.76rem; color:#8B7355; }
+        .avatar-preview { width:64px; height:64px; border-radius:50%; object-fit:cover; border:3px solid #f0e4cf; margin-top:8px; }
+        .form-actions { display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:18px 28px; background:#fdf6ed; border-top:1px solid #f0e4cf; }
+        .btn-cancel { padding:10px 20px; border-radius:10px; border:1.5px solid #d4c4a0; background:#fff; color:#6B4226; font-size:.88rem; font-weight:700; cursor:pointer; text-decoration:none; transition:background .2s; }
+        .btn-cancel:hover { background:#f5ede0; }
+        .btn-submit { padding:10px 26px; border-radius:10px; background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff; font-size:.9rem; font-weight:700; border:none; cursor:pointer; display:flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(192,92,46,.22); transition:opacity .2s,transform .18s; }
+        .btn-submit:hover { opacity:.9; transform:translateY(-1px); }
+        .back-link { display:inline-flex; align-items:center; gap:8px; color:#6B4226; font-size:.88rem; font-weight:700; text-decoration:none; margin-bottom:20px; }
+        .back-link:hover { color:#C05C2E; }
+        .page-title { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:800; color:#2C2416; margin:0 0 4px; }
+        .page-sub { color:#8B7355; font-size:.88rem; margin:0 0 28px; }
+    </style>
 </head>
 <body>
-        <div layout:fragment="content" class="min-h-screen overflow-auto">
-              <a th:href="@{/user/settings/account}" class="inline-flex items-center bg-red-800 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-            <i class="fas fa-arrow-left mr-2"></i>Back
+<div layout:fragment="content" class="ui-page">
+    <div style="max-width:700px;margin:0 auto;">
+
+        <!-- Back -->
+        <a th:href="@{/user/settings/account}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Account Info
         </a>
-            <div class="max-w-3xl mx-auto py-8 px-4">
-                <h1 class="text-2xl font-bold mb-6">Update your information</h1>
 
-                <form th:action="@{/user/profile/updateInfo/save}" th:object="${userinfo}" method="post" enctype="multipart/form-data" class="space-y-6 bg-white p-6 rounded shadow">
-                   
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Name</label>
-                        <input th:field="*{name}" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                        <small class="text-red-600" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+        <h1 class="page-title">Update Your Profile</h1>
+        <p class="page-sub">Keep your information accurate and up-to-date</p>
+
+        <form th:action="@{/user/profile/updateInfo/save}" th:object="${userinfo}" method="post" enctype="multipart/form-data">
+
+            <div class="form-card">
+                <div class="fch">
+                    <div class="fch-icon"><i class="fas fa-user"></i></div>
+                    <span class="fch-title">Personal Details</span>
+                </div>
+                <div class="form-body">
+
+                    <div class="field-group">
+                        <label class="field-label">Full Name</label>
+                        <input th:field="*{name}" type="text" class="field-input" placeholder="Your full name" required/>
+                        <small class="field-err" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Email</label>
-                        <input th:field="*{email}" type="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                        <small class="text-red-600" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                    <div class="field-group">
+                        <label class="field-label">Email Address</label>
+                        <input th:field="*{email}" type="email" class="field-input" placeholder="email@example.com" required/>
+                        <small class="field-err" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Phone</label>
-                        <input th:field="*{phoneNumber}" type="tel" pattern="^[0-9]{10}$" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <small class="text-red-600" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></small>
+                    <div class="field-group">
+                        <label class="field-label">Phone Number</label>
+                        <input th:field="*{phoneNumber}" type="tel" pattern="^[0-9]{10}$" class="field-input" placeholder="10-digit mobile number"/>
+                        <small class="field-err" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></small>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Profile Picture </label>
-                        <input name="profilePic" type="file" accept="image/*" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <small class="text-red-600" th:if="${#fields.hasErrors('profilePic')}" th:errors="*{profilePic}"></small>
+
+                    <div class="field-group">
+                        <label class="field-label">Profile Picture</label>
+                        <input name="profilePic" type="file" accept="image/*" class="file-input"/>
+                        <span class="field-hint">JPG, PNG or WEBP · Max 5MB</span>
                         <div th:if="${profileImageUrl != null and !#strings.isEmpty(profileImageUrl)}">
-                            <img th:src="${profileImageUrl}" alt="Current Profile Picture" class="mt-2 h-20 w-20 rounded-full object-cover border">
+                            <img th:src="${profileImageUrl}" alt="Current Profile" class="avatar-preview"/>
                         </div>
                     </div>
 
-                    <div class="flex gap-3">
-                        <a th:href="@{/profile/user}" class="px-4 py-2 rounded bg-gray-200 text-gray-800">Cancel</a>
-                        <button type="submit" class="px-4 py-2 rounded bg-red-700 text-white hover:bg-red-800">Save changes</button>
-                    </div>
-                </form>
+                </div>
+                <div class="form-actions">
+                    <a th:href="@{/user/settings/account}" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
             </div>
-        </div>
 
+        </form>
+    </div>
+</div>
 </body>
 </html>

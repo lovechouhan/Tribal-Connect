@@ -1,103 +1,74 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{base}"></html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
 <head>
-    <title>Search Products - E-Store</title>
+  <title>Search Results — TribalConnect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div layout:fragment="content" class="container p-4">
-      <!-- Search Form -->
-      <div class="card mb-4">
-        <div class="card-body">
-            <form th:action="@{/search}" method="get" class="row g-3">
-              <!-- Filters -->
-              <div class="col-md-3">
-                <label class="form-label">Category</label>
-                <select name="category" class="form-select">
-                    <option value="">All Categories</option>
-                    <option value="men" th:selected="${criteria?.category == 'men'}">Men</option>
-                    <option value="women" th:selected="${criteria?.category == 'women'}">Women</option>
-                    <option value="kids" th:selected="${criteria?.category == 'kids'}">Kids</option>
-                </select>
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Min Price</label>
-                <input type="number" 
-                     name="minPrice" 
-                     th:value="${criteria?.minPrice}"
-                     class="form-control"
-                     placeholder="Min Price">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Max Price</label>
-                <input type="number" 
-                     name="maxPrice" 
-                     th:value="${criteria?.maxPrice}"
-                     class="form-control"
-                     placeholder="Max Price">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Sort By</label>
-                <select name="sortBy" class="form-select">
-                    <option value="name" th:selected="${criteria?.sortBy == 'name'}">Name</option>
-                    <option value="MRPprice" th:selected="${criteria?.sortBy == 'MRPprice'}">Price</option>
-                    <option value="createdAt" th:selected="${criteria?.sortBy == 'createdAt'}">Newest</option>
-                </select>
-              </div>
-            </form>
-        </div>
-      </div>
+<div layout:fragment="content" style="max-width:1280px;margin:0 auto;padding:24px;">
 
-      <!-- Results Grid -->
-      <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-        <div th:each="product : ${products}" class="col">
-            <div class="card h-100">
-              <img th:src="${product.images}" 
-                 class="card-img-top" 
-                 style="height: 200px; object-fit: cover;"
-                 alt="Product Image">
-              <div class="card-body">
-                <h5 class="card-title" th:text="${product.name}">Product Name</h5>
-                <p class="card-text" th:text="${product.description}">Description</p>
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">₹<span th:text="${product.MRPprice}">Price</span></h6>
-                    <button class="btn btn-primary btn-sm">Add to Cart</button>
-                </div>
-              </div>
-            </div>
-        </div>
+  <!-- Search Header -->
+  <div style="background:#fff;border-radius:16px;padding:24px;margin-bottom:24px;box-shadow:0 2px 12px rgba(107,66,38,0.08);border-left:4px solid #C05C2E;">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <i class="fas fa-search" style="color:#C05C2E;font-size:1.3rem;"></i>
+      <div>
+        <p style="margin:0;font-size:0.8rem;color:#8B7355;text-transform:uppercase;letter-spacing:0.5px;">Search Results for</p>
+        <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;color:#2C2416;margin:0;"
+            th:text="'&quot;' + ${keyword} + '&quot;'"></h1>
       </div>
-
-      <!-- Pagination -->
-      <nav th:if="${products.totalPages > 1}" class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${!products.hasPrevious()} ? disabled">
-              <a class="page-link" 
-                 th:href="@{/search(page=${products.number - 1}, size=${criteria.pageSize}, 
-                         keyword=${criteria.keyword}, category=${criteria.category}, 
-                         minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice}, 
-                         sortBy=${criteria.sortBy})}">Previous</a>
-            </li>
-            <li class="page-item" 
-              th:each="pageNumber : ${#numbers.sequence(0, products.totalPages - 1)}"
-              th:classappend="${pageNumber == products.number} ? active">
-              <a class="page-link" 
-                 th:href="@{/search(page=${pageNumber}, size=${criteria.pageSize}, 
-                         keyword=${criteria.keyword}, category=${criteria.category}, 
-                         minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice}, 
-                         sortBy=${criteria.sortBy})}"
-                 th:text="${pageNumber + 1}">1</a>
-            </li>
-            <li class="page-item" th:classappend="${!products.hasNext()} ? disabled">
-              <a class="page-link" 
-                 th:href="@{/search(page=${products.number + 1}, size=${criteria.pageSize}, 
-                         keyword=${criteria.keyword}, category=${criteria.category}, 
-                         minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice}, 
-                         sortBy=${criteria.sortBy})}">Next</a>
-            </li>
-        </ul>
-      </nav>
+      <span th:if="${products != null}"
+            style="margin-left:auto;background:#FDF6E9;border:1px solid #E8D5B0;border-radius:20px;padding:6px 16px;font-size:0.82rem;font-weight:600;color:#6B4226;"
+            th:text="${products.size()} + ' crafts found'">0 crafts found</span>
     </div>
+  </div>
+
+  <!-- No Results -->
+  <div th:if="${products == null or #lists.isEmpty(products)}"
+       style="text-align:center;padding:60px 20px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(107,66,38,0.08);">
+    <div style="font-size:4rem;margin-bottom:16px;">🔍</div>
+    <h2 style="font-family:'Playfair Display',serif;color:#6B4226;margin:0 0 8px;">No crafts found</h2>
+    <p style="color:#8B7355;margin:0 0 20px;">We couldn't find any tribal products matching your search. Try different keywords!</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a th:href="@{/user/products}" class="btn-tribal">Browse All Crafts</a>
+      <a th:href="@{/user/main}" class="btn-outline-tribal">Go Home</a>
+    </div>
+    <div style="margin-top:24px;padding:16px;background:#FDF6E9;border-radius:10px;display:inline-block;">
+      <p style="font-size:0.84rem;color:#8B7355;margin:0;"><strong style="color:#6B4226;">Try searching:</strong> Warli painting, bamboo basket, tribal jewellery, Madhubani, honey</p>
+    </div>
+  </div>
+
+  <!-- Results Grid -->
+  <div th:if="${products != null and !#lists.isEmpty(products)}"
+       style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;">
+    <div th:each="product : ${products}" class="tribal-card">
+      <div class="card-img-wrap" style="height:200px;display:flex;align-items:center;justify-content:center;padding:12px;background:#FDF6E9;">
+        <img th:if="${product.images != null and product.images != ''}"
+             th:src="@{${product.images}}"
+             style="max-height:176px;max-width:100%;object-fit:contain;border-radius:8px;" alt="Tribal Craft">
+        <i th:if="${product.images == null or product.images == ''}" class="fas fa-image" style="font-size:3rem;color:#E8D5B0;"></i>
+      </div>
+      <div style="padding:16px;">
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <span class="badge-handcrafted">🤲 Handcrafted</span>
+          <span th:if="${product.category}" class="badge-verified" th:text="${product.category}"></span>
+        </div>
+        <h3 th:text="${product.name}" style="font-family:'Playfair Display',serif;font-size:0.98rem;font-weight:700;color:#2C2416;margin:0 0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h3>
+        <p th:text="${product.sellerName}" style="font-size:0.75rem;color:#C05C2E;margin:0 0 8px;">
+          <i class="fas fa-paint-brush mr-1"></i>
+        </p>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
+          <span style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:#6B4226;" th:text="'₹' + ${product.sellingPrice}"></span>
+          <span th:if="${product.MRPprice > product.sellingPrice}" style="font-size:0.82rem;color:#8B7355;text-decoration:line-through;" th:text="'₹' + ${product.MRPprice}"></span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <a th:href="@{/user/products/view/{id}(id=${product.id})}" class="btn-tribal" style="text-align:center;padding:9px;font-size:0.84rem;">View Details</a>
+          <a th:href="@{'/user/cart/add/' + ${product.id}}" class="btn-forest" style="text-align:center;padding:8px;font-size:0.82rem;border-radius:8px;">Add to Cart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

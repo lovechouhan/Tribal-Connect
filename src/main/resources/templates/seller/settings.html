@@ -1,64 +1,140 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
  layout:decorate="~{base}">
 <head>
-    <title>Seller Settings - ApniDukkan</title>
+    <title>Seller Settings - TribalConnect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .ss-page {
+            background: linear-gradient(160deg,#fdf6ed 0%,#f5e8d3 100%);
+            min-height:100vh; padding:48px 16px 72px;
+        }
+        .ss-hero {
+            background: linear-gradient(135deg,#2C1810 0%,#6B4226 60%,#C05C2E 100%);
+            border-radius:20px; padding:36px 40px; margin-bottom:40px;
+            display:flex; align-items:center; gap:20px;
+            box-shadow:0 8px 32px rgba(44,24,16,.22);
+            position:relative; overflow:hidden;
+        }
+        .ss-hero::after {
+            content:''; position:absolute; right:-60px; top:-60px;
+            width:260px; height:260px; border-radius:50%;
+            background:rgba(255,255,255,.06);
+        }
+        .ss-hero-icon {
+            width:64px; height:64px; border-radius:16px;
+            background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center;
+            font-size:1.8rem; flex-shrink:0; backdrop-filter:blur(8px);
+        }
+        .ss-hero h1 { color:#fff; font-family:'Playfair Display',serif; font-size:1.85rem; font-weight:800; margin:0 0 4px; }
+        .ss-hero p  { color:rgba(255,255,255,.75); margin:0; font-size:.92rem; }
+
+        /* Nav cards grid */
+        .ss-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
+
+        .ss-card {
+            background:#fff; border-radius:16px;
+            padding:28px 24px; text-decoration:none;
+            box-shadow:0 3px 16px rgba(107,66,38,.08);
+            border:1.5px solid #f0e4cf;
+            display:flex; align-items:flex-start; gap:18px;
+            transition: transform .22s, box-shadow .22s, border-color .22s;
+            position:relative; overflow:hidden;
+        }
+        .ss-card::before {
+            content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+            background:linear-gradient(90deg,#6B4226,#C05C2E);
+            transform:scaleX(0); transform-origin:left; transition:transform .28s;
+        }
+        .ss-card:hover { transform:translateY(-5px); box-shadow:0 12px 40px rgba(107,66,38,.14); border-color:#d4c4a0; }
+        .ss-card:hover::before { transform:scaleX(1); }
+        .ss-card:hover .sc-icon { background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff; }
+        .ss-card:hover .sc-arrow { opacity:1; transform:translateX(0); }
+
+        .sc-icon {
+            width:52px; height:52px; border-radius:14px; flex-shrink:0;
+            background:#f5ede0; color:#6B4226;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.25rem; transition: background .22s, color .22s;
+        }
+        .sc-body { flex:1; min-width:0; }
+        .sc-title { font-size:1rem; font-weight:700; color:#2C2416; margin-bottom:4px; }
+        .sc-desc  { font-size:.82rem; color:#8B7355; line-height:1.45; }
+        .sc-arrow {
+            color:#C05C2E; font-size:1.1rem; align-self:center;
+            opacity:0; transform:translateX(-6px); transition: opacity .22s, transform .22s;
+        }
+
+        /* Flash message */
+        .ss-flash {
+            background:#dcfce7; border:1px solid #86efac; color:#15803d;
+            border-radius:12px; padding:14px 20px; margin-bottom:24px;
+            display:flex; align-items:center; justify-content:space-between; gap:12px;
+        }
+    </style>
 </head>
 <body>
-    <div layout:fragment="content" class="min-h-screen bg-red-300 py-8 px-4">
-        <div class="max-w-4xl mx-auto">
-            <!-- Header -->
-            <div class="flex items-center mb-6">
-                <i class="fas fa-cog text-3xl text-red-800 mr-3"></i>
-                <h1 class="text-2xl font-bold text-gray-900">Seller Settings</h1>
-            </div>
+    <div layout:fragment="content" class="ss-page">
+        <div style="max-width:900px;margin:0 auto;">
 
-            <!-- Success Message -->
-            <div th:if="${message}" class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                <span class="block sm:inline" th:text="${message}"></span>
-                <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <!-- Settings Navigation -->
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="w-full md:w-1/4">
-                    <nav class="flex flex-col space-y-2">
-                        <a th:href="@{/seller/settings/store-info}" 
-                           class="text-white bg-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
-                           <i class="fas fa-store mr-2"></i>Store Info
-                        </a>
-                        <a th:href="@{/seller/settings/bank-details}" 
-                           class="text-white bg-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
-                           <i class="fas fa-university mr-2"></i>Bank Details
-                        </a>
-                        <!-- <a th:href="@{/seller/settings/inventory-notifications}" 
-                           class="text-white bg-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
-                           <i class="fas fa-bell mr-2"></i>Inventory Notifications
-                        </a> -->
-                          <a th:href="@{/user/settings/password}"
-                           class="text-white bg-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
-                           <i class="fas fa-key mr-2"></i> Password Management
-                        </a>
-                    </nav>
+            <!-- Hero Banner -->
+            <div class="ss-hero">
+                <div class="ss-hero-icon">⚙️</div>
+                <div>
+                    <h1>Seller Settings</h1>
+                    <p>Manage your store profile, bank details and account preferences</p>
                 </div>
-
-            
             </div>
+
+            <!-- Flash message -->
+            <div th:if="${message}" class="ss-flash">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-check-circle" style="font-size:1.1rem;"></i>
+                    <span th:text="${message}"></span>
+                </div>
+                <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;color:#15803d;font-size:1.1rem;">✕</button>
+            </div>
+
+            <!-- Settings Nav Cards -->
+            <div class="ss-grid">
+
+                <a th:href="@{/seller/settings/store-info}" class="ss-card">
+                    <div class="sc-icon"><i class="fas fa-store"></i></div>
+                    <div class="sc-body">
+                        <div class="sc-title">Store Info</div>
+                        <div class="sc-desc">View and manage your seller profile, store name, and contact details</div>
+                    </div>
+                    <i class="fas fa-chevron-right sc-arrow"></i>
+                </a>
+
+                <a th:href="@{/seller/settings/bank-details}" class="ss-card">
+                    <div class="sc-icon"><i class="fas fa-university"></i></div>
+                    <div class="sc-body">
+                        <div class="sc-title">Bank Details</div>
+                        <div class="sc-desc">Add or update your bank account and IFSC for seamless payouts</div>
+                    </div>
+                    <i class="fas fa-chevron-right sc-arrow"></i>
+                </a>
+
+                <a th:href="@{/user/settings/password}" class="ss-card">
+                    <div class="sc-icon"><i class="fas fa-key"></i></div>
+                    <div class="sc-body">
+                        <div class="sc-title">Password Management</div>
+                        <div class="sc-desc">Change your login password and keep your account secure</div>
+                    </div>
+                    <i class="fas fa-chevron-right sc-arrow"></i>
+                </a>
+
+            </div>
+
         </div>
     </div>
-
-    <!-- JavaScript for smooth scrolling to sections -->
     <script>
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior:'smooth' });
             });
         });
     </script>

@@ -1,101 +1,70 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
- layout:decorate="~{base}"
-
->
-
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
 <head>
-    <title>register</title>
+  <title>Join TribalConnect — Register as Buyer</title>
 </head>
 <body>
-    <!--
-      Register Page Features:
-      - Responsive two-column layout (illustration + form)
-      - Illustration on the left for visual appeal
-      - Registration form on the right with all required fields
-      - Form fields: Full Name, Mobile, Email, Address, City, State, PIN Code, Password, Confirm Password, Profile Image
-      - Register button styled in red
-      - Links for Forgot Password and Login
-      - Uses Tailwind CSS for styling
-      - Inherits background, navbar, and footer from base.html
-    -->
-    <div layout:fragment="content" class="flex flex-col md:flex-row items-center justify-center min-h-screen">
-        <!-- Illustration section -->
-        <div class="w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
-            <!-- Lottie/illustration image -->
-            <img th:src="@{/images/ApniDukkan.png}" alt="24/7 Service" class="w-96 h-96 object-contain" />
-        </div>
-        <!-- Registration form section -->
-        <div class="w-full md:w-1/2 flex justify-center">
-            <form th:object="${userForm}" th:action="@{/register}" method="post" enctype="multipart/form-data" class="bg-red-500 rounded-lg shadow-lg p-8 w-full max-w-md">
-                <!-- Form title -->
-                <h2 class="text-2xl font-semibold text-center text-white mb-6 border-b pb-2">Register</h2>
-                <!-- Form fields grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <!-- Full Name -->
-                    <div>
-                        <label class="block text-white text-sm font-medium mb-1">Full Name</label>
-                        <input type="text" name="name" class="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <!-- Mobile -->
-                    <div>
-                        <label class="block text-white text-sm font-medium mb-1">Mobile</label>
-                        <input type="text" name="phoneNumber" class="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <!-- Email -->
-                    <div class="md:col-span-2">
-                        <label class="block text-white text-sm font-medium mb-1">Email</label>
-                        <input type="email" name="email" class="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <!-- Address -->
-                    <div>
-                        <label class="block text-white text-sm font-medium mb-1">Address</label>
-                        <input type="text" name="address" class="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <!-- City -->
-                    <div>
-                        <label class="block text-white text-sm font-medium mb-1">City</label>
-                        <input type="text" name="city" class="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <!-- State -->
-                    <div>
-                        <label class="block text-white text-sm font-medium mb-1">State</label>
-                        <input type="text" name="state" class="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <!-- PIN Code -->
-                    <div>
-                        <label class="block text-white text-sm font-medium mb-1">PIN Code</label>
-                        <input type="text" name="pincode" class="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <!-- Password -->
-                    <div>
-                        <label class="block text-white text-sm font-medium mb-1">Password</label>
-                        <input type="password" name="password" class="w-full border rounded px-3 py-2" required />
-                    </div>
-                    
-                    <!-- Profile Image -->
-                    <div class="md:col-span-2">
-                        <label class="block text-white text-sm font-medium mb-1">Profile Image</label>
-                        <input type="file" id="profilePic" name="profilePic" accept="image/*" class="w-full" />
-                    </div>
-                </div>
-                <!-- Register button -->
-                <button type="submit" class="w-full bg-white hover:bg-gray-900 text-red-800 font-semibold py-2 rounded mb-2">Register</button>
+<div layout:fragment="content" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:linear-gradient(135deg,rgba(192,92,46,0.06),rgba(61,107,69,0.06));">
+  <div style="width:100%;max-width:680px;">
 
-                
-                <!-- Links for forgot password and login -->
-                <div class="flex flex-col items-center mt-2">
-                    <!-- <a href="#" class="text-white text-sm hover:underline">Forgot Password ?</a> -->
-                    <span class="text-sm mt-1 text-white">Already have an account ? <a th:href="@{'/login'}" class="text-white hover:underline">Login</a></span>
-                    <span class="text-sm mt-1 text-white">OR</span>
-                    <a th:href="@{'/sellers/sellerRegister'}" class="text-white hover:underline">Register as Seller</a>
-                    
-                </div>
-            </form>
-        </div>
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:3rem;margin-bottom:8px;">🛒</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:#2C2416;margin:0 0 6px;">Join TribalConnect</h1>
+      <p style="color:#8B7355;font-size:0.9rem;">Shop authentic tribal handcrafts &amp; support indigenous artisans across India.</p>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <div class="auth-card" style="padding:36px 32px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#6B4226;margin:0 0 22px;font-weight:800;">Create Buyer Account</h2>
+      <form th:object="${userForm}" th:action="@{/register}" method="post" enctype="multipart/form-data"
+            style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+        <div>
+          <label style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;">Full Name *</label>
+          <input type="text" name="name" required placeholder="Your full name" class="tribal-input">
+        </div>
+        <div>
+          <label style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;">Mobile Number *</label>
+          <input type="text" name="phoneNumber" required placeholder="+91 XXXXXXXXXX" class="tribal-input">
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;">Email Address *</label>
+          <input type="email" name="email" required placeholder="your@email.com" class="tribal-input">
+        </div>
+        <div>
+          <label style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;">City *</label>
+          <input type="text" name="city" required class="tribal-input">
+        </div>
+        <div>
+          <label style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;">State *</label>
+          <input type="text" name="state" required class="tribal-input">
+        </div>
+        <div>
+          <label style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;">PIN Code *</label>
+          <input type="text" name="pincode" required class="tribal-input">
+        </div>
+        <div>
+          <label style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;">Password *</label>
+          <input type="password" name="password" required placeholder="Strong password" class="tribal-input">
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="font-size:0.82rem;font-weight:600;color:#6B4226;display:block;margin-bottom:6px;">Profile Photo (optional)</label>
+          <input type="file" id="profilePic" name="profilePic" accept="image/*" style="font-size:0.84rem;color:#6B4226;">
+        </div>
+
+        <div style="grid-column:1/-1;margin-top:8px;">
+          <button type="submit" class="btn-tribal" style="width:100%;padding:13px;font-size:0.95rem;">
+            🎉 Join TribalConnect
+          </button>
+          <div style="margin-top:14px;text-align:center;display:flex;flex-direction:column;gap:6px;">
+            <p style="font-size:0.84rem;color:#8B7355;margin:0;">Already a member? <a th:href="@{'/login'}" style="color:#C05C2E;font-weight:700;text-decoration:none;">Login here</a></p>
+            <p style="font-size:0.84rem;color:#8B7355;margin:0;">Are you a tribal artisan? <a th:href="@{'/sellers/register'}" style="color:#3D6B45;font-weight:700;text-decoration:none;">Register as Artisan →</a></p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 </body>
 </html>

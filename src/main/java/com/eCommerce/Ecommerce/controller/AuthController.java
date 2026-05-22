@@ -63,7 +63,6 @@ public class AuthController {
         try {
             // Create user after OTP verification
 
-            
             // int otp = verificationService.getOtp(userForm.getEmail());
             User user = new User();
             user.setName(userForm.getName());
@@ -72,35 +71,35 @@ public class AuthController {
             user.setPhoneNumber(userForm.getPhoneNumber());
             if (userForm.getProfilePic() != null && !userForm.getProfilePic().isEmpty()) {
 
-            Map data = imageService.upload(userForm.getProfilePic());
-            String fileURL = data.get("url").toString();
-            user.setProfileImageUrl(fileURL);
+                Map data = imageService.upload(userForm.getProfilePic());
+                String fileURL = data.get("url").toString();
+                user.setProfileImageUrl(fileURL);
             }
-            user.setEnabled(false); // User is disabled until OTP verification
+            user.setEnabled(false); // User must verify OTP first
             user.setProvider(Provider.SELF); // Default provider
             user.setRole(UserRoles.USER); // Default role
 
-            // Generate and send OTP
-            int n = verificationService.generateAndSendOtp(userForm.getEmail());
-          
-            if (n != -1) {
-                user.setOtp(n);
-            }
-           
             User savedUser = userServices.saveUser(user);
 
             Cart cart = new Cart();
             cart.setUser(savedUser);
             cartRepo.save(cart);
 
-            // Redirect to OTP page with email param so URL updates
-            String emailParam = URLEncoder.encode(userForm.getEmail(), StandardCharsets.UTF_8);
-            redirectAttributes.addFlashAttribute("message", "Registration successful! Please verify your email.");
-            return "redirect:/otp?email=" + emailParam;
+            // Generate and send OTP using n8n webhook and SMS
+            verificationService.generateAndSendOtp(savedUser.getEmail());
+
+            redirectAttributes.addFlashAttribute("message",
+                    "Registration successful! Please check your email for the OTP.");
+            return "redirect:/otp?email=" + URLEncoder.encode(savedUser.getEmail(), StandardCharsets.UTF_8);
         } catch (IllegalArgumentException e) {
+            if ("UNVERIFIED".equals(e.getMessage())) {
+                verificationService.generateAndSendOtp(userForm.getEmail());
+                redirectAttributes.addFlashAttribute("message",
+                        "Your account exists but is unverified. We have sent a new OTP!");
+                return "redirect:/otp?email=" + URLEncoder.encode(userForm.getEmail(), StandardCharsets.UTF_8);
+            }
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            String emailParam = URLEncoder.encode(userForm.getEmail(), StandardCharsets.UTF_8);
-            return "redirect:/otp?email=" + emailParam;
+            return "redirect:/register";
         }
 
     }
@@ -124,7 +123,8 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public String verifyOtp(@RequestParam("email") String email, @RequestParam("otp") int otp) {
+    public String verifyOtp(@RequestParam("email") String email, @RequestParam("otp") int otp,
+            RedirectAttributes redirectAttributes) {
         try {
             User user = userServices.getUserByEmail(email);
             System.out.println("Verifying OTP for email: " + email);
@@ -136,8 +136,15 @@ public class AuthController {
 
             System.out.println("Stored OTP: " + user.getOtp() + ", Received OTP: " + otp);
             if (user.getOtp() == otp) {
+                if (user.getOtpExpiryTime() != null && java.time.LocalDateTime.now().isAfter(user.getOtpExpiryTime())) {
+                    redirectAttributes.addFlashAttribute("error",
+                            "OTP has expired. Please register again to receive a new OTP.");
+                    return "redirect:/register";
+                }
+
                 user.setEnabled(true);
                 user.setOtp(0); // Clear the OTP after successful verification
+                user.setOtpExpiryTime(null);
                 userServices.updateUserstatus(user);
                 System.out.println("User verified and enabled: " + user.getEmail());
 
@@ -172,6 +179,17 @@ public class AuthController {
             e.printStackTrace();
 
             return "otp";
+        }
+    }
+
+    @PostMapping("/resend-otp")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public org.springframework.http.ResponseEntity<?> resendOtp(@RequestParam("email") String email) {
+        try {
+            verificationService.generateAndSendOtp(email);
+            return org.springframework.http.ResponseEntity.ok().body(Map.of("message", "OTP sent successfully"));
+        } catch (Exception e) {
+            return org.springframework.http.ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 

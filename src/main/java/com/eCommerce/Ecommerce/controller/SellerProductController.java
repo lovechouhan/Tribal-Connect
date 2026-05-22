@@ -340,14 +340,14 @@ public class SellerProductController {
     private com.eCommerce.Ecommerce.Repo.SellerRepo sellerRepository;
 
     // ✅ Get all products by sellerId (API)
-    @GetMapping("/{sellerId}")
+    @GetMapping("/api/{sellerId}")
     public ResponseEntity<List<Product>> getProductBySellerId(@PathVariable Long sellerId) {
         List<Product> products = productService.getProductsBySellerId(sellerId);
         return ResponseEntity.ok(products);
     }
 
     // ✅ Show add product page
-    @GetMapping("/products")
+    @GetMapping({"/products", "/addProduct"})
     public String getAllProducts(Model model) {
         model.addAttribute("products", new createproduct());
         return "seller/createproduct";

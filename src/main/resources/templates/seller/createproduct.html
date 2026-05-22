@@ -1,75 +1,275 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
  layout:decorate="~{base}">
 <head>
-   
-    <title>create Product</title>
+    <title>Add New Product — TribalConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .ap-page {
+            background: linear-gradient(160deg, #fdf6ed 0%, #f5e8d3 100%);
+            min-height: 100vh; padding: 36px 16px 80px;
+        }
+        .ap-wrap { max-width: 820px; margin: 0 auto; }
+
+        /* Back */
+        .back-link { display:inline-flex; align-items:center; gap:8px; color:#6B4226; font-size:.88rem; font-weight:700; text-decoration:none; margin-bottom:20px; }
+        .back-link:hover { color:#C05C2E; }
+
+        /* Hero */
+        .ap-hero {
+            background: linear-gradient(135deg, #2C1810 0%, #6B4226 55%, #C05C2E 100%);
+            border-radius: 22px; padding: 28px 36px; margin-bottom: 32px;
+            display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+            box-shadow: 0 8px 40px rgba(44,24,16,.22); position: relative; overflow: hidden;
+        }
+        .ap-hero::after { content:''; position:absolute; right:-60px; top:-60px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.06); }
+        .hero-icon { width:60px; height:60px; border-radius:16px; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; font-size:1.6rem; flex-shrink:0; backdrop-filter:blur(6px); }
+        .ap-hero h1 { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:800; color:#fff; margin:0 0 4px; }
+        .ap-hero p { color:rgba(255,255,255,.72); margin:0; font-size:.88rem; }
+
+        /* Cards */
+        .form-card {
+            background: #fff; border-radius: 18px; margin-bottom: 20px;
+            box-shadow: 0 4px 24px rgba(107,66,38,.08); border: 1px solid #f0e4cf; overflow: hidden;
+        }
+        .card-hdr {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px 26px; background: #fdf6ed; border-bottom: 1px solid #f0e4cf;
+        }
+        .ch-icon { width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.9rem; flex-shrink:0; }
+        .ch-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:#2C2416; }
+        .card-body { padding: 24px 26px; display: flex; flex-direction: column; gap: 18px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        @media(max-width:600px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+
+        /* Fields */
+        .field { display:flex; flex-direction:column; gap:6px; }
+        .field label { font-size:.74rem; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:#6B4226; }
+        .field input, .field select, .field textarea {
+            padding: 11px 14px; border-radius: 10px; border: 1.5px solid #e2d5c3;
+            background: #fff; font-size: .92rem; color: #2C2416; outline: none;
+            transition: border-color .2s, box-shadow .2s; font-family: inherit; width: 100%; box-sizing: border-box;
+        }
+        .field textarea { resize: vertical; min-height: 90px; }
+        .field input:focus, .field select:focus, .field textarea:focus {
+            border-color: #C05C2E; box-shadow: 0 0 0 3px rgba(192,92,46,.12);
+        }
+        .field .hint { font-size:.74rem; color:#8B7355; }
+        .field .err  { font-size:.74rem; color:#dc2626; }
+
+        /* Prefix input */
+        .input-prefix { display:flex; align-items:center; border:1.5px solid #e2d5c3; border-radius:10px; overflow:hidden; transition:border-color .2s,box-shadow .2s; background:#fff; }
+        .input-prefix:focus-within { border-color:#C05C2E; box-shadow:0 0 0 3px rgba(192,92,46,.12); }
+        .prefix { padding:11px 12px; background:#fdf6ed; color:#6B4226; font-weight:700; font-size:.88rem; border-right:1.5px solid #e2d5c3; white-space:nowrap; }
+        .input-prefix input { border:none; padding:11px 14px; font-size:.92rem; color:#2C2416; width:100%; outline:none; background:transparent; }
+
+        /* File input */
+        .file-zone {
+            border: 2px dashed #d4c4a0; border-radius: 12px; background: #fdf9f5;
+            padding: 28px 20px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s;
+            position: relative;
+        }
+        .file-zone:hover { border-color: #C05C2E; background: #fdf6ed; }
+        .file-zone input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+        .fz-icon { font-size:2.2rem; color:#d4c4a0; margin-bottom:8px; }
+        .fz-text { font-size:.86rem; color:#8B7355; font-weight:600; }
+        .fz-hint { font-size:.74rem; color:#a89070; margin-top:4px; }
+        #preview-wrap { display:none; text-align:center; margin-top:14px; }
+        #preview-img { max-height:140px; border-radius:12px; border:2px solid #f0e4cf; object-fit:cover; }
+
+        /* Save badge */
+        .save-badge { display:none; align-items:center; gap:6px; background:#dcfce7; color:#15803d; border-radius:8px; padding:8px 14px; font-size:.82rem; font-weight:700; margin-top:4px; }
+
+        /* Submit bar */
+        .submit-bar {
+            display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+            padding: 20px 26px; background: #fdf6ed; border-top: 1px solid #f0e4cf;
+            border-radius: 0 0 18px 18px;
+        }
+        .btn-cancel { padding:11px 22px; border-radius:10px; border:1.5px solid #d4c4a0; background:#fff; color:#6B4226; font-size:.9rem; font-weight:700; text-decoration:none; transition:background .2s; }
+        .btn-cancel:hover { background:#f5ede0; }
+        .btn-submit {
+            padding: 12px 28px; border-radius: 10px;
+            background: linear-gradient(135deg, #6B4226, #C05C2E);
+            color: #fff; font-size: .95rem; font-weight: 700; border: none; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 16px rgba(192,92,46,.24); transition: opacity .2s, transform .18s;
+        }
+        .btn-submit:hover { opacity:.9; transform:translateY(-1px); }
+    </style>
 </head>
 <body>
-    <div layout:fragment="content" class="min-h-screen overflow-auto">
-   
+<div layout:fragment="content" class="ap-page">
+<div class="ap-wrap">
 
-    <form th:object="${products}" th:action="@{/sellers/products/add}" method="post" enctype="multipart/form-data" class="max-w-md mx-auto bg-white p-6 rounded shadow">
-        <h2 class="text-2xl font-bold mb-4">Add New Product</h2>
-        <div class="mb-4">
-            <label for="name" class="block text-gray-700">Product Name</label>
-            <input type="text"  name="name" class="w-full border rounded px-3 py-2" required>
-        </div>
-        <div class="mb-4">
-            <label for="description" class="block text-gray-700">Description</label>
-            <textarea  name="description" class="w-full border rounded px-3 py-2" rows="3" required></textarea>
-        </div>
-        <div class="mb-4">
-            <label for="MRPprice" class="block text-gray-700">MRP Price</label>
-            <input type="number"  name="MRPprice" class="w-full border rounded px-3 py-2"  min="50" required>
-        </div>
-        <div class="mb-4">
-            <label for="sellingPrice" class="block text-gray-700">Selling Price</label>
-            <input type="number"  name="sellingPrice" class="w-full border rounded px-3 py-2"  min="50" required>
-        </div>
-        <div class="mb-4">
-            <label for="discountPrice" class="block text-gray-700">Discount Price</label>
-            <input type="number"  name="discountPrice" class="w-full border rounded px-3 py-2"  min="50" max="5000">
-        </div>
+    <!-- Back -->
+    <a th:href="@{/sellers/products}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to My Products
+    </a>
 
-        <div class="mb-4">
-            <label for="color" class="block text-gray-700">Color</label>
-            <input type="text"  name="color" class="w-full border rounded px-3 py-2">
+    <!-- Hero -->
+    <div class="ap-hero">
+        <div class="hero-icon">🏺</div>
+        <div>
+            <h1>Add New Product</h1>
+            <p>List your handcrafted tribal product on TribalConnect</p>
         </div>
-        
-        <div class="mb-4">
-            <label for="quantity" class="block text-gray-700">Quantity</label>
-            <input type="number"  name="quantity" class="w-full border rounded px-3 py-2" min="1" required>
-        </div>
-        <div class="mb-4">
-            <label for="category" class="block text-gray-700">Category</label>
-            <select name="category" class="w-full border rounded px-3 py-2" required>
-                <option value="">Select Category</option>
-                <option value="men">Men</option>
-                <option value="women">Women</option>
-                <option value="kids">Kids</option>
-                <option value="electronics">Electronics</option>
-                <option value="accessories">Accessories</option>
-                <option value="footwear">Footwear</option>
-                <option value="bags">Bags</option>
-                <option value="audio">Audio</option>
-            </select>
-        </div>
-        <div class="mb-4">
-            <label for="brand" class="block text-gray-700">Brand</label>
-            <input type="text"  name="brand" class="w-full border rounded px-3 py-2">
-        </div>
-       <div class="mb-4">
-            <label for="images" class="block text-gray-700">Product Image</label>
-            <input type="file" name="images" class="w-full border rounded px-3 py-2" accept="image/*">
-        </div>
-        <button type="submit" class="bg-red-800 text-white px-4 py-2 rounded hover:bg-gray-900">Add Product</button>
-    </form>
-
-
-
     </div>
 
+    <form th:object="${products}" th:action="@{/sellers/products/add}" method="post" enctype="multipart/form-data">
+
+        <!-- ── Basic Info ── -->
+        <div class="form-card">
+            <div class="card-hdr">
+                <div class="ch-icon"><i class="fas fa-tag"></i></div>
+                <span class="ch-title">Product Information</span>
+            </div>
+            <div class="card-body">
+                <div class="field">
+                    <label>Product Name <span style="color:#dc2626">*</span></label>
+                    <input type="text" name="name" placeholder="e.g. Handwoven Bastar Dhokra Figurine" required/>
+                </div>
+                <div class="field">
+                    <label>Description <span style="color:#dc2626">*</span></label>
+                    <textarea name="description" placeholder="Describe your product — material, origin, craftsmanship, dimensions..." required></textarea>
+                </div>
+                <div class="grid-2">
+                    <div class="field">
+                        <label>Category <span style="color:#dc2626">*</span></label>
+                        <select name="category" required>
+                            <option value="">— Select Category —</option>
+                            <option value="handicrafts">🏺 Tribal Handicrafts</option>
+                            <option value="paintings">🎨 Gond &amp; Tribal Paintings</option>
+                            <option value="bamboo">🎋 Bamboo &amp; Cane Crafts</option>
+                            <option value="jewelry">💎 Handmade Jewelry</option>
+                            <option value="textiles">🧵 Tribal Textiles &amp; Fabrics</option>
+                            <option value="wood">🪵 Wooden Tribal Art</option>
+                            <option value="forest">🌿 Organic Forest Products</option>
+                            <option value="honey">🍯 Natural Honey &amp; Herbs</option>
+                            <option value="clay">🏛️ Clay &amp; Terracotta Art</option>
+                            <option value="decor">🏠 Cultural Home Decor</option>
+                            <option value="baskets">🧺 Handwoven Baskets</option>
+                            <option value="eco">♻️ Eco-Friendly Handmade Products</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Brand / Artisan Name</label>
+                        <input type="text" name="brand" placeholder="e.g. Bastar Craft Co."/>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="field">
+                        <label>Color / Finish</label>
+                        <input type="text" name="color" placeholder="e.g. Earthy Red, Natural Wood"/>
+                    </div>
+                    <div class="field">
+                        <label>Quantity in Stock <span style="color:#dc2626">*</span></label>
+                        <input type="number" name="quantity" placeholder="0" min="1" required/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Pricing ── -->
+        <div class="form-card">
+            <div class="card-hdr">
+                <div class="ch-icon"><i class="fas fa-rupee-sign"></i></div>
+                <span class="ch-title">Pricing Details</span>
+            </div>
+            <div class="card-body">
+                <div class="grid-3">
+                    <div class="field">
+                        <label>MRP Price <span style="color:#dc2626">*</span></label>
+                        <div class="input-prefix">
+                            <span class="prefix">₹</span>
+                            <input type="number" name="MRPprice" id="mrp" placeholder="0" min="50" required oninput="calcSave()"/>
+                        </div>
+                        <span class="hint">Maximum retail price</span>
+                    </div>
+                    <div class="field">
+                        <label>Selling Price <span style="color:#dc2626">*</span></label>
+                        <div class="input-prefix">
+                            <span class="prefix">₹</span>
+                            <input type="number" name="sellingPrice" id="sell" placeholder="0" min="50" required oninput="calcSave()"/>
+                        </div>
+                        <span class="hint">Price customers will pay</span>
+                    </div>
+                    <div class="field">
+                        <label>Discount Amount</label>
+                        <div class="input-prefix">
+                            <span class="prefix">₹</span>
+                            <input type="number" name="discountPrice" id="disc" placeholder="0" min="0" max="5000"/>
+                        </div>
+                        <span class="hint">Optional extra discount</span>
+                    </div>
+                </div>
+                <div class="save-badge" id="save-badge">
+                    <i class="fas fa-tag"></i>
+                    <span id="save-text">Customer saves ₹0</span>
+                    <span id="save-pct" style="background:#bbf7d0;color:#15803d;padding:2px 8px;border-radius:8px;font-size:.7rem;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Image ── -->
+        <div class="form-card">
+            <div class="card-hdr">
+                <div class="ch-icon"><i class="fas fa-image"></i></div>
+                <span class="ch-title">Product Image</span>
+            </div>
+            <div class="card-body">
+                <div class="file-zone" id="drop-zone">
+                    <input type="file" name="images" id="img-input" accept="image/*" onchange="previewImage(event)"/>
+                    <div class="fz-icon">📷</div>
+                    <div class="fz-text">Click to upload or drag &amp; drop your product image</div>
+                    <div class="fz-hint">JPG, PNG, WEBP · Max 5 MB · Recommended: 800×800px square</div>
+                </div>
+                <div id="preview-wrap">
+                    <img id="preview-img" src="" alt="Preview"/>
+                    <div style="margin-top:8px;font-size:.78rem;color:#6B4226;font-weight:600;" id="file-name"></div>
+                </div>
+            </div>
+            <div class="submit-bar">
+                <a th:href="@{/sellers/products}" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-plus-circle"></i> Add Product
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>
+</div>
+
+<script>
+    function previewImage(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('preview-img').src = ev.target.result;
+            document.getElementById('preview-wrap').style.display = 'block';
+            document.getElementById('file-name').textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function calcSave() {
+        const mrp  = parseFloat(document.getElementById('mrp').value) || 0;
+        const sell = parseFloat(document.getElementById('sell').value) || 0;
+        const badge = document.getElementById('save-badge');
+        if (mrp > 0 && sell > 0 && mrp > sell) {
+            const saved = mrp - sell;
+            const pct   = Math.round((saved / mrp) * 100);
+            document.getElementById('save-text').textContent = 'Customer saves ₹' + saved.toFixed(0);
+            document.getElementById('save-pct').textContent  = pct + '% off';
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+</script>
 </body>
 </html>

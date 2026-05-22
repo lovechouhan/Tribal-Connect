@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment History — TribalConnect</title>
+  <style>
+    .ph-page {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #fdf6ee 0%, #f5e8d4 100%);
+      padding: 40px 20px 60px;
+    }
+    .ph-container { max-width: 1100px; margin: 0 auto; }
+
+    /* Page header */
+    .ph-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .ph-header-left { display: flex; align-items: center; gap: 16px; }
+    .ph-icon-box {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #F0B830, #D4960A);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 20px rgba(240,184,48,0.3);
+    }
+    .ph-title h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #2C1810;
+      margin: 0 0 4px;
+    }
+    .ph-title p { color: #9a7a66; font-size: 0.85rem; margin: 0; }
+
+    /* Summary stats */
+    .ph-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 640px) { .ph-stats { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 24px;
+      border: 1px solid rgba(107,66,38,0.1);
+      box-shadow: 0 2px 16px rgba(44,24,16,0.06);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+    }
+    .stat-card.total::before { background: linear-gradient(180deg, #F0B830, #D4960A); }
+    .stat-card.paid::before { background: linear-gradient(180deg, #4ade80, #22c55e); }
+    .stat-card.pending::before { background: linear-gradient(180deg, #f87171, #ef4444); }
+
+    .stat-icon { font-size: 1.6rem; }
+    .stat-text span { display: block; font-size: 0.72rem; color: #9a7a66; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+    .stat-text strong { font-size: 1.3rem; font-weight: 800; color: #2C1810; font-family: 'Playfair Display', serif; }
+
+    /* Empty state */
+    .ph-empty {
+      background: #fff;
+      border-radius: 24px;
+      padding: 70px 40px;
+      text-align: center;
+      border: 2px dashed rgba(107,66,38,0.15);
+      box-shadow: 0 4px 30px rgba(44,24,16,0.06);
+    }
+    .ph-empty .empty-icon { font-size: 4rem; margin-bottom: 16px; display: block; }
+    .ph-empty h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #2C1810; margin: 0 0 10px; }
+    .ph-empty p { color: #9a7a66; font-size: 0.9rem; margin: 0; line-height: 1.6; }
+
+    /* Table */
+    .ph-table-wrap {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(44,24,16,0.08);
+      border: 1px solid rgba(107,66,38,0.1);
+    }
+    .ph-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .ph-table thead tr {
+      background: linear-gradient(135deg, #2C1810, #3d2218);
+    }
+    .ph-table thead th {
+      padding: 16px 18px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: left;
+    }
+    .ph-table tbody tr {
+      border-bottom: 1px solid rgba(107,66,38,0.07);
+      transition: background 0.15s;
+    }
+    .ph-table tbody tr:last-child { border-bottom: none; }
+    .ph-table tbody tr:hover { background: #fdf6ee; }
+    .ph-table td { padding: 16px 18px; color: #3d2218; vertical-align: middle; }
+    
+    .row-num {
+      width: 28px; height: 28px;
+      background: rgba(107,66,38,0.08);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: #7a5c48;
+    }
+    .order-id {
+      font-weight: 700;
+      color: #2C1810;
+      font-family: 'Inter', monospace;
+      font-size: 0.82rem;
+      background: rgba(107,66,38,0.07);
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .amount-cell { font-size: 1rem; font-weight: 800; color: #2C1810; font-family: 'Playfair Display', serif; }
+    
+    /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-badge.completed { background: rgba(74,222,128,0.15); color: #065f46; border: 1px solid rgba(74,222,128,0.3); }
+    .status-badge.pending { background: rgba(245,158,11,0.15); color: #92400e; border: 1px solid rgba(245,158,11,0.3); }
+    .status-badge.failed { background: rgba(248,113,113,0.15); color: #991b1b; border: 1px solid rgba(248,113,113,0.3); }
+
+    .date-cell { font-size: 0.85rem; font-weight: 500; color: #7a5c48; }
+    
+    .view-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: #C05C2E;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(192,92,46,0.3);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .view-btn:hover {
+      background: rgba(192,92,46,0.1);
+      border-color: #C05C2E;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="ph-page">
+    <div class="ph-container">
+
+      <!-- Header -->
+      <div class="ph-header">
+        <div class="ph-header-left">
+          <div class="ph-icon-box">💳</div>
+          <div class="ph-title">
+            <h1>Payment History</h1>
+            <p>Track your earnings, successful payouts, and pending transactions</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="ph-stats" th:if="${paymentOrders != null and !#lists.isEmpty(paymentOrders)}">
+        <div class="stat-card total">
+          <div class="stat-icon">💰</div>
+          <div class="stat-text">
+            <span>Total Earnings</span>
+            <strong th:text="${'₹' + #numbers.formatDecimal(totalEarnings, 1, 'COMMA', 0, 'POINT')}">₹0</strong>
+          </div>
+        </div>
+        <div class="stat-card paid">
+          <div class="stat-icon">✅</div>
+          <div class="stat-text">
+            <span>Paid Orders</span>
+            <strong th:text="${paidCount}">0</strong>
+          </div>
+        </div>
+        <div class="stat-card pending">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-text">
+            <span>Pending Orders</span>
+            <strong th:text="${pendingCount}">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div th:if="${paymentOrders == null or #lists.isEmpty(paymentOrders)}" class="ph-empty">
+        <span class="empty-icon">💸</span>
+        <h3>No Payment History</h3>
+        <p>You haven't received any payments yet. When customers purchase your crafts,<br>the transaction details will appear here.</p>
+      </div>
+
+      <!-- Table -->
+      <div th:if="${paymentOrders != null and !#lists.isEmpty(paymentOrders)}" class="ph-table-wrap">
+        <table class="ph-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Order Ref</th>
+              <th>Transaction Date</th>
+              <th>Amount</th>
+              <th>Payment Status</th>
+              <th>Order Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="order, stat : ${paymentOrders}">
+              <td><div class="row-num" th:text="${stat.index + 1}">1</div></td>
+              <td>
+                <span class="order-id" th:text="${order.orderId}">ORD-123</span>
+                <div style="font-size:0.7rem; color:#9a7a66; margin-top:4px;" th:if="${order.paymentInfo?.paymentId != null}" th:text="'TXN: ' + ${order.paymentInfo.paymentId}"></div>
+              </td>
+              <td>
+                <div class="date-cell" th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'dd MMM yyyy, hh:mm a') : '—'}">Date</div>
+              </td>
+              <td>
+                <span class="amount-cell" th:text="${'₹' + #numbers.formatDecimal(order.totalAmount != null ? order.totalAmount : 0, 1, 'COMMA', 2, 'POINT')}">₹0.00</span>
+              </td>
+              <td>
+                <span class="status-badge" th:classappend="${order.paymentStatus != null ? (order.paymentStatus.name() == 'COMPLETED' ? 'completed' : 'pending') : 'pending'}">
+                  <i th:class="${order.paymentStatus != null and order.paymentStatus.name() == 'COMPLETED' ? 'fas fa-check-circle' : 'fas fa-clock'}"></i>
+                  <span th:text="${order.paymentStatus != null ? order.paymentStatus : 'PENDING'}">PENDING</span>
+                </span>
+              </td>
+              <td>
+                <span th:text="${order.orderStatus}" style="font-weight: 600; font-size: 0.8rem; color: #7a5c48;">SHIPPED</span>
+              </td>
+              <td>
+                <a th:href="@{/sellers/ordersDelivered/{id}(id=${order.id})}" class="view-btn">
+                  View Details
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

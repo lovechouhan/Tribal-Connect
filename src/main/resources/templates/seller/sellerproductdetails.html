@@ -154,8 +154,8 @@
         function confirmDelete() {
             if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
                 const productId = /*[[${product.id}]]*/ null;
-                fetch(`/sellers/${productId}`, {
-                    method: 'DELETE',
+                fetch(`/sellers/products/delete/${productId}`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     }

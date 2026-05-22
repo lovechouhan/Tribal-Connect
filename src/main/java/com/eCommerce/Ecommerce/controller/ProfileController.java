@@ -75,8 +75,8 @@ public class ProfileController {
         return "user/profile";
     }
 
-    @GetMapping("/user/profile/updateInfo/{email}")
-    public String getUserUpdateInfo(@PathVariable("email") String email, Authentication authentication, Model model) {
+    @GetMapping("/user/profile/updateInfo")
+    public String getUserUpdateInfo(@RequestParam("email") String email, Authentication authentication, Model model) {
 
         User userinfo = userRepository.findByEmail(email);
         if (userinfo == null)

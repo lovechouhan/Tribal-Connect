@@ -28,9 +28,9 @@
 	  key: 'rzp_test_RTq0pZ3gH0hMCJ', // Enter the Key ID generated from the Dashboard
 	  amount: '50000', // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
 	  currency: 'INR',
-	  name: 'Apni Dukaan',
+	  name: 'TribalConnect',
 	  description: 'Test Transaction',
-	  image: 'images/ApniDukkan.png',
+	  image: 'https://placehold.co/100x100/6B4226/FDF6E9?text=TC',
 	  order_id: 'order_9A33XWu170gUtm', // This is a sample Order ID. Pass the id obtained in the response of Step 1
 	  handler: function (response) {
 		alert(response.razorpay_payment_id);

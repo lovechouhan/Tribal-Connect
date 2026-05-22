@@ -20,6 +20,7 @@ import com.eCommerce.Ecommerce.Repo.ProductRepo;
 import com.eCommerce.Ecommerce.Repo.SellerAddressRepo;
 import com.eCommerce.Ecommerce.Repo.SellerRepo;
 import com.eCommerce.Ecommerce.Services.CloudinaryImageService;
+import com.eCommerce.Ecommerce.Services.SMSservice;
 import jakarta.mail.MessagingException;
 
 @Service
@@ -32,7 +33,7 @@ public class SellerService {
     private CloudinaryImageService imageService;
 
     @Autowired
-    private EmailService emailService;
+    private SMSservice smsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -71,6 +72,8 @@ public class SellerService {
 
         // Set initial account status and role
         seller.setAccountStatus(AccountStatus.PENDING_VERIFICATION);
+        seller.setEnabled(false);
+        seller.setIsemailVerified(false);
         seller.setRole(UserRoles.SELLER);
         seller.setPassword(passwordEncoder.encode(seller.getPassword()));
 
@@ -83,14 +86,10 @@ public class SellerService {
             seller.setPickupAddress(pickupAddress);
         }
 
-        // Generate and set OTP
-        int n = verificationService.generateAndSendOtp(seller.getEmail());
-        if (n != -1) {
-            seller.setOtp(n);
-        }
-
         // Save the seller
-        return sellerRepo.save(seller);
+        Seller savedSeller = sellerRepo.save(seller);
+        System.out.println("DEBUG [saveSeller]: Seller saved to DB. ID: " + savedSeller.getId());
+        return savedSeller;
     }
 
     public Seller getSellerById(Long id) {
@@ -120,8 +119,7 @@ public class SellerService {
             existingSeller.setPickupAddress(sellerForm.getPickupAddress());
             existingSeller.setBankDetails(sellerForm.getBankDetails());
             existingSeller.setBussinessDetails(sellerForm.getBussinessDetails());
-           
-                
+
             existingSeller.setGSTIN(sellerForm.getGSTIN());
 
             if (sellerForm.getProfilePic() != null && !sellerForm.getProfilePic().isEmpty()
@@ -160,11 +158,10 @@ public class SellerService {
         Seller seller = getSellerById(sellerId);
         seller.setAccountStatus(status);
 
-        // Send email notification about status change
-        String subject = "Account Status Updated";
         String message = "Your seller account status has been updated to: " + status;
-        emailService.sendVerificationEmail(seller.getEmail(), subject, message, subject);
 
+        smsService.sendOTP(seller.getPhoneNumber(), message);
+        ;
         return sellerRepo.save(seller);
     }
 

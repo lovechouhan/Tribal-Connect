@@ -4,143 +4,185 @@
       layout:decorate="~{base}">
 <head>
     <meta charset="UTF-8">
-    <title>My Account - ApniDukkan</title>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Bank Details - TribalConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .bank-page { background:linear-gradient(160deg,#fdf6ed 0%,#f5e8d3 100%); min-height:100vh; padding:40px 16px 72px; }
+        .bank-hero {
+            max-width:780px; margin:0 auto 32px;
+            background:linear-gradient(135deg,#2C1810 0%,#6B4226 55%,#C05C2E 100%);
+            border-radius:22px; padding:34px 40px;
+            display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+            box-shadow:0 8px 40px rgba(44,24,16,.22); position:relative; overflow:hidden;
+        }
+        .bank-hero::after { content:''; position:absolute; right:-70px; top:-70px; width:250px; height:250px; border-radius:50%; background:rgba(255,255,255,.06); }
+        .hero-icon { width:64px; height:64px; border-radius:18px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0; backdrop-filter:blur(8px); }
+        .bank-hero h1 { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:800; color:#fff; margin:0 0 4px; }
+        .bank-hero p  { color:rgba(255,255,255,.72); margin:0; font-size:.88rem; }
+        .sec-badge { display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3); color:#fff; font-size:.76rem; font-weight:700; padding:7px 16px; border-radius:20px; backdrop-filter:blur(6px); white-space:nowrap; }
+
+        .bank-card { max-width:780px; margin:0 auto; background:#fff; border-radius:20px; border:1px solid #f0e4cf; box-shadow:0 4px 28px rgba(107,66,38,.10); overflow:hidden; }
+
+        .account-strip { background:linear-gradient(135deg,#2C1810,#6B4226); padding:20px 32px; display:flex; align-items:center; gap:16px; }
+        .strip-avatar { width:50px; height:50px; border-radius:14px; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+        .strip-name  { font-weight:800; font-size:1.05rem; color:#fff; }
+        .strip-email { font-size:.8rem; color:rgba(255,255,255,.7); }
+
+        .details-grid { display:grid; grid-template-columns:1fr 1fr; }
+        @media(max-width:560px){ .details-grid{ grid-template-columns:1fr; } }
+        .detail-cell { padding:22px 30px; border-right:1px solid #f5ede0; border-bottom:1px solid #f5ede0; transition:background .15s; }
+        .detail-cell:hover { background:#fdf9f5; }
+        .detail-cell:nth-child(even) { border-right:none; }
+        .detail-cell.full { grid-column:1/-1; border-right:none; }
+        .d-label { font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.6px; color:#C05C2E; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+        .d-value { font-size:.98rem; font-weight:700; color:#2C2416; font-family:'Courier New',monospace; letter-spacing:.4px; }
+        .d-value.plain { font-family:inherit; }
+
+        .acct-wrap { display:flex; align-items:center; gap:10px; }
+        .acct-full  { display:none; }
+        .toggle-btn { background:none; border:1px solid #f0e4cf; cursor:pointer; color:#C05C2E; font-size:.76rem; font-weight:700; padding:4px 10px; border-radius:8px; transition:background .15s; display:flex; align-items:center; gap:5px; }
+        .toggle-btn:hover { background:#f5ede0; }
+
+        .card-footer { padding:18px 30px; background:#fdf6ed; border-top:1px solid #f0e4cf; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+        .footer-note { font-size:.8rem; color:#8B7355; display:flex; align-items:center; gap:6px; }
+        .btn-edit { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff; border:none; border-radius:10px; padding:10px 22px; font-size:.86rem; font-weight:700; cursor:pointer; text-decoration:none; box-shadow:0 4px 14px rgba(192,92,46,.22); transition:opacity .2s,transform .18s; }
+        .btn-edit:hover { opacity:.9; transform:translateY(-1px); }
+
+        .sec-hdr { display:flex; align-items:center; gap:12px; padding:16px 30px; background:#fdf6ed; border-top:2px solid #f0e4cf; }
+        .sh-icon { width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#6B4226,#C05C2E); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.85rem; }
+        .sh-title { font-family:'Playfair Display',serif; font-size:.98rem; font-weight:700; color:#2C2416; }
+
+        .order-row { display:flex; align-items:center; justify-content:space-between; padding:13px 30px; border-bottom:1px solid #f5ede0; transition:background .15s; }
+        .order-row:last-child { border-bottom:none; }
+        .order-row:hover { background:#fdf9f5; }
+        .or-dot { width:34px; height:34px; border-radius:10px; background:#f5ede0; display:flex; align-items:center; justify-content:center; color:#C05C2E; flex-shrink:0; }
+        .pill { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:.7rem; font-weight:700; }
+        .pill-green { background:#dcfce7; color:#15803d; }
+        .pill-blue  { background:#dbeafe; color:#1d4ed8; }
+        .back-link { display:inline-flex; align-items:center; gap:8px; color:#6B4226; font-size:.88rem; font-weight:700; text-decoration:none; margin-bottom:22px; }
+        .back-link:hover { color:#C05C2E; }
+    </style>
 </head>
 <body>
-<div layout:fragment="content" class="min-h-screen bg-red-300 py-8 px-4">
-    <div class="mb-6">
-            <a th:href="@{/seller/settings}" class="inline-flex items-center bg-red-800 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-                <i class="fas fa-arrow-left mr-2"></i>Back
-            </a>
-        </div>
-        
-    <div class="max-w-4xl mx-auto">
+<div layout:fragment="content" class="bank-page">
+    <div style="max-width:780px;margin:0 auto;">
 
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center">
-                <i class="fas fa-user-circle text-3xl text-red-800 mr-3"></i>
-                <h1 class="text-2xl font-bold text-gray-900">My Account</h1>
+        <a th:href="@{/seller/settings}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Settings</a>
+
+        <!-- Hero -->
+        <div class="bank-hero">
+            <div class="hero-icon">🏦</div>
+            <div style="flex:1;">
+                <h1>Bank Details</h1>
+                <p>Your linked payout account for receiving payments</p>
             </div>
-           
+            <span class="sec-badge"><i class="fas fa-shield-alt"></i> Secured &amp; Encrypted</span>
         </div>
 
-        <!-- Main Content -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Main Card -->
+        <div class="bank-card">
 
-            <!-- Profile Header -->
-            <div class="bg-red-800 text-white p-6">
-                <div class="flex items-center space-x-4">
-                    <!-- Profile Image -->
-                    <!--
-                    <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center">
-                        <img th:if="${seller.profilePic}" th:src="@{${seller.profilePic}}"
-                             alt="Profile" class="w-20 h-20 rounded-full object-cover">
-                        <i th:unless="${seller.profilePic}" class="fas fa-user text-red-800 text-4xl"></i>
+            <!-- Account holder strip -->
+            <div class="account-strip">
+                <div class="strip-avatar">🧑‍💼</div>
+                <div>
+                    <div class="strip-name" th:text="${seller.bankDetails.accountHolderName}">Account Holder</div>
+                    <div class="strip-email" th:text="${seller.email}">seller@email.com</div>
+                </div>
+            </div>
+
+            <!-- Details grid -->
+            <div class="details-grid">
+                <div class="detail-cell">
+                    <div class="d-label"><i class="fas fa-hashtag"></i> Account Number</div>
+                    <div class="d-value">
+                        <div class="acct-wrap">
+                            <span id="acctMasked"
+                                  th:with="acc=${seller.bankDetails.accountNumber}"
+                                  th:text="${acc != null and #strings.length(acc) > 4 ? '•••• ' + #strings.substring(acc, #strings.length(acc)-4, #strings.length(acc)) : acc}">
+                                •••• 9012
+                            </span>
+                            <span class="acct-full" id="acctFull" th:text="${seller.bankDetails.accountNumber}">Full</span>
+                            <button class="toggle-btn" onclick="toggleAccount()" id="toggleBtn">
+                                <i class="fas fa-eye" id="toggleIcon"></i> Show
+                            </button>
+                        </div>
                     </div>
-                    -->
+                </div>
+
+                <div class="detail-cell">
+                    <div class="d-label"><i class="fas fa-university"></i> Bank Name</div>
+                    <div class="d-value plain" th:text="${seller.bankDetails.bankName}">HDFC Bank</div>
+                </div>
+
+                <div class="detail-cell">
+                    <div class="d-label"><i class="fas fa-code"></i> IFSC Code</div>
+                    <div class="d-value" th:text="${seller.bankDetails.ifscCode}">HDFC0001234</div>
+                </div>
+
+                <div class="detail-cell">
+                    <div class="d-label"><i class="fas fa-envelope"></i> Registered Email</div>
+                    <div class="d-value plain" style="font-size:.9rem;" th:text="${seller.email}">seller@email.com</div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="card-footer">
+                <span class="footer-note">
+                    <i class="fas fa-lock" style="color:#C05C2E;"></i>
+                    Your bank info is encrypted and never shared
+                </span>
+                <a th:href="@{/seller/settings/updateInfo(email=${seller.email})}" class="btn-edit">
+                    <i class="fas fa-pen"></i> Update Details
+                </a>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="sec-hdr">
+                <div class="sh-icon"><i class="fas fa-history"></i></div>
+                <span class="sh-title">Recent Activity</span>
+            </div>
+
+            <div th:if="${#lists.isEmpty(recentOrders)}"
+                 style="text-align:center;padding:32px 24px;color:#8B7355;">
+                <i class="fas fa-inbox" style="font-size:2rem;color:#d4c4a0;display:block;margin-bottom:10px;"></i>
+                No recent activity to show
+            </div>
+
+            <div th:each="order : ${recentOrders}" class="order-row">
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <div class="or-dot"><i class="fas fa-shopping-bag"></i></div>
                     <div>
-                        <h2 class="text-2xl font-bold" th:text="${seller.bankDetails.accountHolderName}">User Name</h2>
-                        <p class="text-red-100" th:text="${seller.email}">user@email.com</p>
+                        <div style="font-weight:700;color:#2C2416;font-size:.88rem;" th:text="'Order #' + ${order.orderNumber}">Order</div>
+                        <div style="font-size:.74rem;color:#8B7355;" th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy')}">Date</div>
                     </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:800;color:#2C2416;" th:text="'₹' + ${order.totalAmount}">₹0</div>
+                    <span th:class="${order.status == 'DELIVERED' ? 'pill pill-green' : 'pill pill-blue'}"
+                          th:text="${order.status}">Status</span>
                 </div>
             </div>
 
-            <!-- Account Details -->
-            <div class="p-6 space-y-6">
+        </div>
+    </div>
+</div>
 
-                <!-- Personal Information -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900 pb-2 border-b">
-                        <i class="fas fa-info-circle mr-2"></i>Personal Information
-                    </h3>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Account Holder Name</label>
-                            <p class="mt-1 text-gray-900" th:text="${seller.bankDetails.accountHolderName}">John Doe</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Email Address</label>
-                            <p class="mt-1 text-gray-900" th:text="${seller.email}">john@example.com</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Account Number</label>
-                            <p class="mt-1 text-gray-900"
-                               th:text="${seller.bankDetails.accountNumber}">+1234567890</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Bank Name</label>
-                            <p class="mt-1 text-gray-900"
-                               th:text="${seller.bankDetails.bankName}">Bank of World</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">IFSC Code</label>
-                            <p class="mt-1 text-gray-900"
-                               th:text="${seller.bankDetails.ifscCode}">IFSC0001234</p>
-                        </div>
-
-
-                       
-
-                       
-
-                    </div>
-                </div>
-
-                <!-- Account Statistics -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900 pb-2 border-b">
-                        <i class="fas fa-chart-bar mr-2"></i>Account Statistics
-                    </h3>
-                    <!-- You can add analytics cards or charts here -->
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900 pb-2 border-b">
-                        <i class="fas fa-clock mr-2"></i>Recent Activity
-                    </h3>
-
-                    <div class="space-y-3">
-                        <div th:if="${#lists.isEmpty(recentOrders)}"
-                             class="text-gray-500 text-center py-4">
-                            No recent activity
-                        </div>
-
-                        <div th:each="order : ${recentOrders}"
-                             class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div class="flex items-center">
-                                <i class="fas fa-shopping-bag text-red-800 mr-3"></i>
-                                <div>
-                                    <p class="font-medium text-gray-900"
-                                       th:text="${'Order #' + order.orderNumber}">Order #12345</p>
-                                    <p class="text-sm text-gray-600"
-                                       th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy HH:mm')}">
-                                        01 Jan 2025
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="font-medium text-gray-900"
-                                   th:text="${'₹' + order.totalAmount}">₹500</p>
-                                <p class="text-sm"
-                                   th:classappend="${order.status == 'DELIVERED' ? 'text-green-600' : 'text-blue-600'}"
-                                   th:text="${order.status}">Status</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div> <!-- End p-6 -->
-        </div> <!-- End bg-white -->
-    </div> <!-- End max-w-4xl -->
-</div> <!-- End layout fragment -->
+<script>
+    function toggleAccount() {
+        const masked = document.getElementById('acctMasked');
+        const full   = document.getElementById('acctFull');
+        const btn    = document.getElementById('toggleBtn');
+        if (full.style.display === 'none' || !full.style.display) {
+            masked.style.display = 'none';
+            full.style.display   = 'inline';
+            btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
+        } else {
+            full.style.display   = 'none';
+            masked.style.display = 'inline';
+            btn.innerHTML = '<i class="fas fa-eye"></i> Show';
+        }
+    }
+</script>
 </body>
 </html>

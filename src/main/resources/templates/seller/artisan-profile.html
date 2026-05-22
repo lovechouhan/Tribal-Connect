@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+  <meta charset="UTF-8">
+  <title>Artisan Storytelling Profile — TribalConnect</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div layout:fragment="content" style="padding:28px 24px;max-width:900px;margin:0 auto;">
+
+  <!-- Page Header -->
+  <div style="margin-bottom:28px; display:flex; justify-content:space-between; align-items:center;">
+    <div>
+      <div style="font-family:'Kalam',cursive;color:#C05C2E;font-size:0.9rem;margin-bottom:2px;">🎨 Artisan Identity</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:#2C2416;margin:0;">Cultural Storytelling Profile</h1>
+      <p style="color:#6B4226;margin-top:6px;font-size:0.9rem;">Share your heritage, craft process, and story with your customers to build trust and authenticity.</p>
+    </div>
+    <div>
+      <!-- Edit Button -->
+      <button type="button" id="editBtn" th:if="${profile.artisanName != null}" onclick="toggleEditMode()" style="background:#F0B830;color:#2C1810;border:none;padding:10px 20px;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(240,184,48,0.3);transition:transform 0.2s;">
+        <i class="fas fa-edit"></i> Edit Profile
+      </button>
+    </div>
+  </div>
+
+  <div th:if="${message}" style="background:#d4edda;color:#155724;padding:14px 20px;border-radius:10px;margin-bottom:24px;border-left:4px solid #28a745;">
+    <i class="fas fa-check-circle" style="margin-right:8px;"></i> <span th:text="${message}"></span>
+  </div>
+  <div th:if="${error}" style="background:#f8d7da;color:#721c24;padding:14px 20px;border-radius:10px;margin-bottom:24px;border-left:4px solid #dc3545;">
+    <i class="fas fa-exclamation-circle" style="margin-right:8px;"></i> <span th:text="${error}"></span>
+  </div>
+
+  <div style="background:#fff;border-radius:18px;box-shadow:0 4px 20px rgba(107,66,38,0.1);padding:32px;border-top:4px solid #3D6B45;">
+    
+    <!-- VIEW MODE -->
+    <div id="viewMode" th:class="${profile.artisanName == null ? 'hidden' : ''}">
+      <div style="display:flex; gap: 32px; align-items: flex-start;">
+        <div style="flex-shrink:0; text-align:center;">
+          <img th:if="${profile.artisanImage != null}" th:src="${profile.artisanImage}" alt="Artisan Photo" style="width:160px;height:160px;border-radius:50%;object-fit:cover;border:4px solid #FDF6E9;box-shadow:0 6px 15px rgba(0,0,0,0.1);">
+          <div th:unless="${profile.artisanImage != null}" style="width:160px;height:160px;border-radius:50%;background:#FDF6E9;display:inline-flex;align-items:center;justify-content:center;color:#6B4226;font-size:4rem;border:4px solid #fff;box-shadow:0 6px 15px rgba(0,0,0,0.1);">
+            <i class="fas fa-user-alt"></i>
+          </div>
+        </div>
+        
+        <div style="flex:1;">
+          <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; color:#2C1810; margin:0 0 10px;" th:text="${profile.artisanName}">Artisan Name</h2>
+          
+          <div style="display:flex; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+            <div th:if="${profile.tribeOrCommunity != null and !profile.tribeOrCommunity.isEmpty()}" style="background:#FDF6E9; padding:6px 16px; border-radius:20px; color:#C05C2E; font-weight:600; font-size:0.9rem;">
+              <i class="fas fa-users" style="margin-right:6px;"></i> <span th:text="${profile.tribeOrCommunity}">Tribe</span>
+            </div>
+            <div th:if="${profile.regionOrState != null and !profile.regionOrState.isEmpty()}" style="background:#e8f4ec; padding:6px 16px; border-radius:20px; color:#2d5a3d; font-weight:600; font-size:0.9rem;">
+              <i class="fas fa-map-marker-alt" style="margin-right:6px;"></i> <span th:text="${profile.regionOrState}">Region</span>
+            </div>
+          </div>
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+            <div>
+              <div style="font-size:0.8rem; text-transform:uppercase; color:#9a7a66; font-weight:700; margin-bottom:4px;">Craft Specialty</div>
+              <div style="font-size:1.1rem; color:#2C1810; font-weight:500;" th:text="${profile.craftSpecialty ?: '—'}">Specialty</div>
+            </div>
+            <div>
+              <div style="font-size:0.8rem; text-transform:uppercase; color:#9a7a66; font-weight:700; margin-bottom:4px;">Experience</div>
+              <div style="font-size:1.1rem; color:#2C1810; font-weight:500;" th:text="${profile.yearsOfExperience != null ? profile.yearsOfExperience + ' Years' : '—'}">Years</div>
+            </div>
+          </div>
+          
+          <div style="margin-bottom:24px;">
+            <div style="font-size:0.8rem; text-transform:uppercase; color:#9a7a66; font-weight:700; margin-bottom:8px;">Biography</div>
+            <p style="color:#5a3c28; line-height:1.6; margin:0;" th:text="${profile.shortBio ?: 'No biography added yet.'}">Bio</p>
+          </div>
+          
+          <div th:if="${profile.handcraftedProcess != null and !profile.handcraftedProcess.isEmpty()}">
+            <div style="font-size:0.8rem; text-transform:uppercase; color:#9a7a66; font-weight:700; margin-bottom:8px;">Handcrafted Process</div>
+            <p style="color:#5a3c28; line-height:1.6; margin:0; background:#FAFAFA; padding:16px; border-radius:10px; border-left:3px solid #D4960A;" th:text="${profile.handcraftedProcess}">Process</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT MODE (FORM) -->
+    <div id="editMode" th:class="${profile.artisanName != null ? 'hidden' : ''}">
+      <form th:action="@{/sellers/artisan-profile}" method="post" enctype="multipart/form-data" th:object="${profile}">
+        
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:32px;">
+          
+          <!-- Image Upload Section -->
+          <div>
+            <label style="display:block;font-weight:600;color:#6B4226;margin-bottom:12px;">Artisan Photo</label>
+            <div style="border:2px dashed #E8D5B0;border-radius:14px;padding:24px;text-align:center;background:#FDF6E9;">
+              <div th:if="*{artisanImage}" style="margin-bottom:16px;">
+                <img th:src="*{artisanImage}" alt="Artisan Photo" style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid #3D6B45;box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+              </div>
+              <div th:unless="*{artisanImage}" style="margin-bottom:16px;">
+                <div style="width:140px;height:140px;border-radius:50%;background:#E8D5B0;display:inline-flex;align-items:center;justify-content:center;color:#6B4226;font-size:3rem;margin:0 auto;">
+                  <i class="fas fa-user-alt"></i>
+                </div>
+              </div>
+              <input type="file" name="imageFile" id="imageFile" accept="image/*" style="display:none;" onchange="previewImage(this)">
+              <label for="imageFile" style="background:#3D6B45;color:#fff;padding:8px 16px;border-radius:20px;font-size:0.85rem;font-weight:600;cursor:pointer;display:inline-block;transition:all 0.2s;">
+                <i class="fas fa-camera"></i> Upload Photo
+              </label>
+              <p style="font-size:0.75rem;color:#8B7355;margin-top:10px;">A clear photo of you or your workspace builds trust.</p>
+            </div>
+          </div>
+
+          <!-- Form Fields -->
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            
+            <div>
+              <label style="display:block;font-weight:600;color:#6B4226;margin-bottom:8px;">Artisan/Group Name</label>
+              <input type="text" th:field="*{artisanName}" placeholder="e.g. Bhil Craft Collective" style="width:100%;padding:12px 16px;border:1.5px solid #E8D5B0;border-radius:10px;font-size:0.95rem;color:#2C2416;background:#FAFAFA;" required>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div>
+                <label style="display:block;font-weight:600;color:#6B4226;margin-bottom:8px;">Tribe / Community</label>
+                <input type="text" th:field="*{tribeOrCommunity}" placeholder="e.g. Gond, Warli" style="width:100%;padding:12px 16px;border:1.5px solid #E8D5B0;border-radius:10px;font-size:0.95rem;color:#2C2416;background:#FAFAFA;">
+              </div>
+              <div>
+                <label style="display:block;font-weight:600;color:#6B4226;margin-bottom:8px;">Region / State</label>
+                <input type="text" th:field="*{regionOrState}" placeholder="e.g. Bastar, Chhattisgarh" style="width:100%;padding:12px 16px;border:1.5px solid #E8D5B0;border-radius:10px;font-size:0.95rem;color:#2C2416;background:#FAFAFA;">
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+              <div>
+                <label style="display:block;font-weight:600;color:#6B4226;margin-bottom:8px;">Craft Specialty</label>
+                <input type="text" th:field="*{craftSpecialty}" placeholder="e.g. Dhokra Art, Handloom Weaving" style="width:100%;padding:12px 16px;border:1.5px solid #E8D5B0;border-radius:10px;font-size:0.95rem;color:#2C2416;background:#FAFAFA;">
+              </div>
+              <div>
+                <label style="display:block;font-weight:600;color:#6B4226;margin-bottom:8px;">Years of Exp.</label>
+                <input type="number" th:field="*{yearsOfExperience}" placeholder="e.g. 15" style="width:100%;padding:12px 16px;border:1.5px solid #E8D5B0;border-radius:10px;font-size:0.95rem;color:#2C2416;background:#FAFAFA;">
+              </div>
+            </div>
+
+            <div>
+              <label style="display:block;font-weight:600;color:#6B4226;margin-bottom:8px;">Short Biography</label>
+              <textarea th:field="*{shortBio}" rows="4" maxlength="500" placeholder="Tell your story. How did you start? What does your craft mean to your community?" style="width:100%;padding:12px 16px;border:1.5px solid #E8D5B0;border-radius:10px;font-size:0.95rem;color:#2C2416;background:#FAFAFA;resize:vertical;"></textarea>
+            </div>
+
+            <div>
+              <label style="display:block;font-weight:600;color:#6B4226;margin-bottom:8px;">Handcrafted Process (Optional)</label>
+              <textarea th:field="*{handcraftedProcess}" rows="3" maxlength="2000" placeholder="Describe the traditional methods or sustainable materials used." style="width:100%;padding:12px 16px;border:1.5px solid #E8D5B0;border-radius:10px;font-size:0.95rem;color:#2C2416;background:#FAFAFA;resize:vertical;"></textarea>
+            </div>
+
+            <div style="margin-top:16px;text-align:right;display:flex;justify-content:flex-end;gap:12px;">
+              <button type="button" onclick="toggleEditMode()" th:if="${profile.artisanName != null}" style="background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;padding:12px 24px;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:background 0.2s;">
+                Cancel
+              </button>
+              <button type="submit" style="background:linear-gradient(135deg,#C05C2E 0%,#8B3A15 100%);color:#fff;border:none;padding:12px 32px;border-radius:10px;font-size:1rem;font-weight:700;font-family:'Playfair Display',serif;cursor:pointer;box-shadow:0 4px 12px rgba(192,92,46,0.3);transition:transform 0.2s;">
+                Save Profile
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+  window.toggleEditMode = function() {
+    const viewMode = document.getElementById('viewMode');
+    const editMode = document.getElementById('editMode');
+    const editBtn = document.getElementById('editBtn');
+    
+    if (viewMode.classList.contains('hidden')) {
+      viewMode.classList.remove('hidden');
+      editMode.classList.add('hidden');
+      if(editBtn) editBtn.classList.remove('hidden');
+    } else {
+      viewMode.classList.add('hidden');
+      editMode.classList.remove('hidden');
+      if(editBtn) editBtn.classList.add('hidden');
+    }
+  };
+
+  window.previewImage = function(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        const parent = input.parentElement;
+        const existingImgContainer = parent.querySelector('div:first-child');
+        existingImgContainer.innerHTML = '<img src="' + e.target.result + '" alt="Preview" style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid #3D6B45;box-shadow:0 4px 10px rgba(0,0,0,0.1);">';
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+  </script>
+</div>
+</body>
+</html>

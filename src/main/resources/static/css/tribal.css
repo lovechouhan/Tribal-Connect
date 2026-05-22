@@ -1,0 +1,601 @@
+/* =====================================================
+   TribalConnect — Tribal E-Marketplace Global CSS
+   ===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  /* Earthy Tribal Palette */
+  --terracotta:    #C05C2E;
+  --terracotta-dk: #A04820;
+  --terracotta-lt: #E07A50;
+  --ochre:         #D4960A;
+  --ochre-lt:      #F0B830;
+  --forest:        #3D6B45;
+  --forest-lt:     #5A8F63;
+  --bark:          #6B4226;
+  --bark-lt:       #8B5E3C;
+  --cream:         #FDF6E9;
+  --cream-dk:      #F5EAD2;
+  --sand:          #E8D5B0;
+  --charcoal:      #2C2416;
+  --warm-gray:     #8B7355;
+
+  /* Gradients */
+  --grad-hero:   linear-gradient(135deg, #C05C2E 0%, #D4960A 50%, #3D6B45 100%);
+  --grad-card:   linear-gradient(145deg, #FDF6E9 0%, #F5EAD2 100%);
+  --grad-warm:   linear-gradient(135deg, #6B4226 0%, #C05C2E 100%);
+  --grad-forest: linear-gradient(135deg, #3D6B45 0%, #5A8F63 100%);
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Poppins', sans-serif;
+  --font-accent:  'Kalam', cursive;
+
+  /* Shadows */
+  --shadow-card: 0 4px 20px rgba(107, 66, 38, 0.15);
+  --shadow-hover: 0 8px 32px rgba(107, 66, 38, 0.25);
+  --shadow-btn:  0 4px 12px rgba(192, 92, 46, 0.35);
+}
+
+/* ---- Base Reset ---- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--cream);
+  color: var(--charcoal);
+  margin: 0;
+}
+
+/* ---- Tribal Pattern Background ---- */
+.tribal-bg {
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(192,92,46,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(61,107,69,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(212,150,10,0.04) 0%, transparent 60%);
+}
+
+/* ---- Navbar ---- */
+.tribal-navbar {
+  background: var(--grad-warm);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tribal-navbar .brand-name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: var(--ochre-lt);
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.tribal-navbar .brand-tagline {
+  font-family: var(--font-accent);
+  font-size: 0.7rem;
+  color: var(--sand);
+  display: block;
+}
+
+/* ---- Hero Section ---- */
+.tribal-hero {
+  background: var(--grad-hero);
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+}
+
+.tribal-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ---- Section Headings ---- */
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--bark);
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 60%;
+  height: 3px;
+  background: var(--grad-warm);
+  border-radius: 2px;
+}
+
+/* ---- Tribal Badge ---- */
+.badge-handcrafted {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #C05C2E, #D4960A);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.badge-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #3D6B45, #5A8F63);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+/* ---- Product Cards ---- */
+.tribal-card {
+  background: var(--grad-card);
+  border: 1px solid rgba(107,66,38,0.12);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+.tribal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.tribal-card .card-img-wrap {
+  position: relative;
+  background: #fff;
+  overflow: hidden;
+}
+
+.tribal-card .card-img-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--grad-warm);
+}
+
+/* ---- Buttons ---- */
+.btn-tribal {
+  background: var(--grad-warm);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  letter-spacing: 0.3px;
+}
+
+.btn-tribal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(192,92,46,0.45);
+  color: #fff;
+}
+
+.btn-tribal:active { transform: translateY(0); }
+
+.btn-forest {
+  background: var(--grad-forest);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-forest:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(61,107,69,0.4);
+  color: #fff;
+}
+
+.btn-outline-tribal {
+  background: transparent;
+  color: var(--terracotta);
+  border: 2px solid var(--terracotta);
+  padding: 8px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-outline-tribal:hover {
+  background: var(--terracotta);
+  color: #fff;
+}
+
+/* ---- Category Cards ---- */
+.category-card {
+  position: relative;
+  background: var(--cream);
+  border-radius: 16px;
+  overflow: hidden;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(107,66,38,0.1);
+  border: 1px solid rgba(192,92,46,0.1);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(107,66,38,0.25);
+  border-color: var(--terracotta);
+}
+
+.category-card .cat-img-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 85%; /* slightly rectangular */
+  overflow: hidden;
+  background: var(--cream-dk);
+}
+
+.category-card .cat-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.category-card:hover .cat-img {
+  transform: scale(1.12);
+}
+
+/* Subtle Tribal Pattern Overlay */
+.category-card .cat-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(61, 40, 24, 0.15); /* warm dark tint */
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2.5L22.5 16 25 13.5V0h2v13.5L29.5 16 32 13.5V0h2v13.5l2.5-2.5L39 8.5V0h1v8.5l-2.5 2.5L35 13.5V40h-2V13.5l-2.5 2.5L28 18.5V40h-2V18.5l-2.5-2.5L21 13.5V40h-1V20.5z' fill='%23ffffff' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E");
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  z-index: 1;
+}
+
+.category-card:hover .cat-overlay {
+  opacity: 0.3;
+}
+
+.category-card .cat-content {
+  padding: 16px 12px;
+  background: var(--grad-card);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  border-top: 3px solid var(--terracotta);
+}
+
+.category-card .cat-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bark);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.category-card .cat-explore {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--terracotta);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-top: 6px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.3s ease;
+  height: 0;
+  overflow: hidden;
+}
+
+.category-card:hover .cat-explore {
+  opacity: 1;
+  transform: translateY(0);
+  height: auto;
+  margin-top: 6px;
+}
+
+/* ---- Artisan/Seller Cards ---- */
+.artisan-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  border-top: 4px solid var(--terracotta);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.artisan-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+.artisan-card .artisan-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--ochre);
+  margin: 0 auto 12px;
+}
+
+.artisan-card .artisan-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--bark);
+}
+
+.artisan-card .artisan-tribe {
+  font-size: 0.78rem;
+  color: var(--terracotta);
+  font-weight: 500;
+}
+
+/* ---- Sidebar ---- */
+.tribal-sidebar {
+  background: linear-gradient(180deg, #6B4226 0%, #4A2E16 100%);
+  border-right: 3px solid var(--ochre);
+}
+
+.tribal-sidebar .sidebar-logo-text {
+  font-family: var(--font-display);
+  color: var(--ochre-lt);
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.tribal-sidebar .nav-item a {
+  color: var(--sand);
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tribal-sidebar .nav-item a:hover {
+  background: rgba(255,255,255,0.12);
+  color: var(--ochre-lt);
+}
+
+/* ---- Stats Cards ---- */
+.stat-card {
+  border-radius: 14px;
+  padding: 20px;
+  color: #fff;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-3px); }
+.stat-card.terracotta { background: linear-gradient(135deg, #C05C2E, #E07A50); }
+.stat-card.forest    { background: linear-gradient(135deg, #3D6B45, #5A8F63); }
+.stat-card.ochre     { background: linear-gradient(135deg, #D4960A, #F0B830); color: var(--charcoal); }
+.stat-card.bark      { background: linear-gradient(135deg, #6B4226, #8B5E3C); }
+
+/* ---- Festival Banner ---- */
+.festival-banner {
+  background: linear-gradient(135deg, #C05C2E 0%, #D4960A 40%, #3D6B45 100%);
+  border-radius: 16px;
+  padding: 28px 32px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.festival-banner::before {
+  content: '🎉';
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  font-size: 5rem;
+  opacity: 0.15;
+}
+
+/* ---- Footer ---- */
+.tribal-footer {
+  background: var(--charcoal);
+  color: var(--sand);
+  font-family: var(--font-body);
+}
+
+.tribal-footer .footer-brand {
+  font-family: var(--font-display);
+  color: var(--ochre-lt);
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.tribal-footer a {
+  color: var(--sand);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.tribal-footer a:hover { color: var(--ochre-lt); }
+
+/* ---- Login / Register Cards ---- */
+.auth-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(107,66,38,0.15);
+  border-top: 5px solid var(--terracotta);
+}
+
+/* ---- Form Inputs ---- */
+.tribal-input {
+  border: 1.5px solid #d4c4a0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  background: var(--cream);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.tribal-input:focus {
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px rgba(192,92,46,0.15);
+  outline: none;
+  background: #fff;
+}
+
+/* ---- Price Display ---- */
+.price-selling {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--bark);
+}
+
+.price-mrp {
+  font-size: 1rem;
+  color: var(--warm-gray);
+  text-decoration: line-through;
+}
+
+.price-saving {
+  font-size: 0.82rem;
+  color: var(--forest);
+  font-weight: 600;
+}
+
+/* ---- Govt Initiative Banner ---- */
+.govt-banner {
+  background: linear-gradient(135deg, #1a3a2a, #2d5a3d);
+  border-radius: 16px;
+  border-left: 5px solid var(--ochre);
+  color: #fff;
+  padding: 24px 32px;
+}
+
+/* ---- Testimonials ---- */
+.testimonial-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  border-left: 4px solid var(--terracotta);
+  box-shadow: var(--shadow-card);
+}
+
+.testimonial-card .quote-icon {
+  font-size: 2.5rem;
+  color: var(--ochre);
+  line-height: 1;
+  font-family: Georgia, serif;
+}
+
+/* ---- Breadcrumb ---- */
+.tribal-breadcrumb {
+  background: var(--cream-dk);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  color: var(--warm-gray);
+}
+
+.tribal-breadcrumb a {
+  color: var(--terracotta);
+  text-decoration: none;
+}
+
+.tribal-breadcrumb a:hover { text-decoration: underline; }
+
+/* ---- Alert Messages ---- */
+.tribal-alert-success {
+  background: #d4edda;
+  border: 1px solid #5A8F63;
+  color: #2d5a3d;
+  border-radius: 10px;
+  padding: 12px 18px;
+}
+
+.tribal-alert-error {
+  background: #fdecea;
+  border: 1px solid var(--terracotta);
+  color: var(--bark);
+  border-radius: 10px;
+  padding: 12px 18px;
+}
+
+/* ---- Section Divider ---- */
+.section-divider {
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--ochre), transparent);
+  margin: 40px 0;
+}
+
+/* ---- Animated Entrance ---- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up { animation: fadeInUp 0.5s ease both; }
+.delay-100  { animation-delay: 0.1s; }
+.delay-200  { animation-delay: 0.2s; }
+.delay-300  { animation-delay: 0.3s; }
+
+/* ---- Utility Overrides ---- */
+.text-terracotta  { color: var(--terracotta); }
+.text-ochre       { color: var(--ochre); }
+.text-forest      { color: var(--forest); }
+.text-bark        { color: var(--bark); }
+.text-cream       { color: var(--cream); }
+.bg-cream         { background-color: var(--cream); }
+.bg-terracotta    { background-color: var(--terracotta); }
+.border-terracotta { border-color: var(--terracotta); }
+
+/* ---- Responsive adjustments ---- */
+@media (max-width: 768px) {
+  .tribal-hero { min-height: 300px; }
+  .section-title { font-size: 1.4rem; }
+  .tribal-navbar .brand-name { font-size: 1.2rem; }
+}

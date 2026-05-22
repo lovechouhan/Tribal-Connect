@@ -1,13 +1,88 @@
-<footer th:fragment="footer" class="bg-gray-900 text-gray-300 mt-10">
-  <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+<footer th:fragment="footer" class="tribal-footer" style="margin-top:auto;padding:48px 0 24px;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
 
-    
+    <!-- Top Grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:40px;">
 
-  <!-- Bottom strip -->
-  <div class="border-t border-gray-700 py-4">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-white">
-      <p>© 2025 Apni Dukaan. All Rights Reserved.</p>
-     
+      <!-- Brand Column -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <span style="font-size:2rem;">🌿</span>
+          <div>
+            <div class="footer-brand">TribalConnect</div>
+            <div style="font-family:'Kalam',cursive;font-size:0.75rem;color:#D4960A;letter-spacing:1px;">Tribal Artisan Marketplace</div>
+          </div>
+        </div>
+        <p style="font-size:0.84rem;line-height:1.7;color:#a89070;max-width:220px;">
+          Connecting tribal artisans with the world. Every purchase empowers indigenous communities and preserves ancient craftsmanship.
+        </p>
+        <div style="display:flex;gap:12px;margin-top:16px;">
+          <a href="#" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:#E8D5B0;font-size:0.9rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#C05C2E'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:#E8D5B0;font-size:0.9rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#C05C2E'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><i class="fab fa-instagram"></i></a>
+          <a href="#" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:#E8D5B0;font-size:0.9rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#C05C2E'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <!-- Shop Links -->
+      <div>
+        <h4 style="font-family:'Playfair Display',serif;color:#F0B830;font-size:1rem;margin-bottom:16px;font-weight:700;">Shop</h4>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+          <li><a th:href="@{/user/products}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>All Handicrafts</a></li>
+          <li><a th:href="@{/user/products}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Tribal Paintings</a></li>
+          <li><a th:href="@{/user/products}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Bamboo Crafts</a></li>
+          <li><a th:href="@{/user/products}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Tribal Jewellery</a></li>
+          <li><a th:href="@{/user/products}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Forest Products</a></li>
+          <li><a th:href="@{/user/products}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Organic Honey &amp; Herbs</a></li>
+        </ul>
+      </div>
+
+      <!-- Sell on Platform -->
+      <div>
+        <h4 style="font-family:'Playfair Display',serif;color:#F0B830;font-size:1rem;margin-bottom:16px;font-weight:700;">Artisans</h4>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+          <li><a th:href="@{/sellers/register}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Register as Artisan</a></li>
+          <li><a th:href="@{/sellers/login}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Artisan Login</a></li>
+          <li><a th:href="@{/sellers/dashboard}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Seller Dashboard</a></li>
+          <li><a href="#" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Shipping Guide</a></li>
+          <li><a href="#" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Payment Info</a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <h4 style="font-family:'Playfair Display',serif;color:#F0B830;font-size:1rem;margin-bottom:16px;font-weight:700;">Support</h4>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+          <li><a th:href="@{/user/about}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>About TribalConnect</a></li>
+          <li><a th:href="@{/user/contact}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Contact Us</a></li>
+          <li><a th:href="@{/user/support}" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Customer Care</a></li>
+          <li><a href="#" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Privacy Policy</a></li>
+          <li><a href="#" style="font-size:0.84rem;"><i class="fas fa-chevron-right mr-2" style="color:#C05C2E;font-size:0.65rem;"></i>Return Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Govt Initiative Strip -->
+    <div style="background:rgba(61,107,69,0.15);border:1px solid rgba(61,107,69,0.3);border-radius:10px;padding:14px 20px;margin-bottom:28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <span style="font-size:1.8rem;">🇮🇳</span>
+      <div>
+        <p style="margin:0;font-size:0.82rem;color:#5A8F63;font-weight:600;">Supported by Government Tribal Welfare Initiatives</p>
+        <p style="margin:0;font-size:0.74rem;color:#8B7355;">TRIFED Empanelled &nbsp;|&nbsp; Van Dhan Vikas Kendra &nbsp;|&nbsp; Ministry of Tribal Affairs</p>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="background:rgba(212,150,10,0.15);color:#D4960A;border:1px solid #D4960A;border-radius:6px;padding:3px 10px;font-size:0.72rem;font-weight:600;">100% Authentic</span>
+        <span style="background:rgba(61,107,69,0.15);color:#3D6B45;border:1px solid #3D6B45;border-radius:6px;padding:3px 10px;font-size:0.72rem;font-weight:600;">Tribal Verified</span>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <p style="margin:0;font-size:0.78rem;color:#6B5440;">
+        &copy; 2025 TribalConnect. Made with ❤️ for India's Tribal Artisans.
+      </p>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img src="https://img.shields.io/badge/UPI-Accepted-brightgreen?style=flat&logo=googlepay" alt="UPI" style="height:22px;" onerror="this.style.display='none'">
+        <span style="font-size:0.78rem;color:#6B5440;">COD Available | Secure Payments</span>
+      </div>
     </div>
   </div>
 </footer>

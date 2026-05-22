@@ -59,12 +59,18 @@ public class UserServices {
         if (inputRole == UserRoles.USER) {
             User u1 = userRepo.findByEmail(user.getEmail());
             if (u1 != null) {
+                if (!u1.isEnabled()) {
+                    throw new IllegalArgumentException("UNVERIFIED");
+                }
                 throw new IllegalArgumentException("User with this email already exists");
             }
             user.setRole(UserRoles.USER);
         } else if (inputRole == UserRoles.SELLER) {
             Seller s1 = SellerRepo.findByEmail(user.getEmail());
             if (s1 != null) {
+                if (!s1.isEnabled()) {
+                    throw new IllegalArgumentException("UNVERIFIED");
+                }
                 throw new IllegalArgumentException("User with this email already exists");
             }
             user.setRole(UserRoles.SELLER);

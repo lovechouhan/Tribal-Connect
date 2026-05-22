@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CloudinaryImageService {

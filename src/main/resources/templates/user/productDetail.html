@@ -1,223 +1,818 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
- layout:decorate="~{base}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{base}">
+
 <head>
-   
-    <title>home</title>
+  <title th:text="${product.name} + ' — TribalConnect'">Product — TribalConnect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
-    <div layout:fragment="content" class="min-h-screen overflow-auto">
-      <!-- Product Detail Section -->
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-2 gap-8 bg-red-200 rounded-xl shadow">
+  <div layout:fragment="content" style="min-height:100vh;">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Product Images -->
-        <div class="p-4 flex flex-col items-center space-y-4">
-            <div class="w-full grid grid-cols-1 gap-2">
-                <div th:each="image : ${product.images}" class="rounded-lg overflow-hidden bg-gray-50 p-2">
-                    <img th:src="${image != null and image != '' ? image : '/images/no-image.png'}"
-                         alt="Product Image"
-                         class="w-full h-64 object-cover rounded-lg cursor-pointer hover:opacity-90" />
-                </div>
-            </div>
+    <!-- Breadcrumb -->
+    <div style="max-width:1280px;margin:0 auto;padding:16px 24px;">
+      <div class="tribal-breadcrumb">
+        <a th:href="@{/user/main}">🏠 Home</a> &rsaquo;
+        <a th:href="@{/user/products}">Tribal Crafts</a> &rsaquo;
+        <span th:text="${product.name}" style="color:#6B4226;font-weight:600;"></span>
+      </div>
+    </div>
 
-            <a th:href="@{'/user/cart/add/' + ${product.id}}"
-               class="w-full md:w-auto max-w-xs bg-red-800 text-white text-center py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-900 transition">
-                Add to Cart
+    <!-- Product Detail -->
+    <div style="max-width:1280px;margin:0 auto;padding:0 24px 48px;">
+      <div
+        style="display:grid;grid-template-columns:1fr 1fr;gap:40px;background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(107,66,38,0.12);overflow:hidden;">
+
+        <!-- Left: Product Image -->
+        <div
+          style="background:linear-gradient(145deg,#FDF6E9,#F5EAD2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;min-height:480px;">
+          <div th:each="image : ${product.images}">
+            <img th:src="${image != null and image != '' ? image : '/images/no-image.png'}" alt="Handcrafted Product"
+              style="max-width:100%;max-height:380px;object-fit:contain;border-radius:12px;box-shadow:0 8px 24px rgba(107,66,38,0.15);">
+          </div>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;">
+            <a th:href="@{'/user/cart/add/' + ${product.id}}" class="btn-tribal"
+              style="text-align:center;padding:13px;">
+              <i class="fas fa-shopping-basket mr-2"></i>Add to Basket
             </a>
+            <button type="button" th:onclick="|openAISummary(${product.id})|"
+              style="background:#f5ecd8;color:#6B4226;border:1px solid #d4c4a0;border-radius:8px;padding:10px;font-weight:600;cursor:pointer;font-size:0.88rem;">
+              🤖 Get AI Craft Insight
+            </button>
+            <button type="button" class="wishlist-btn" th:attr="data-product-id=${product.id}"
+              th:style="${wishlistedProductIds != null and wishlistedProductIds.contains(product.id)} ? 'background:#FDF6E9;color:#C05C2E;border:1px solid #C05C2E;border-radius:8px;padding:10px;font-weight:600;cursor:pointer;font-size:0.88rem;display:flex;align-items:center;justify-content:center;gap:6px;' : 'background:#fff;color:#C05C2E;border:1px solid #C05C2E;border-radius:8px;padding:10px;font-weight:600;cursor:pointer;font-size:0.88rem;display:flex;align-items:center;justify-content:center;gap:6px;'">
+              <i th:class="${wishlistedProductIds != null and wishlistedProductIds.contains(product.id)} ? 'fa-solid fa-heart mr-1' : 'fa-regular fa-heart mr-1'" th:style="${wishlistedProductIds != null and wishlistedProductIds.contains(product.id)} ? 'color:#C05C2E;' : ''"></i><span th:text="${wishlistedProductIds != null and wishlistedProductIds.contains(product.id)} ? 'Wishlisted' : 'Wishlist'">Wishlist</span>
+            </button>
+          </div>
         </div>
-        
-        
 
-        <!-- Product Information -->
-        <div class="space-y-6">
-            <!-- Basic Information -->
+        <!-- Right: Product Info -->
+        <div style="padding:36px 32px 36px 0;display:flex;flex-direction:column;gap:20px;">
+
+          <!-- Badges -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="badge-handcrafted">🤲 Handcrafted</span>
+            <span th:if="${product.category != null}" class="badge-verified" th:text="${product.category}"></span>
+            <span th:if="${product.quantity > 0}"
+              style="background:#d4edda;color:#2d5a3d;border-radius:20px;padding:2px 12px;font-size:0.7rem;font-weight:600;">✓
+              In Stock</span>
+            <span th:if="${product.quantity <= 0}"
+              style="background:#fdecea;color:#C05C2E;border-radius:20px;padding:2px 12px;font-size:0.7rem;font-weight:600;">Out
+              of Stock</span>
+          </div>
+
+          <!-- Product Name -->
+          <h1 th:text="${product.name}"
+            style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:#2C2416;margin:0;line-height:1.3;">
+          </h1>
+
+          <!-- Artisan Info -->
+          <div th:if="${product.sellerName != null}"
+            style="display:flex;align-items:center;gap:10px;background:#FDF6E9;border-radius:10px;padding:12px 16px;border-left:3px solid #C05C2E;">
+            <i class="fas fa-paint-brush" style="color:#C05C2E;font-size:1.2rem;"></i>
             <div>
-                <h2 class="text-gray-500 text-sm">Description</h2>
-                <p class="mt-1 text-gray-900" th:text="${product.description}">Description</p>
+              <div style="font-size:0.72rem;color:#8B7355;text-transform:uppercase;letter-spacing:0.5px;">Crafted by
+                Artisan</div>
+              <div style="font-weight:700;color:#6B4226;font-size:0.95rem;" th:text="${product.sellerName}"></div>
             </div>
+            <span
+              style="margin-left:auto;background:linear-gradient(135deg,#3D6B45,#5A8F63);color:#fff;border-radius:20px;padding:2px 10px;font-size:0.7rem;font-weight:600;">✓
+              Verified</span>
+          </div>
 
-            <!-- Pricing -->
-            <div class="border-t border-gray-200 pt-4">
-                <h2 class="text-gray-500 text-sm">Pricing</h2>
-                <div class="mt-2 flex items-baseline space-x-4">
-                    <span class="text-3xl font-bold text-gray-900">₹[[${product.sellingPrice}]]</span>
-                    <span class="text-xl text-gray-500 line-through"
-                        th:if="${product.MRPprice > product.sellingPrice}">₹[[${product.MRPprice}]]</span>
-                    <span class="text-green-600 font-medium"
-                        th:if="${product.discountPrice > 0}">[[${product.MRPprice - product.sellingPrice}]]rs OFF</span>
-                </div>
-            </div>
+          <!-- Description -->
+          <div>
+            <h3
+              style="font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#8B7355;margin:0 0 8px;font-weight:600;">
+              About This Craft</h3>
+            <p th:text="${product.description}" style="color:#4a3520;line-height:1.8;font-size:0.95rem;margin:0;"></p>
+          </div>
 
-            <!-- Stock -->
-            <div class="border-t border-gray-200 pt-4">
-                <h2 class="text-gray-500 text-sm">Stock Status</h2>
-                <div class="mt-2 flex items-center space-x-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                        th:classappend="${product.quantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                        [[${product.quantity > 0 ? 'In Stock' : 'Out of Stock'}]]
-                    </span>
-                    <span class="text-gray-900">[[${product.quantity}]] units available</span>
-                </div>
-            </div>
+          <!-- Cultural Significance -->
+          <div
+            style="background:linear-gradient(135deg,rgba(192,92,46,0.06),rgba(212,150,10,0.06));border-radius:12px;padding:16px;border:1px solid rgba(192,92,46,0.15);">
+            <h3
+              style="font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#C05C2E;margin:0 0 8px;font-weight:600;">
+              <i class="fas fa-landmark mr-1"></i>Cultural Significance</h3>
+            <p style="color:#6B4226;font-size:0.88rem;line-height:1.7;margin:0;">This product represents generations of
+              indigenous knowledge and traditional craftsmanship passed down through tribal communities, preserving
+              India's rich cultural heritage.</p>
+          </div>
 
-            <!-- Additional Details -->
-            <div class="border-t border-gray-200 pt-4 space-y-4">
-                <div>
-                    <h2 class="text-gray-500 text-sm">Brand</h2>
-                    <p class="mt-1 text-gray-900" th:text="${product.brand}">Brand Name</p>
-                </div>
-                <div>
-                    <h2 class="text-gray-500 text-sm">Color</h2>
-                    <p class="mt-1 text-gray-900" th:text="${product.color}">Color</p>
-                </div>
-                <!-- <div th:if="${not #lists.isEmpty(product.sizes)}">
-                    <h2 class="text-gray-500 text-sm">Available Sizes</h2>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                        <span th:each="size : ${product.sizes}"
-                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                            [[${size}]]
-                        </span>
-                    </div>
-                </div> -->
+          <!-- Pricing -->
+          <div style="border-top:1px dashed #E8D5B0;padding-top:16px;">
+            <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;">
+              <span class="price-selling" th:text="'₹' + ${product.sellingPrice}" style="font-size:2rem;"></span>
+              <span class="price-mrp" th:if="${product.MRPprice > product.sellingPrice}"
+                th:text="'₹' + ${product.MRPprice}" style="font-size:1.1rem;"></span>
+              <span class="price-saving" th:if="${product.discountPrice != null and product.discountPrice > 0}"
+                th:text="'₹' + ${product.MRPprice - product.sellingPrice} + ' savings'"
+                style="font-size:0.88rem;"></span>
             </div>
+          </div>
 
-            <!-- Created Date -->
-            <div class="border-t border-gray-200 pt-4">
-                <h2 class="text-gray-500 text-sm">Listed On</h2>
-                <p class="mt-1 text-gray-900" th:text="${#temporals.format(product.createdAt, 'dd MMMM yyyy')}">
-                    Date</p>
-                     
+          <!-- Product Details Grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div th:if="${product.brand != null and !#strings.isEmpty(product.brand)}"
+              style="background:#F5EAD2;border-radius:8px;padding:10px 14px;">
+              <div
+                style="font-size:0.7rem;color:#8B7355;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">
+                Materials / Brand</div>
+              <div style="font-weight:600;color:#6B4226;font-size:0.9rem;" th:text="${product.brand}"></div>
             </div>
+            <div th:if="${product.color != null and !#strings.isEmpty(product.color)}"
+              style="background:#F5EAD2;border-radius:8px;padding:10px 14px;">
+              <div
+                style="font-size:0.7rem;color:#8B7355;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">
+                Color / Finish</div>
+              <div style="font-weight:600;color:#6B4226;font-size:0.9rem;" th:text="${product.color}"></div>
+            </div>
+            <div style="background:#F5EAD2;border-radius:8px;padding:10px 14px;">
+              <div
+                style="font-size:0.7rem;color:#8B7355;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">
+                Stock</div>
+              <div style="font-weight:600;font-size:0.9rem;"
+                th:style="${product.quantity > 0 ? 'color:#3D6B45' : 'color:#C05C2E'}"
+                th:text="${product.quantity > 0 ? product.quantity + ' units available' : 'Out of Stock'}"></div>
+            </div>
+            <div style="background:#F5EAD2;border-radius:8px;padding:10px 14px;">
+              <div
+                style="font-size:0.7rem;color:#8B7355;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">
+                Listed On</div>
+              <div style="font-weight:600;color:#6B4226;font-size:0.9rem;"
+                th:text="${#temporals.format(product.createdAt, 'dd MMM yyyy')}"></div>
+            </div>
+          </div>
+
+          <!-- Delivery Info -->
+          <div
+            style="background:linear-gradient(135deg,rgba(61,107,69,0.08),rgba(90,143,99,0.05));border-radius:10px;padding:14px 16px;border:1px solid rgba(61,107,69,0.2);">
+            <div style="font-size:0.78rem;font-weight:600;color:#3D6B45;margin-bottom:8px;"><i
+                class="fas fa-truck mr-1"></i>Delivery & Support</div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:0.82rem;color:#4a3520;">
+              <div><i class="fas fa-check mr-2" style="color:#5A8F63;"></i>Pan-India delivery available</div>
+              <div><i class="fas fa-check mr-2" style="color:#5A8F63;"></i>COD available on most pincodes</div>
+              <div><i class="fas fa-check mr-2" style="color:#5A8F63;"></i>UPI / Card / Net Banking accepted</div>
+              <div><i class="fas fa-check mr-2" style="color:#5A8F63;"></i>7-day return support</div>
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-</main>
-
-<div>
-
-</div>
-<!-- Related Products -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h2 class="text-xl font-bold mb-4">You may also like</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div th:each="relatedProduct : ${relatedProducts}" class="bg-white rounded-xl shadow p-4 flex flex-col">
+      <!-- ═══════════════════════════════════════════════════
+         MEET THE ARTISAN — Storytelling Profile
+    ═══════════════════════════════════════════════════ -->
+      <div th:if="${artisanProfile != null}" id="artisan-profile-section" style="margin-top:48px; background:linear-gradient(145deg, #FAF8F5, #F5F1E6); border-radius: 24px; padding: 36px; box-shadow: 0 4px 20px rgba(107, 66, 38, .08); border: 1px solid rgba(107, 66, 38, .1);">
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 800; color: #2C2416; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 1.5rem;">🏺</span> Meet the Artisan
+        </h2>
+        
+        <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start;">
+          <!-- Artisan Image -->
+          <div style="flex-shrink: 0; width: 160px; height: 160px; border-radius: 50%; overflow: hidden; border: 4px solid #fff; box-shadow: 0 8px 24px rgba(107, 66, 38, .15);">
+            <img th:if="${artisanProfile.artisanImage != null and artisanProfile.artisanImage != ''}"
+                 th:src="${artisanProfile.artisanImage}" alt="Artisan Image" style="width: 100%; height: 100%; object-fit: cover;">
+            <div th:if="${artisanProfile.artisanImage == null or artisanProfile.artisanImage == ''}"
+                 style="width: 100%; height: 100%; background: linear-gradient(135deg, #C05C2E, #D4960A); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 3rem; font-family: 'Playfair Display', serif; font-weight: 800;">
+              <span th:text="${artisanProfile.artisanName != null ? #strings.substring(artisanProfile.artisanName, 0, 1) : 'A'}"></span>
+            </div>
+          </div>
+          
+          <!-- Artisan Details -->
+          <div style="flex: 1; min-width: 280px;">
+            <h3 th:text="${artisanProfile.artisanName != null ? artisanProfile.artisanName : product.seller.sellerName}" 
+                style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #6B4226; margin: 0 0 8px 0;"></h3>
+            
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+              <span th:if="${artisanProfile.tribeOrCommunity != null and artisanProfile.tribeOrCommunity != ''}" 
+                    style="background: rgba(192, 92, 46, 0.1); color: #C05C2E; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+                <i class="fas fa-users mr-1"></i> <span th:text="${artisanProfile.tribeOrCommunity}"></span>
+              </span>
+              <span th:if="${artisanProfile.regionOrState != null and artisanProfile.regionOrState != ''}" 
+                    style="background: rgba(45, 90, 61, 0.1); color: #2d5a3d; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+                <i class="fas fa-map-marker-alt mr-1"></i> <span th:text="${artisanProfile.regionOrState}"></span>
+              </span>
+              <span th:if="${artisanProfile.yearsOfExperience != null}" 
+                    style="background: rgba(212, 150, 10, 0.1); color: #D4960A; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+                <i class="fas fa-star mr-1"></i> <span th:text="${artisanProfile.yearsOfExperience} + ' Years Experience'"></span>
+              </span>
+            </div>
+            
+            <p th:if="${artisanProfile.shortBio != null and artisanProfile.shortBio != ''}" 
+               th:text="${artisanProfile.shortBio}" 
+               style="color: #5C4D3C; font-size: 0.95rem; line-height: 1.7; margin-bottom: 16px;"></p>
                
-                <img th:src="${relatedProduct.images != null and relatedProduct.images != '' ? relatedProduct.images : '/images/no-image.png'}"
-                     alt="Related Product Image"
-                     class="h-64 w-3/4 object-fill object-center mx-auto mt-4 rounded-lg shadow-sm" />
-                <div class="p-4">
-                    <h3 th:text="${relatedProduct.name}" class="text-lg font-semibold text-gray-800 line-clamp-1"></h3>
-                   <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-600" th:text="${relatedProduct.brand}">Brand</span>
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                </svg>
-                                <span class="text-sm text-gray-600 ml-1">4.5</span>
-                            </div>
-                        </div>
-                    
-                    <div class="mt-3">
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-lg font-bold text-gray-900" th:text="${'₹' + relatedProduct.sellingPrice}"></span>
-                            <span th:if="${product.MRPprice > product.sellingPrice}" class="text-sm text-gray-500 line-through" th:text="${'₹' + relatedProduct.MRPprice}"></span>
-                            <span th:if="${product.discountPrice > 0}" class="text-sm text-green-600 ml-2" th:text="${'Save ₹' + relatedProduct.discountPrice}"></span>
-                        </div>
-                        <div class="flex justify-between items-center mt-2">
-                            <span th:text="${'Stock: ' + relatedProduct.quantity}" 
-                                  th:class="${relatedProduct.quantity > 0 ? 'text-green-600' : 'text-red-600'}"
-                                  class="text-sm font-medium"></span>
-                            <span class="text-sm text-gray-500" 
-                                  th:text="${#temporals.format(relatedProduct.createdAt, 'dd MMM yyyy')}"></span>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-     
-
-                    <div class="pt-4 flex space-x-2">
-                            <a th:href="@{'/user/cart/add/' + ${relatedProduct.id}}"
-                               class="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
-                                Add to Cart
-                            </a>
-                            <a th:href="@{/user/products/view/{id}(id=${relatedProduct.id})}"
-                               class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-              
-                
-                
+            <div th:if="${artisanProfile.craftSpecialty != null and artisanProfile.craftSpecialty != ''}" style="margin-bottom: 16px;">
+              <strong style="color: #2C2416; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Craft Specialty:</strong>
+              <span th:text="${artisanProfile.craftSpecialty}" style="color: #6B4226; font-weight: 600; margin-left: 6px;"></span>
             </div>
+            
+            <div th:if="${artisanProfile.handcraftedProcess != null and artisanProfile.handcraftedProcess != ''}" 
+                 style="background: #fff; padding: 20px; border-radius: 16px; border-left: 4px solid #C05C2E; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+              <h4 style="font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #6B4226; margin: 0 0 8px 0;">The Process</h4>
+              <p th:text="${artisanProfile.handcraftedProcess}" style="color: #5C4D3C; font-size: 0.9rem; line-height: 1.6; margin: 0;"></p>
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
 
+      <!-- ═══════════════════════════════════════════════════
+         SUPPORT THIS ARTISAN — Voluntary Tipping Section
+    ═══════════════════════════════════════════════════ -->
+      <div th:if="${product.seller != null}" id="tip-section" style="margin-top:48px;">
 
-<!-- Product Review Section -->
-<section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 mt-10 bg-red-200 rounded-xl shadow">
-    <!-- Flash Messages -->
-    <div th:if="${successMessage}" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-        <span th:text="${successMessage}">Success message here</span>
-    </div>
-    <div th:if="${errorMessage}" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-        <span th:text="${errorMessage}">Error message here</span>
-    </div>
-    
-    <h2 class="text-xl font-bold mb-4">Product Reviews</h2>
-    <!-- Review Form -->
-    <form th:action="@{/user/review/submitReview}" method="post" class="mb-8">
-        <!-- Hidden fields for productId and userId -->
-        <input type="hidden" name="productId" th:value="${product.id}" />
-     
-
-        <div class="mb-4">
-            <label for="review" class="block text-gray-700 font-semibold mb-2">Write a review</label>
-            <textarea id="review" name="review" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Share your thoughts..."></textarea>
+        <!-- Tip Success / Error Flash Toasts -->
+        <div th:if="${tipSuccess}" id="tip-toast-success" style="position:fixed;top:24px;right:24px;z-index:10000;background:linear-gradient(135deg,#2d5a3d,#3D6B45);color:#fff;
+                  padding:18px 28px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.25);font-size:0.92rem;
+                  max-width:420px;animation:slideInRight .5s ease;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:1.4rem;">🙏</span>
+          <span th:text="${tipSuccess}"></span>
         </div>
-        <div class="flex items-center gap-4 mb-4">
-            <label class="text-gray-700 font-semibold">Rating:</label>
-            <select name="rating" class="border border-gray-300 rounded px-2 py-1">
-                <option value="5">5 ★</option>
-                <option value="4">4 ★</option>
-                <option value="3">3 ★</option>
-                <option value="2">2 ★</option>
+        <div th:if="${tipError}" id="tip-toast-error" style="position:fixed;top:24px;right:24px;z-index:10000;background:linear-gradient(135deg,#8B2500,#C05C2E);color:#fff;
+                  padding:18px 28px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.25);font-size:0.92rem;
+                  max-width:420px;animation:slideInRight .5s ease;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:1.4rem;">⚠️</span>
+          <span th:text="${tipError}"></span>
+        </div>
+
+        <style>
+          @keyframes slideInRight {
+            from {
+              transform: translateX(120%);
+              opacity: 0;
+            }
+
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+
+          @keyframes fadeOut {
+            from {
+              opacity: 1;
+              transform: translateX(0);
+            }
+
+            to {
+              opacity: 0;
+              transform: translateX(120%);
+            }
+          }
+
+          @keyframes gentlePulse {
+
+            0%,
+            100% {
+              transform: scale(1);
+            }
+
+            50% {
+              transform: scale(1.03);
+            }
+          }
+
+          @keyframes heartBeat {
+            0% {
+              transform: scale(1);
+            }
+
+            14% {
+              transform: scale(1.3);
+            }
+
+            28% {
+              transform: scale(1);
+            }
+
+            42% {
+              transform: scale(1.3);
+            }
+
+            70% {
+              transform: scale(1);
+            }
+          }
+
+          @keyframes shimmer {
+            0% {
+              background-position: -200% center;
+            }
+
+            100% {
+              background-position: 200% center;
+            }
+          }
+
+          .tip-card {
+            background: linear-gradient(160deg, #FFFDF7 0%, #FDF6E9 40%, #F5EAD2 100%);
+            border-radius: 24px;
+            box-shadow: 0 6px 32px rgba(107, 66, 38, .12), 0 1px 4px rgba(107, 66, 38, .06);
+            padding: 36px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(107, 66, 38, .08);
+          }
+
+          .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #6B4226, #C05C2E, #D4960A, #C05C2E, #6B4226);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+          }
+
+          .tip-artisan-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #C05C2E, #D4960A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.6rem;
+            font-weight: 800;
+            box-shadow: 0 4px 16px rgba(192, 92, 46, .3);
+            border: 3px solid #fff;
+            flex-shrink: 0;
+            overflow: hidden;
+          }
+
+          .tip-artisan-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .tip-amount-btn {
+            background: #fff;
+            border: 2px solid #E8D5B0;
+            border-radius: 12px;
+            padding: 12px 6px;
+            cursor: pointer;
+            transition: all .25s ease;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #6B4226;
+            text-align: center;
+            min-width: 0;
+          }
+
+          .tip-amount-btn:hover {
+            border-color: #C05C2E;
+            background: linear-gradient(135deg, #FFF8EE, #FDF6E9);
+            box-shadow: 0 4px 16px rgba(192, 92, 46, .15);
+            transform: translateY(-2px);
+          }
+
+          .tip-amount-btn.selected {
+            border-color: #C05C2E;
+            background: linear-gradient(135deg, #6B4226, #C05C2E);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(192, 92, 46, .3);
+            transform: translateY(-2px);
+          }
+
+          .tip-custom-input {
+            background: #fff;
+            border: 2px solid #E8D5B0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6B4226;
+            width: 100%;
+            outline: none;
+            transition: border-color .2s;
+            font-family: 'Inter', sans-serif;
+          }
+
+          .tip-custom-input:focus {
+            border-color: #C05C2E;
+            box-shadow: 0 0 0 3px rgba(192, 92, 46, .1);
+          }
+
+          .tip-send-btn {
+            background: linear-gradient(135deg, #6B4226, #C05C2E);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+          }
+
+          .tip-send-btn:hover {
+            background: linear-gradient(135deg, #C05C2E, #D4960A);
+            box-shadow: 0 6px 24px rgba(192, 92, 46, .35);
+            transform: translateY(-2px);
+          }
+
+          .tip-send-btn:active {
+            transform: translateY(0);
+          }
+
+          .tip-send-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none;
+          }
+
+          .tip-stat-badge {
+            background: rgba(255, 255, 255, .7);
+            border-radius: 12px;
+            padding: 14px 18px;
+            text-align: center;
+            border: 1px solid rgba(107, 66, 38, .08);
+            backdrop-filter: blur(4px);
+          }
+
+          .tip-stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #6B4226;
+            line-height: 1;
+          }
+
+          .tip-stat-label {
+            font-size: 0.72rem;
+            color: #8B7355;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            font-weight: 600;
+          }
+
+          .tip-section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #2C2416;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+
+          .tip-heart {
+            display: inline-block;
+            font-size: 1.3rem;
+            animation: gentlePulse 2s ease-in-out infinite;
+          }
+
+          .tip-confirm-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(44, 36, 22, .65);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .tip-confirm-overlay.active {
+            display: flex;
+          }
+
+          .tip-confirm-card {
+            background: #FFFDF7;
+            border-radius: 20px;
+            padding: 36px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 16px 48px rgba(107, 66, 38, .2);
+            animation: gentlePulse .3s ease;
+          }
+
+          @media (max-width: 640px) {
+            .tip-card {
+              padding: 24px 18px;
+            }
+
+            .tip-amounts-grid {
+              grid-template-columns: repeat(2, 1fr) !important;
+            }
+          }
+        </style>
+
+        <div class="tip-card">
+          <!-- Header -->
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+            <div class="tip-artisan-avatar">
+              <img th:if="${product.seller.profileImageUrl != null and product.seller.profileImageUrl != ''}"
+                th:src="${product.seller.profileImageUrl}" alt="Artisan Photo">
+              <span th:if="${product.seller.profileImageUrl == null or product.seller.profileImageUrl == ''}"
+                th:text="${product.seller.sellerName != null ? #strings.substring(product.seller.sellerName, 0, 1) : 'A'}"></span>
+            </div>
+            <div style="flex:1;min-width:180px;">
+              <h2 class="tip-section-title">
+                <span class="tip-heart">💛</span> Support This Artisan
+              </h2>
+              <p style="color:#8B7355;font-size:0.88rem;margin:6px 0 0;line-height:1.5;">
+                Your small contribution directly empowers
+                <strong th:text="${product.seller.sellerName != null ? product.seller.sellerName : 'this artisan'}"
+                  style="color:#C05C2E;"></strong>
+                and helps preserve indigenous craft traditions.
+              </p>
+            </div>
+          </div>
+
+          <!-- Stats Row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
+            <div class="tip-stat-badge">
+              <div class="tip-stat-value" th:text="'₹' + ${artisanTotalSupport}">₹0</div>
+              <div class="tip-stat-label">Total Support Received</div>
+            </div>
+            <div class="tip-stat-badge">
+              <div class="tip-stat-value" th:text="${artisanSupporterCount}">0</div>
+              <div class="tip-stat-label">Supporters</div>
+            </div>
+          </div>
+
+          <!-- Appreciation Message -->
+          <div style="background:linear-gradient(135deg,rgba(192,92,46,0.06),rgba(212,150,10,0.06));border-radius:12px;
+                    padding:16px;margin-bottom:24px;border:1px solid rgba(192,92,46,0.12);">
+            <p style="color:#6B4226;font-size:0.88rem;line-height:1.7;margin:0;">
+              <i class="fas fa-quote-left" style="color:#C05C2E;margin-right:6px;opacity:.5;"></i>
+              Every rupee you contribute goes directly toward sustaining the livelihoods of tribal artisan families,
+              preserving centuries-old craft techniques, and building a more equitable marketplace for indigenous
+              communities.
+              <i class="fas fa-quote-right" style="color:#C05C2E;margin-left:6px;opacity:.5;"></i>
+            </p>
+          </div>
+
+          <!-- Tip Form -->
+          <form id="tipForm" th:action="@{/user/tip/send}" method="post">
+            <input type="hidden" name="productId" th:value="${product.id}" />
+            <input type="hidden" name="amount" id="tipAmountInput" value="" />
+
+            <!-- Quick Amount Buttons -->
+            <div style="margin-bottom:16px;">
+              <label
+                style="font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#8B7355;font-weight:600;margin-bottom:10px;display:block;">
+                Choose Amount
+              </label>
+              <div class="tip-amounts-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+                <button type="button" class="tip-amount-btn" data-amount="10" onclick="selectTipAmount(10, this)">
+                  <div>₹10</div>
+                  <div style="font-size:0.65rem;font-family:'Inter',sans-serif;font-weight:400;color:#8B7355;margin-top:2px;">☕ Chai</div>
+                </button>
+                <button type="button" class="tip-amount-btn" data-amount="50" onclick="selectTipAmount(50, this)">
+                  <div>₹50</div>
+                  <div style="font-size:0.65rem;font-family:'Inter',sans-serif;font-weight:400;color:#8B7355;margin-top:2px;">🎨 Colors</div>
+                </button>
+                <button type="button" class="tip-amount-btn" data-amount="100" onclick="selectTipAmount(100, this)">
+                  <div>₹100</div>
+                  <div style="font-size:0.65rem;font-family:'Inter',sans-serif;font-weight:400;color:#8B7355;margin-top:2px;">🧶 Materials</div>
+                </button>
+                <button type="button" class="tip-amount-btn" data-amount="200" onclick="selectTipAmount(200, this)">
+                  <div>₹200</div>
+                  <div style="font-size:0.65rem;font-family:'Inter',sans-serif;font-weight:400;color:#8B7355;margin-top:2px;">🤝 Empower</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Custom Amount -->
+            <div style="margin-bottom:16px;">
+              <label
+                style="font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#8B7355;font-weight:600;margin-bottom:8px;display:block;">
+                Or Enter Custom Amount
+              </label>
+              <div style="position:relative;">
+                <span
+                  style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:700;color:#6B4226;font-size:1.1rem;">₹</span>
+                <input type="number" id="tipCustomAmount" class="tip-custom-input" style="padding-left:34px;"
+                  placeholder="Enter amount (₹1 — ₹10,000)" min="1" max="10000"
+                  oninput="handleCustomAmount(this.value)">
+              </div>
+            </div>
+
+            <!-- Optional Message -->
+            <div style="margin-bottom:20px;">
+              <label
+                style="font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;color:#8B7355;font-weight:600;margin-bottom:8px;display:block;">
+                Leave a Note (Optional)
+              </label>
+              <input type="text" name="message" class="tip-custom-input"
+                placeholder="e.g., Beautiful craftsmanship! Keep up the great work 🙌" maxlength="200">
+            </div>
+
+            <!-- Send Button -->
+            <button type="button" id="tipSendBtn" class="tip-send-btn" disabled onclick="openTipConfirm()">
+              <span style="font-size:1.1rem;">🙏</span>
+              <span>Send Appreciation</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div class="tip-confirm-overlay" id="tipConfirmOverlay" onclick="closeTipConfirm(event)">
+          <div class="tip-confirm-card" onclick="event.stopPropagation()">
+            <div style="font-size:3rem;margin-bottom:12px;animation:heartBeat 1.2s ease;">💛</div>
+            <h3
+              style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:#2C2416;margin:0 0 8px;">
+              Confirm Your Support
+            </h3>
+            <p style="color:#8B7355;font-size:0.9rem;margin:0 0 20px;line-height:1.6;">
+              You are about to send
+              <strong id="tipConfirmAmount" style="color:#C05C2E;font-size:1.1rem;"></strong>
+              to support
+              <strong th:text="${product.seller.sellerName != null ? product.seller.sellerName : 'this artisan'}"
+                style="color:#6B4226;"></strong>.
+            </p>
+            <div style="display:flex;gap:12px;">
+              <button type="button" onclick="closeTipConfirmBtn()" style="flex:1;padding:12px;border-radius:10px;border:2px solid #E8D5B0;background:#fff;color:#6B4226;
+                           font-weight:600;cursor:pointer;font-size:0.9rem;transition:all .2s;">
+                Cancel
+              </button>
+              <button type="button" onclick="confirmTip()" style="flex:1;padding:12px;border-radius:10px;border:none;
+                           background:linear-gradient(135deg,#6B4226,#C05C2E);color:#fff;
+                           font-weight:700;cursor:pointer;font-size:0.9rem;transition:all .2s;
+                           box-shadow:0 4px 16px rgba(192,92,46,.3);">
+                🙏 Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END: Support This Artisan Section -->
+
+      <script>
+        // ── Tipping Logic ──
+        let selectedTipAmount = 0;
+
+        function selectTipAmount(amount, btn) {
+          selectedTipAmount = amount;
+          document.getElementById('tipAmountInput').value = amount;
+          document.getElementById('tipCustomAmount').value = '';
+          // Toggle visual selection
+          document.querySelectorAll('.tip-amount-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          document.getElementById('tipSendBtn').disabled = false;
+        }
+
+        function handleCustomAmount(val) {
+          const amount = parseInt(val);
+          document.querySelectorAll('.tip-amount-btn').forEach(b => b.classList.remove('selected'));
+          if (amount > 0 && amount <= 10000) {
+            selectedTipAmount = amount;
+            document.getElementById('tipAmountInput').value = amount;
+            document.getElementById('tipSendBtn').disabled = false;
+          } else {
+            selectedTipAmount = 0;
+            document.getElementById('tipAmountInput').value = '';
+            document.getElementById('tipSendBtn').disabled = true;
+          }
+        }
+
+        function openTipConfirm() {
+          if (selectedTipAmount <= 0) return;
+          document.getElementById('tipConfirmAmount').textContent = '₹' + selectedTipAmount;
+          document.getElementById('tipConfirmOverlay').classList.add('active');
+        }
+
+        function closeTipConfirm(e) {
+          if (e && e.target !== e.currentTarget) return;
+          document.getElementById('tipConfirmOverlay').classList.remove('active');
+        }
+        function closeTipConfirmBtn() {
+          document.getElementById('tipConfirmOverlay').classList.remove('active');
+        }
+
+        function confirmTip() {
+          document.getElementById('tipConfirmOverlay').classList.remove('active');
+          document.getElementById('tipForm').submit();
+        }
+
+        // Auto-dismiss toasts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function () {
+          ['tip-toast-success', 'tip-toast-error'].forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) {
+              setTimeout(function () {
+                el.style.animation = 'fadeOut .5s ease forwards';
+                setTimeout(function () { el.remove(); }, 500);
+              }, 5000);
+            }
+          });
+        });
+      </script>
+
+
+      <div th:if="${relatedProducts != null and !#lists.isEmpty(relatedProducts)}" style="margin-top:48px;">
+        <h2 class="section-title" style="font-size:1.6rem;margin-bottom:24px;">You May Also Like</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;">
+          <div th:each="rel : ${relatedProducts}" class="tribal-card">
+            <div
+              style="height:180px;display:flex;align-items:center;justify-content:center;background:#FDF6E9;padding:12px;">
+              <img th:src="${rel.images != null and rel.images != '' ? rel.images : '/images/no-image.png'}"
+                style="max-height:156px;max-width:100%;object-fit:contain;border-radius:8px;" alt="Related Craft">
+            </div>
+            <div style="padding:14px;">
+              <h3 th:text="${rel.name}"
+                style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:#2C2416;margin:0 0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+              </h3>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
+                <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:#6B4226;"
+                  th:text="'₹'+${rel.sellingPrice}"></span>
+                <span th:if="${rel.MRPprice > rel.sellingPrice}"
+                  style="font-size:0.82rem;color:#8B7355;text-decoration:line-through;"
+                  th:text="'₹'+${rel.MRPprice}"></span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <a th:href="@{'/user/cart/add/' + ${rel.id}}" class="btn-tribal"
+                  style="flex:1;text-align:center;padding:7px 10px;font-size:0.78rem;">Add to Cart</a>
+                <a th:href="@{/user/products/view/{id}(id=${rel.id})}"
+                  style="padding:7px 12px;border:1px solid #C05C2E;border-radius:8px;color:#C05C2E;text-decoration:none;font-size:0.78rem;display:flex;align-items:center;"><i
+                    class="fas fa-eye"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div
+        style="margin-top:48px;background:#fff;border-radius:20px;box-shadow:0 4px 20px rgba(107,66,38,0.1);padding:32px;border-top:4px solid #C05C2E;">
+        <h2
+          style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;color:#2C2416;margin:0 0 24px;">
+          Customer Reviews</h2>
+
+        <div th:if="${successMessage}" class="tribal-alert-success" style="margin-bottom:16px;"
+          th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="tribal-alert-error" style="margin-bottom:16px;" th:text="${errorMessage}">
+        </div>
+
+        <!-- Review Form -->
+        <form th:action="@{/user/review/submitReview}" method="post"
+          style="background:#FDF6E9;border-radius:12px;padding:20px;margin-bottom:28px;border:1px solid #E8D5B0;">
+          <input type="hidden" name="productId" th:value="${product.id}" />
+          <h3 style="font-size:1rem;font-weight:700;color:#6B4226;margin:0 0 14px;">Share Your Experience</h3>
+          <textarea name="review" rows="3" class="tribal-input" style="margin-bottom:12px;"
+            placeholder="Tell others about this handcrafted product..."></textarea>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <label style="font-weight:600;color:#6B4226;font-size:0.88rem;">Rating:</label>
+              <select name="rating" class="tribal-input" style="width:auto;padding:7px 12px;">
+                <option value="5">5 ★★★★★</option>
+                <option value="4">4 ★★★★</option>
+                <option value="3">3 ★★★</option>
+                <option value="2">2 ★★</option>
                 <option value="1">1 ★</option>
-            </select>
-        </div>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg">Submit Review</button>
-    </form>
-    <!-- Reviews List -->
-    <div class="space-y-6 bg-white rounded-lg shadow-md p-6">
-        <div th:if="${#lists.isEmpty(reviews)}" class="text-gray-500 text-center">
-            No reviews yet. Be the first to review this product!
-        </div>
-        <div th:each="review : ${reviews}" class="border-b pb-4 last:border-b-0">
-            <div class="flex items-center gap-2 mb-1">
-                <span class="font-semibold" th:text="${review.userName}">User Name</span>
-                <span class="text-yellow-500">
-                    <span th:utext="${#strings.repeat('★', review.rating)}"></span>
-                    <span th:utext="${#strings.repeat('☆', 5 - review.rating)}"></span>
-                </span>
+              </select>
             </div>
-            <!-- <div class="text-gray-600 text-sm mb-1" th:text="${review.reviewText}">Review text</div>
-            <div class="text-xs text-gray-400" th:text="${#temporals.format(review.createdAt, 'dd MMMM yyyy')}">Date</div> -->
+            <button type="submit" class="btn-tribal" style="padding:9px 22px;font-size:0.88rem;">Submit Review</button>
+          </div>
+        </form>
 
-             <div class="text-gray-600 text-sm font-bold mb-1" th:text="${review.reviewText}">Review text</div>
-            <div class="text-xs font-bold text-gray-400" th:text="${#temporals.format(review.reviewDate, 'dd MMM yyyy')}">Date</div>
-             
+        <!-- Reviews List -->
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div th:if="${#lists.isEmpty(reviews)}" style="text-align:center;padding:32px;color:#8B7355;">
+            <div style="font-size:2rem;margin-bottom:8px;">🌱</div>
+            <p>Be the first to share your experience with this tribal craft!</p>
+          </div>
+          <div th:each="review : ${reviews}" style="padding:16px;border-bottom:1px dashed #E8D5B0;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div
+                style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C05C2E,#D4960A);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem;"
+                th:text="${#strings.substring(review.userName,0,1)}">U</div>
+              <div>
+                <div style="font-weight:700;color:#6B4226;font-size:0.9rem;" th:text="${review.userName}"></div>
+                <div style="color:#D4960A;font-size:0.85rem;">
+                  <span th:utext="${#strings.repeat('★', review.rating)}"></span>
+                  <span style="color:#E8D5B0;" th:utext="${#strings.repeat('★', 5 - review.rating)}"></span>
+                </div>
+              </div>
+              <div style="margin-left:auto;font-size:0.75rem;color:#8B7355;"
+                th:text="${#temporals.format(review.reviewDate, 'dd MMM yyyy')}"></div>
+            </div>
+            <p style="color:#4a3520;font-size:0.88rem;line-height:1.7;margin:0;" th:text="${review.reviewText}"></p>
+          </div>
         </div>
+      </div>
     </div>
-</section>
-
-
-   </div>
-
+  </div>
 </body>
+
 </html>
